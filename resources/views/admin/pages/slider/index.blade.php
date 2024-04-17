@@ -1,0 +1,27 @@
+@php
+    use App\Helpers\Template as Template;
+    $showDropdownItemsStatus = Template::showDropdownItemsStatus('sliders', $params);
+    $showAreaSearch = Template::showAreaSearch($controllerName, $params, $routeName);
+@endphp
+@extends('admin.main')
+@section('content')
+    @include('admin.elements.header', ['btnAdd' => true])
+    <div class="row row-deck row-cards">
+        <div class="col-12">
+            <div class="row row-cards">
+                <div class="col-12">
+                    <div class="card card-body">
+                        <div class="table-responsive">
+                            <div id="successMessageContainer"></div>
+                            @include('admin.pages.' . $controllerName . '.list', ['items' => $items])
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+<script>
+    CKEDITOR.replace('content_1');
+</script>
