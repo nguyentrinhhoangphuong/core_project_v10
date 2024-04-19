@@ -69,20 +69,7 @@ $(document).ready(function () {
         }
     });
 
-    // // ================= Change Category ================
-    // // Event handler for keypress and change events
-    // $(".category-select2, .change-category").on(
-    //     "keypress change",
-    //     function (e) {
-    //         if (e.type === "keypress" && e.which !== 13) {
-    //             return; // Exit if keypress is not Enter key
-    //         }
-    //         var id = $(this).data("item-id");
-    //         var category_id = $(".change-category").val();
-    //         var controller = $(this).data("controller");
-    //         updateCategory(id, category_id, controller);
-    //     }
-    // );
+    // ================= Change Category ================
 
     // Function to update category asynchronously
     function updateCategory(id, category_id, controller) {
@@ -184,52 +171,6 @@ $(document).ready(function () {
     // ================= SLECT 2 =========================
     // khởi tạo select2()
     $(".category-select2").select2();
-
-    // let categoryTree = $("#nestable-category");
-    // categoryTree.nestable({}).on("change", function () {
-    //     let dataSend = categoryTree.nestable("serialize"); // obj
-    //     let url = categoryTree.data("url");
-    //     console.log(url);
-    //     $.ajax({
-    //         type: "POST",
-    //         url: url,
-    //         dataType: "json",
-    //         data: {
-    //             _token: $('meta[name="csrf-token"]').attr("content"),
-    //             data: dataSend,
-    //         },
-    //         success: function (response) {
-    //             console.log(response);
-    //         },
-    //     });
-    // });
-
-    var nestedSortable = new Sortable(document.getElementById("result"), {
-        animation: 150,
-        handle: ".sortable-handle",
-        onEnd: function (evt) {
-            var item = evt.item;
-            var parentId = $(item).closest(".sortable-row").data("item-id");
-            var newIndex = $(item).index();
-
-            // Gửi yêu cầu AJAX để cập nhật vị trí mới của mục
-            $.ajax({
-                url: "/update-item-position",
-                method: "POST",
-                data: {
-                    itemId: $(item).data("item-id"),
-                    parentId: parentId,
-                    newIndex: newIndex,
-                },
-                success: function (response) {
-                    // Xử lý phản hồi từ máy chủ (nếu cần)
-                },
-                error: function (xhr, status, error) {
-                    // Xử lý lỗi (nếu có)
-                },
-            });
-        },
-    });
 });
 
 // ================ review image ==================
@@ -243,3 +184,54 @@ var openFile = function (event) {
     };
     reader.readAsDataURL(input.files[0]);
 };
+
+// ================= nested sortable ===================
+var nestedSortables = [].slice.call(
+    document.querySelectorAll(".nested-sortable")
+);
+for (var i = 0; i < nestedSortables.length; i++) {
+    new Sortable(nestedSortables[i], {
+        group: "nested",
+        animation: 150,
+        fallbackOnBody: true,
+        swapThreshold: 0.65,
+        onEnd: function () {
+            // This event is triggered after a drag-and-drop operation completes
+            let url = "/admin/categories/updateTree";
+            let data = serialize(root);
+            var csrfToken = $('meta[name="csrf-token"]').attr("content");
+            $.ajax({
+                url: url,
+                method: "POST",
+                data: {
+                    data: data,
+                    _token: csrfToken,
+                },
+                success: function (data) {},
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error(
+                        "Lỗi khi thực hiện yêu cầu:",
+                        textStatus,
+                        errorThrown
+                    );
+                },
+            });
+        },
+    });
+}
+const nestedQuery = ".nested-sortable";
+const identifier = "sortableId";
+const root = document.getElementById("nestedDemo");
+function serialize(sortable) {
+    var serialized = [];
+    var children = [].slice.call(sortable.children);
+    for (var i in children) {
+        var nested = children[i].querySelector(nestedQuery);
+        serialized.push({
+            id: children[i].dataset[identifier],
+            children: nested ? serialize(nested) : [],
+        });
+    }
+    return serialized;
+}
+console.log(serialize(root));

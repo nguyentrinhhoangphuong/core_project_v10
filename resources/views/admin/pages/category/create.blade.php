@@ -11,7 +11,7 @@
         @csrf
         <div class="card-body">
             <div class="row justify-content-center">
-                <div class="col-xl-4">
+                <div class="col-xl-12">
                     @include('admin.templates.error')
                     <div class="row">
                         <div class="col-md-6 col-xl-12">

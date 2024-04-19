@@ -4,7 +4,7 @@
 -   Preview ảnh trước khi lưu (bài viết) ✅
 -   ảnh lưu phải có phiên bản: webp, thumb ✅
 -   tích hợp laravel file manager vào upload hình ảnh bài viết ✅
--   Tích hợp kéo thả danh mục đa cấp sử dụng thư viện https://github.com/SortableJS/Sortable
+-   Tích hợp kéo thả danh mục đa cấp sử dụng thư viện https://github.com/SortableJS/Sortable ✅
 -   Quản lý danh mục sản phẩm
 -   Quản lý menu (hiển thị ngoài trang frontend) đa cấp
     -   menu có thể liên kết đến một trang nào đó trong nội bộ website

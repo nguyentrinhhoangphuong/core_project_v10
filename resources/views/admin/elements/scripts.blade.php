@@ -2,9 +2,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
     crossorigin="anonymous"></script>
-<script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-<!-- Tabler Core -->
-<script src="{{ asset('_admin/dist/js/tabler.min.js') }}" defer></script>
 <script src="{{ asset('_admin/ckeditor/ckeditor.js') }}"></script>
 <script>
     var options = {
@@ -59,8 +56,12 @@
         ],
         removeButtons: 'Flash,CopyFormatting,RemoveFormat,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Find,Replace,SelectAll,Scayt,Undo,Redo,Maximize,ShowBlocks,About,Source,SpecialChar'
     };
-
-    CKEDITOR.replace('edit-article', options);
+    if (document.getElementById('edit-article')) {
+        CKEDITOR.replace('edit-article', options);
+    }
 </script>
+<script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
+<!-- Tabler Core -->
+<script src="{{ asset('_admin/dist/js/tabler.min.js') }}" defer></script>
 <script src="{{ asset('_admin/select2/select2.min.js') }}"></script>
 <script src="{{ asset('_admin/js/my-js.js') }}"></script>

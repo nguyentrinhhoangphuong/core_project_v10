@@ -26,8 +26,8 @@ class CategoryController extends AdminController
     {
         // return MainMoDel::fixTree();
         $params = $this->params; // Tạo một bản sao của $this->params
-        // $items = MainModel::withDepth()->having('depth', '>', 0)->defaultOrder()->get()->toTree();
-        $items = MainModel::withDepth()->having('depth', '>', 0)->defaultOrder()->get()->toFlatTree();
+        $items = MainModel::withDepth()->having('depth', '>', 0)->defaultOrder()->get()->toTree();
+        // $items = MainModel::withDepth()->having('depth', '>', 0)->defaultOrder()->get()->toFlatTree();
         return view($this->pathViewController . 'index', [
             'params' => $params,
             'title' => ucfirst($this->controllerName) . 's Management',
@@ -114,6 +114,16 @@ class CategoryController extends AdminController
                 'active' => config('zvn.template.status.active.name'),
                 'inactive' => config('zvn.template.status.inactive.name')
             ]
+        ]);
+    }
+
+    public function updateTree(Request $request)
+    {
+        $data = $request->data;
+        $root = MainModel::find(92);
+        MainModel::rebuildSubtree($root, $data);
+        return response()->json([
+            'success' => true
         ]);
     }
 }

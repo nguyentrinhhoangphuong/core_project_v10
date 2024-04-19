@@ -2,7 +2,7 @@
 @section('content')
     @include('admin.elements.header', ['btnAdd' => true])
     <div class="row row-deck row-cards">
-        <div class="col-12">
+        <div class="col-4">
             <div class="row row-cards">
                 <div class="col-12">
                     <div class="card card-body">

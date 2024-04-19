@@ -5,7 +5,6 @@
 @endphp
 <tr>
     <td>{{ str_repeat('/-----', $item->depth) }} {!! $name !!}</td>
-    <td>@include('admin.pages.category.order', ['id' => $id])</td>
     <td>{!! $status !!}</td>
     <td>
         <a class="btn btn-outline-primary" href="{{ route('admin.categories.edit', ['item' => $item]) }}">Edit</a>

@@ -13,7 +13,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\
     Route::get('categories/test', ['uses' => 'CategoryController@test']); // phải đứng trước resource
     Route::post('categories/update-status/{id}', ['uses' => 'CategoryController@updateStatus', 'as' => 'categories.update.status']);
     Route::get('categories/move/{id}/{type}', ['uses' => 'CategoryController@move', 'as' => 'categories.move']);
-    Route::get('categories/updateTree', ['uses' => 'CategoryController@updateTree', 'as' => 'categories.update.tree']);
+    Route::post('categories/updateTree', ['uses' => 'CategoryController@updateTree', 'as' => 'categories.update.tree']);
     Route::resource('categories', 'CategoryController', ['parameters' => ['categories' => 'item']]);
     // ======================= ARTICLE =================================
     Route::post('articles/update-status/{id}', ['uses' => 'ArticleController@updateStatus', 'as' => 'articles.update.status']);
