@@ -14,8 +14,6 @@
         $id = $item['id'];
         $name = $item['name'];
         $status = $item['status'];
-        $is_home = $item['is_home'];
-        $ordering = $item['ordering'];
         $parent_id = $item['parent_id'];
     @endphp
     <form action="{{ route('admin.' . $routeName . '.update', ['item' => $item]) }}" method="post" class="card">
@@ -23,7 +21,7 @@
         @method('PUT')
         <div class="card-body">
             <div class="row justify-content-center">
-                <div class="col-xl-4">
+                <div class="col-xl-12">
                     @include('admin.templates.error')
                     <div class="row">
                         <div class="col-md-6 col-xl-12">
@@ -39,19 +37,6 @@
                                             @if (old('status', $status) == $key) selected @endif>{{ $value }}
                                         </option>
                                     @endforeach
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Ordering</label>
-                                <input type="text" class="form-control" name="ordering"
-                                    value="{{ old('ordering', $ordering) }}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Is home</label>
-                                <select class="form-select" name="is_home">
-                                    <option value="active" @if (old('is_home', $is_home) == 'active') selected @endif>Yes</option>
-                                    <option value="inactive" @if (old('is_home', $is_home) == 'inactive') selected @endif>No
-                                    </option>
                                 </select>
                             </div>
                             <div class="mb-3">

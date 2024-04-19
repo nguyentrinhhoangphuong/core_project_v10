@@ -15,6 +15,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\
     Route::get('categories/move/{id}/{type}', ['uses' => 'CategoryController@move', 'as' => 'categories.move']);
     Route::post('categories/updateTree', ['uses' => 'CategoryController@updateTree', 'as' => 'categories.update.tree']);
     Route::resource('categories', 'CategoryController', ['parameters' => ['categories' => 'item']]);
+    // ======================= CATEGORY PRODUCT =================================
+    Route::post('category-products/update-status/{id}', ['uses' => 'CategoryProductsController@updateStatus', 'as' => 'category-products.update.status']);
+    Route::post('category-products/updateTree', ['uses' => 'CategoryProductsController@updateTree', 'as' => 'category-products.update.tree']);
+    Route::resource('category-products', 'CategoryProductsController', ['parameters' => ['category-products' => 'item']]);
     // ======================= ARTICLE =================================
     Route::post('articles/update-status/{id}', ['uses' => 'ArticleController@updateStatus', 'as' => 'articles.update.status']);
     Route::post('articles/update-category/{id}', ['uses' => 'ArticleController@updateCategory', 'as' => 'articles.update.category']);

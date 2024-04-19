@@ -21,7 +21,3 @@
         </div>
     </div>
 @endsection
-
-<script>
-    CKEDITOR.replace('content_1');
-</script>
