@@ -1,6 +1,6 @@
 @extends('admin.main')
 @section('content')
-    @include('admin.elements.header', ['btnAdd' => true])
+    @include('admin.elements.header')
     <div class="row row-deck row-cards">
         <div class="col-12">
             <div class="row row-cards">
