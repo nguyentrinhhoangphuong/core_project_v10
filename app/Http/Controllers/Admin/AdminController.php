@@ -37,9 +37,9 @@ class AdminController extends Controller
     }
 
 
-    public function save($item)
+    public function save($item, $options)
     {
-        $this->model->saveItem($item, ['task' => 'add-item']);
+        $this->model->saveItem($item, $options);
     }
 
     public function updateItem($request, $item)

@@ -16,6 +16,10 @@ $(document).ready(function () {
     let $btnSearch = $("button#btn-search");
     let $inputSearchField = $("input[name = search_field]"); //hidden
     let $inputSearchValue = $("input[name = search_value]");
+    let $submitMenuCategory = $(".accordion-item #sumbitMenuCategory");
+    let $submitMenuCategoryProducts = $(
+        ".accordion-item #sumbitMenuCategoryProducts"
+    );
 
     // chọn filed cần search
     $(".select-field").click(function () {
@@ -28,7 +32,7 @@ $(document).ready(function () {
         $("#selectDataField").text($(this).text());
     });
 
-    // nút search
+    // ================== nút search ==============================================================
     $btnSearch.click(function (e) {
         let params = ["page", "filter_status", "select_field", "select_value"];
         let pathname = window.location.pathname; // /admin/sliders
@@ -59,7 +63,7 @@ $(document).ready(function () {
         }
     });
 
-    // ================== DELETE SLIDER ====================
+    // ================== DELETE SLIDER ==============================================================
     document.addEventListener("click", function (e) {
         const el = e.target;
         if (el.classList.contains("item_delete")) {
@@ -69,7 +73,7 @@ $(document).ready(function () {
         }
     });
 
-    // ================= Change Category ================
+    // ================= Change Category ==============================================================
     // Function to update category asynchronously
     function updateCategory(id, category_id, controller) {
         let csrfToken = $('meta[name="csrf-token"]').attr("content");
@@ -108,7 +112,7 @@ $(document).ready(function () {
         }
     );
 
-    // ================== CHANGE STATUS ==================
+    // ================== CHANGE STATUS ==============================================================
     // Event handler for toggle status button
     $(".toggle-status").click(function () {
         var button = $(this);
@@ -167,11 +171,11 @@ $(document).ready(function () {
         });
     });
 
-    // ================= SLECT 2 =========================
+    // ================= SLECT 2 ======================================================================
     // khởi tạo select2()
     $(".category-select2").select2();
 
-    // ================= nested sortable ===================
+    // ================= nested sortable ===============================================================
     const nestedQuery = ".nested-sortable";
     const identifier = "sortableId";
     const root = document.getElementById("nestedDemo");
@@ -187,12 +191,10 @@ $(document).ready(function () {
         }
         return serialized;
     }
-    // console.log(serialize(root));
 
     var nestedSortables = [].slice.call(
         document.querySelectorAll(".nested-sortable")
     );
-
     for (var i = 0; i < nestedSortables.length; i++) {
         new Sortable(nestedSortables[i], {
             group: "nested",
@@ -205,26 +207,83 @@ $(document).ready(function () {
                 const routeName = element.dataset.routename;
                 let url = "/admin/" + routeName + "/updateTree";
                 let data = serialize(root);
-                var csrfToken = $('meta[name="csrf-token"]').attr("content");
                 $.ajax({
                     url: url,
                     method: "POST",
                     data: {
                         data: data,
-                        _token: csrfToken,
                     },
                     success: function (data) {},
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.error(
-                            "Lỗi khi thực hiện yêu cầu:",
-                            textStatus,
-                            errorThrown
-                        );
-                    },
                 });
             },
         });
     }
+
+    // ========================= MENUS MAGEMENT SUBMIT FORM ==========================================
+    function submitMenu(url, categoryModelType) {
+        var selectedValues = [];
+        // Duyệt qua tất cả các checkbox đã chọn và lấy giá trị của chúng
+        $(".accordion-body input[type='checkbox']:checked").each(function () {
+            var id = $(this).val();
+            var name = $(this).closest("label").attr("value");
+            var checkboxInfo = {
+                model_id: id,
+                name: name,
+            };
+            selectedValues.push(checkboxInfo);
+        });
+
+        $.ajax({
+            url: url,
+            method: "POST",
+            data: {
+                selectedValues: selectedValues,
+                categoryModelType: categoryModelType,
+            },
+            success: function (data) {
+                window.location.reload();
+                // $(".accordion-body input[type='checkbox']:checked").prop(
+                //     "checked",
+                //     false
+                // );
+                // var nestedDemoDiv = $("#nestedDemo");
+                // $.each(data.items.selectedValues, function (index, item) {
+                //     if (typeof item !== "object" || !item.name) {
+                //         console.error("Dữ liệu mục không hợp lệ:", item);
+                //         return;
+                //     }
+                //     var newItemDiv = $("<div></div>")
+                //         .attr("data-sortable-id", item.model_id)
+                //         .addClass("list-group-item")
+                //         .text(item.name);
+                //     nestedDemoDiv.append(newItemDiv);
+                // });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error(
+                    "Lỗi khi thực hiện yêu cầu:",
+                    textStatus,
+                    errorThrown
+                );
+            },
+        });
+    }
+
+    $submitMenuCategory.click(function () {
+        var categoryModelType = $("#collapse-2")
+            .find(".accordion-body")
+            .data("category-model-type");
+        submitMenu("/admin/menus", categoryModelType);
+    });
+
+    $submitMenuCategoryProducts.click(function () {
+        var categoryProductsModelType = $("#collapse-3")
+            .find(".accordion-body")
+            .data("category-products-model-type");
+        submitMenu("/admin/menus", categoryProductsModelType);
+    });
+
+    // ======================== SAVE MENU ===================================
 });
 
 // ================ review image ==================

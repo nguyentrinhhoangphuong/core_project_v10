@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\FileManagerController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\Controllers\\Admin\\'], function () {
@@ -19,6 +18,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\
     Route::post('category-products/update-status/{id}', ['uses' => 'CategoryProductsController@updateStatus', 'as' => 'category-products.update.status']);
     Route::post('category-products/updateTree', ['uses' => 'CategoryProductsController@updateTree', 'as' => 'category-products.update.tree']);
     Route::resource('category-products', 'CategoryProductsController', ['parameters' => ['category-products' => 'item']]);
+    // ======================= MENUS =================================
+    Route::post('menus/updateTree', ['uses' => 'MenuController@updateTree', 'as' => 'menus.update.tree']);
+    Route::post('menus/addCustomLink', ['uses' => 'MenuController@addCustomLink', 'as' => 'menus.add.custom.link']);
+    Route::resource('menus', 'MenuController', ['parameters' => ['menus' => 'item']]);
     // ======================= ARTICLE =================================
     Route::post('articles/update-status/{id}', ['uses' => 'ArticleController@updateStatus', 'as' => 'articles.update.status']);
     Route::post('articles/update-category/{id}', ['uses' => 'ArticleController@updateCategory', 'as' => 'articles.update.category']);

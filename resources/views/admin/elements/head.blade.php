@@ -35,4 +35,13 @@
     .select2-container .select2-selection--single .select2-selection__rendered {
         line-height: calc(1.5em + 0.75rem);
     }
+
+    .menu-scroll {
+        max-height: 200px;
+        /* Giới hạn chiều cao tối đa */
+        overflow-y: auto;
+        /* Cho phép cuộn dọc nếu nội dung quá dài */
+        overflow-x: hidden;
+        /* Ẩn thanh cuộn ngang */
+    }
 </style>

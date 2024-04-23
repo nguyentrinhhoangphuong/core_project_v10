@@ -19,11 +19,11 @@
             </form>
         </button>
     </div>
-    @if (count($item->children))
-        <div class="list-group nested-sortable border border-2">
+    <div class="list-group nested-sortable">
+        @if (count($item->children))
             @foreach ($item->children as $itemChild)
                 @include('admin.pages.' . $controllerName . '.item_row', ['item' => $itemChild])
             @endforeach
-        </div>
-    @endif
+        @endif
+    </div>
 </div>
