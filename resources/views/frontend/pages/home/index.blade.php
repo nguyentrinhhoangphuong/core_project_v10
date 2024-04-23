@@ -1,10 +1,10 @@
 @extends('frontend.main')
 @section('content')
     <!-- Home Section Start -->
-    @include('frontend.components.home.home-section-start')
+    {{-- @include('frontend.components.home.home-section-start') --}}
     <!-- Home Section End -->
 
-    <!-- Banner Section Start -->
+    {{-- <!-- Banner Section Start -->
     @include('frontend.components.home.banner-section')
     <!-- Banner Section End -->
 
@@ -14,5 +14,5 @@
 
     <!-- Newsletter Section Start -->
     @include('frontend.components.home.newsletter-section')
-    <!-- Newsletter Section End -->
+    <!-- Newsletter Section End --> --}}
 @endsection

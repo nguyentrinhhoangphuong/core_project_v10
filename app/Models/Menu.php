@@ -12,7 +12,7 @@ class Menu extends MainModel
 
     public $fieldSearchAccepted = ['all', 'name'];
 
-    public function categories()
+    public function menus()
     {
         return $this->hasMany(Menu::class, 'parent_id', 'id')->with('menus');
     }
@@ -57,11 +57,10 @@ class Menu extends MainModel
     {
         $result = null;
         if ($options['task'] == 'get-item') {
-            $result = self::select('id', 'name', 'parent_id', '_lft', '_rgt')->where('id', $params)->first();
+            $result = self::select('id', 'name', 'parent_id', '_lft', '_rgt', 'is_custom_link', 'url')->where('id', $params)->first();
         }
         return $result;
     }
-
 
     public function countItems($params = null, $options = null)
     {
@@ -84,7 +83,6 @@ class Menu extends MainModel
         }
         return $result;
     }
-
 
     public function saveItem($request, $options)
     {

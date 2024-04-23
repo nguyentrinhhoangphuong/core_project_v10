@@ -283,7 +283,15 @@ $(document).ready(function () {
         submitMenu("/admin/menus", categoryProductsModelType);
     });
 
-    // ======================== SAVE MENU ===================================
+    // ======================== Custom link ===================================
+    $("form").submit(function (event) {
+        var url = $("#urlInput").val();
+        var name = $("#linkTextInput").val();
+        if (url.trim() === "" || name.trim() === "") {
+            alert("Vui lòng điền vào cả hai trường URL và Tên Url.");
+            event.preventDefault(); // Ngăn chặn việc submit form
+        }
+    });
 });
 
 // ================ review image ==================

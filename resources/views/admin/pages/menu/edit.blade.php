@@ -15,6 +15,8 @@
         $name = $item['name'];
         $status = $item['status'];
         $parent_id = $item['parent_id'];
+        $is_custom_link = $item['is_custom_link'];
+        $url = $item['url'];
     @endphp
     <form action="{{ route('admin.' . $routeName . '.update', ['item' => $item]) }}" method="post" class="card">
         @csrf
@@ -29,6 +31,13 @@
                                 <label class="form-label">Name</label>
                                 <input type="text" class="form-control" name="name" value="{{ old('name', $name) }}">
                             </div>
+                            @if ($is_custom_link == 1)
+                                <div class="mb-3">
+                                    <label class="form-label">Custom Link</label>
+                                    <input type="text" class="form-control" name="url"
+                                        value="{{ old('url', $url) }}">
+                                </div>
+                            @endif
                             <div class="mb-3">
                                 <label class="form-label">Parent</label>
                                 <select class="form-select" name="parent_id">
@@ -40,7 +49,6 @@
                                     @endforeach
                                 </select>
                             </div>
-
                         </div>
                     </div>
                 </div>

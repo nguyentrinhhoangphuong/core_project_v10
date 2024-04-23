@@ -49,7 +49,7 @@ class CategoryController extends AdminController
     public function store(MainRequest $request)
     {
         // $this->save($request->all());
-        $this->save($request->all());
+        $this->save($request->all(), ['task' => 'add-item']);
         return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' created successfully');
     }
 

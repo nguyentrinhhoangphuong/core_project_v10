@@ -31,15 +31,15 @@
         <!-- Quick View Modal Box End -->
 
         <!-- Location Modal Start -->
-        @include('frontend.components.home.location-modal-start')
+        {{-- @include('frontend.components.home.location-modal-start') --}}
         <!-- Location Modal End -->
 
         <!-- Cookie Bar Box Start -->
-        @include('frontend.components.home.cookie-bar-box-start')
+        {{-- @include('frontend.components.home.cookie-bar-box-start') --}}
         <!-- Cookie Bar Box End -->
 
         <!-- Deal Box Modal Start -->
-        @include('frontend.components.home.deal-box-modal-start')
+        {{-- @include('frontend.components.home.deal-box-modal-start') --}}
         <!-- Deal Box Modal End -->
     @endif
     <!-- Tap to top and theme setting button start -->
