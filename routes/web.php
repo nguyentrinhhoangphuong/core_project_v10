@@ -7,6 +7,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\
     Route::resource('dashboard', 'DashboardController');
     // ======================= SLIDER ===============================
     Route::post('sliders/update-status/{id}', ['uses' => 'SliderController@updateStatus', 'as' => 'sliders.update.status']);
+    Route::post('sliders/update-ordering', ['uses' => 'SliderController@updateOrdering', 'as' => 'sliders.update.ordering']);
+    Route::post('sliders/update-field', ['uses' => 'SliderController@updateField', 'as' => 'sliders.update.field']);
     Route::resource('sliders', 'SliderController', ['parameters' => ['sliders' => 'item']]);
     // ======================= CATEGORY =================================
     Route::get('categories/test', ['uses' => 'CategoryController@test']); // phải đứng trước resource
@@ -18,6 +20,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\
     Route::post('category-products/update-status/{id}', ['uses' => 'CategoryProductsController@updateStatus', 'as' => 'category-products.update.status']);
     Route::post('category-products/updateTree', ['uses' => 'CategoryProductsController@updateTree', 'as' => 'category-products.update.tree']);
     Route::resource('category-products', 'CategoryProductsController', ['parameters' => ['category-products' => 'item']]);
+    // ======================= PRODUCT =================================
+    Route::post('products/update-status/{id}', ['uses' => 'ProductsController@updateStatus', 'as' => 'products.update.status']);
+    Route::resource('products', 'ProductsController', ['parameters' => ['products' => 'item']]);
     // ======================= MENUS =================================
     Route::post('menus/updateTree', ['uses' => 'MenuController@updateTree', 'as' => 'menus.update.tree']);
     Route::post('menus/addCustomLink', ['uses' => 'MenuController@addCustomLink', 'as' => 'menus.add.custom.link']);
@@ -26,6 +31,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\
     Route::post('articles/update-status/{id}', ['uses' => 'ArticleController@updateStatus', 'as' => 'articles.update.status']);
     Route::post('articles/update-category/{id}', ['uses' => 'ArticleController@updateCategory', 'as' => 'articles.update.category']);
     Route::resource('articles', 'ArticleController', ['parameters' => ['articles' => 'item']]);
+    // ======================= SETTING =================================
+    Route::get('settings/add-social-config', ['uses' => 'SettingController@addSocialConfig', 'as' => 'settings.add.social.config']);
+    Route::get('settings/add-useful-links-config', ['uses' => 'SettingController@addUsefulLinksConfig', 'as' => 'settings.add.useful.links.config']);
+    Route::get('settings/add-help-center-config', ['uses' => 'SettingController@addHelpCenterConfig', 'as' => 'settings.add.help.center.config']);
+    Route::get('settings/edit-social-config/{id}', ['uses' => 'SettingController@editSocialConfig', 'as' => 'settings.edit.social.config']);
+    Route::get('settings/edit-useful-links-config/{id}', ['uses' => 'SettingController@editUsefulLinksConfig', 'as' => 'settings.edit.useful.links.config']);
+    Route::get('settings/edit-help-center-config/{id}', ['uses' => 'SettingController@editHelpCenterConfig', 'as' => 'settings.edit.help.center.config']);
+    Route::post('settings/update-social-config', ['uses' => 'SettingController@updateSocialConfig', 'as' => 'settings.update.social.config']);
+    Route::post('settings/update-useful-links-config', ['uses' => 'SettingController@updateUsefulLinksConfig', 'as' => 'settings.update.useful.links.config']);
+    Route::post('settings/update-help-center-config', ['uses' => 'SettingController@updateHelpCenterConfig', 'as' => 'settings.update.help.center.config']);
+    Route::resource('settings', 'SettingController', ['parameters' => ['settings' => 'item']]);
     // ======================= laravel-filemanager ===================
     Route::get('filemanager', ['uses' => 'FileManagerController@index', 'as' => 'fileManager.index']);
 });

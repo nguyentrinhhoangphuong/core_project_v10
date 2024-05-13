@@ -17,8 +17,8 @@ class MainModel extends Model implements HasMedia
 
     protected $folderUpload = '';
     protected $fieldSearchAccepted = [];
-    protected $crudNotAccepted = ['_token', '_method', 'thumb_current'];
-    protected $guarded = ['_token', '_method', 'thumb_current'];
+    protected $crudNotAccepted = ['_token', '_method', 'thumb_current', 'add-item-config'];
+    protected $guarded = ['_token', '_method', 'thumb_current', 'add-item-config'];
 
     public function registerMediaConversions(Media $media = null): void
     {

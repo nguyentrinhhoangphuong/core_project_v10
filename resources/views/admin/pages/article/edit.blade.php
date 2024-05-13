@@ -33,7 +33,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Content</label>
-                                <textarea class="form-control" name="content" id="edit-article">{{ old(' edit-article', $content) }}</textarea>
+                                <textarea class="form-control" name="content" id="editor1">{{ old(' editor1', $content) }}</textarea>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Status</label>

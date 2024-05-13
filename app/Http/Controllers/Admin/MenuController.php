@@ -49,13 +49,15 @@ class MenuController extends AdminController
     public function store(Request $request)
     {
         $this->save($request->all(), ['task' => 'add-item']);
-        return response()->json([
-            'success' => true,
-            'items' => [
-                'selectedValues' => $request['selectedValues'],
-                'categoryModelType' => $request['categoryModelType'],
-            ]
-        ]);
+        $items = MainModel::withDepth()->having('depth', '>', 0)->defaultOrder()->get()->toTree();
+        return view($this->pathViewController . 'list', compact('items'));
+        // return response()->json([
+        //     'success' => true,
+        //     'items' => [
+        //         'selectedValues' => $request['selectedValues'],
+        //         'categoryModelType' => $request['categoryModelType'],
+        //     ]
+        // ]);
     }
 
     public function edit($item)
@@ -100,9 +102,7 @@ class MenuController extends AdminController
         $data = $request->data;
         $root = MainModel::find(1);
         MainModel::rebuildSubtree($root, $data);
-        return response()->json([
-            'success' => true,
-        ]);
+        // return view($this->pathViewController . 'list', compact('items'));
     }
 
     public function addCustomLink(Request $request)

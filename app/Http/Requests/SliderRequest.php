@@ -22,18 +22,16 @@ class SliderRequest extends FormRequest
      */
     public function rules(): array
     {
-        // bail: nghĩa là nếu vi phạm 'min:5' thì sẽ dừng lại ngay chứ k cần phải tới 'url' 'link' => 'bail|required|min:5|url',
         $id = $this->id;
         $condThumb = 'bail|required|image';
-        $condName = 'bail|required|between:1,100|unique:' . $this->table . ',name';
+        $condName = 'bail|required|min:5'; // Thay đổi từ 'between' thành 'min' và 'max'
         if (!empty($id)) {
             $condThumb = 'bail|image';
-            $condName .= ',' . $id; // nếu có id (edit) thì ta thêm $id để không phải unique
         }
         return [
             'name' => $condName,
             'description' => 'bail|required|min:5',
-            'link' => 'bail|required|min:5|url',
+            'link' => 'bail|required|url', // Sử dụng 'url' validation rule cho trường link
             'status' => 'bail|in:active,inactive',
             'thumb' => $condThumb
         ];

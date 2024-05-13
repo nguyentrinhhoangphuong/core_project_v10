@@ -5,7 +5,7 @@
         'inactive' => config('zvn.template.status.inactive.name'),
     ];
 @endphp
-<table class="table table-vcenter card-table table-striped" id="myTable">
+<table class="table table-vcenter card-table table-striped display" id="myTable">
     <thead>
         <tr>
             <th class="w-1">#</th>
@@ -17,7 +17,7 @@
             <th class="w-2">Hành động</th>
         </tr>
     </thead>
-    <tbody id="result">
+    <tbody id="tablecontents">
         @if (count($items) > 0)
             @foreach ($items as $key => $item)
                 @php
@@ -28,10 +28,13 @@
                     $link = $item['link'];
                     $description = $item['description'];
                     $btnStatus = $item->status == 'active' ? 'btn-outline-success' : 'btn-outline-danger';
+                    $routeName = $routeName;
                 @endphp
-                <tr>
-                    <td>{!! $index !!}</td>
-                    <td class="text-secondary"><img src="{!! $mediaUrl !!}" alt="{!! $name !!}"></td>
+                <tr class="row1" data-id="{{ $id }}" data-routename="{{ $routeName }}">
+                    <td><i class="fa fa-sort"></i></td>
+                    <td class="text-secondary">
+                        <img src="{!! $mediaUrl !!}" width="100"alt="{!! $name !!}">
+                    </td>
                     <td class="text-secondary">{!! $name !!}</td>
                     <td>
                         <button class="btn {{ $btnStatus }} toggle-status" data-item-id="{{ $item->id }}"
@@ -39,8 +42,12 @@
                             {{ $item->status === 'active' ? $statusOptions['active'] : $statusOptions['inactive'] }}
                         </button>
                     </td>
-                    <td>{!! $description !!}</td>
-                    <td>{!! $link !!}</td>
+                    <td>
+                        <input type="text" class="editable-field" name="description" value="{{ $description }}">
+                    </td>
+                    <td>
+                        <input type="text" class="editable-field" name="link" value="{!! $link !!}">
+                    </td>
                     <td>
                         <a class="btn btn-outline-primary"
                             href="{{ route('admin.' . $routeName . '.edit', ['item' => $id]) }}">Edit</a>

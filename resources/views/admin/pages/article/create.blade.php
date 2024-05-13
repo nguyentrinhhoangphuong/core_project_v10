@@ -21,7 +21,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Content</label>
-                                <textarea class="form-control" name="content" id="edit-article">{{ old('edit-article') }}</textarea>
+                                <textarea class="form-control" name="content" id="editor1">{{ old('editor1') }}</textarea>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Status</label>
@@ -43,9 +43,12 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Thumb</label>
-                                <input type="file" class="form-control" name="thumb" accept='image/*'
-                                    onchange='openFile(event)'> <br>
-                                <img id='output' width="25%">
+                                <input type="file" class="form-control image-with-preview" name="thumb"
+                                    accept='image/*' onchange='openFile(event)'>
+                                <div>
+                                    {{-- không dùng  onchange='openFile(event)' sử dụng tên class --}}
+                                    {{-- <img id='output' width="25%"> --}}
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -29,3 +29,4 @@
 
 <!-- Template css -->
 <link id="color-link" rel="stylesheet" type="text/css" href="{{ asset('_frontend/assets/css/style.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('_frontend/css/my-css.css?v=' . time()) }}">

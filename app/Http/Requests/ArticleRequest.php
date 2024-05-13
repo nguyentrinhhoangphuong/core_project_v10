@@ -25,10 +25,10 @@ class ArticleRequest extends FormRequest
         // bail: nghĩa là nếu vi phạm 'min:5' thì sẽ dừng lại ngay chứ k cần phải tới 'url' 'link' => 'bail|required|min:5|url',
         $id = $this->id;
         $condName = 'bail|required|between:1,100|unique:' . $this->table . ',title';
-        $condThumb = 'bail|required|image|max:500';
+        $condThumb = 'bail|required|image';
         if (!empty($id)) {
             $condName .= ',' . $id; // nếu có id (edit) thì ta thêm $id để không phải unique
-            $condThumb = 'bail|image|max:500';
+            $condThumb = 'bail|image';
         }
         return [
             'title' => $condName,

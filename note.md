@@ -2,11 +2,11 @@
 -   Chuyển select category sang Select2 ✅
 -   Bổ sung thêm ajax change category cho trang danh sách bài viết (Select2) ✅
 -   Preview ảnh trước khi lưu (bài viết) ✅
--   ảnh lưu phải có phiên bản: webp, thumb ✅
+-   ảnh lưu phải có phiên bản: webp, thumb ✅ - thêm image2, resize max = 1920
 -   tích hợp laravel file manager vào upload hình ảnh bài viết ✅
 -   Tích hợp kéo thả danh mục đa cấp sử dụng thư viện https://github.com/SortableJS/Sortable ✅
 -   Quản lý danh mục sản phẩm ✅
--   Quản lý menu (hiển thị ngoài trang frontend) đa cấp
+-   Quản lý menu (hiển thị ngoài trang frontend) đa cấp ✅
     -   menu có thể liên kết đến một trang nào đó trong nội bộ website
     -   menu có thể liên kết đến một trang danh mục bài viết
     -   menu có thể liên kết đến một trang chi tiết bài viết
@@ -21,4 +21,12 @@
         -   url
         -   model_type (CategoryArticle || Article || CategoryProduct || Product)
         -   model_id
--   Hiển thị menu ở trang frontend (đa cấp -> đệ quy)
+-   Hiển thị menu ở trang frontend (đa cấp -> đệ quy) ✅
+
+-   Thêm phần quản lý sản phẩm trong admin, phần thêm hình ảnh sử dụng dropzonejs
+    -   name
+    -   price
+    -   desc
+    -   content
+    -   images (sẽ có nhiều hình ảnh và lưu trong bảng media)
+-   Quản lý setting: giới thiệu, logo, địa chỉ, email, hotline, social, sử dụng tagify để nhập nhiều giá trị

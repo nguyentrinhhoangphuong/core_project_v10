@@ -20,7 +20,7 @@ class Slider extends MainModel
     {
         $result = null;
         if ($options['task'] == 'admin-list-item') {
-            $query = self::select('id', 'name', 'description', 'link', 'thumb', 'created_by', 'created_at', 'updated_at', 'updated_by', 'status');
+            $query = self::select('id', 'name', 'description', 'link', 'thumb', 'ordering', 'ordering', 'created_by', 'created_at', 'updated_at', 'updated_by', 'status');
 
             if ($params['filter']['status'] != 'all') {
                 $query->where('status', $params['filter']['status']);
@@ -40,7 +40,7 @@ class Slider extends MainModel
                 }
             }
 
-            $result = $query->orderBy('id', 'desc')->get();
+            $result = $query->orderBy('ordering', 'ASC')->get();
             foreach ($result as $item) {
                 $item->media = $item->getMedia('slider');
                 foreach ($item->media as $media) {
@@ -57,7 +57,7 @@ class Slider extends MainModel
     {
         $result = null;
         if ($options['task'] == 'get-item') {
-            $result = self::select('id', 'name', 'description', 'status', 'link', 'thumb')->where('id', $params)->first();
+            $result = self::select('id', 'name', 'description', 'status', 'link', 'thumb', 'ordering',)->where('id', $params)->first();
         }
         return $result;
     }
@@ -89,6 +89,7 @@ class Slider extends MainModel
     public function saveItem($request, $options)
     {
         if ($options['task'] == 'add-item') {
+            $request['ordering']  = MainModel::max('ordering') + 1;
             $item = self::create($request->all());
             $item->addMediaFromRequest('thumb')->toMediaCollection($this->folderUpload);
         }

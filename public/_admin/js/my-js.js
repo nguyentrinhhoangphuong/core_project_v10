@@ -5,6 +5,8 @@ $(document).ready(function () {
         },
     });
 
+    // ======================================= DATA TABLE =========================================
+
     $("#myTable").DataTable({
         iDisplayLength: 100,
         aLengthMenu: [
@@ -12,7 +14,45 @@ $(document).ready(function () {
             [5, 10, 25, 50, 100],
         ],
     });
+    $("#tablecontents").sortable({
+        items: "tr",
+        cursor: "move",
+        opacity: 0.6,
+        update: function () {
+            let info;
+            sendOrderToServer();
+            info = true
+                ? fireNotif("Update thành công", "success", 3000)
+                : fireNotif("Update không thành công", "error", 3000);
+        },
+    });
+    function sendOrderToServer() {
+        var order = [];
+        var routeName = $(".row1").attr("data-routename");
+        $("tr.row1").each(function (index, element) {
+            order.push({
+                id: $(this).attr("data-id"),
+                position: index + 1,
+            });
+        });
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: routeName + "/update-ordering",
+            data: {
+                order: order,
+            },
+            success: function (response) {
+                if (response.status == "success") {
+                    info = true;
+                } else {
+                    info = false;
+                }
+            },
+        });
+    }
 
+    // ============================================= SEARCH ==========================================
     let $btnSearch = $("button#btn-search");
     let $inputSearchField = $("input[name = search_field]"); //hidden
     let $inputSearchValue = $("input[name = search_value]");
@@ -138,7 +178,8 @@ $(document).ready(function () {
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 `;
-        $("#successMessageContainer").html(successMessage);
+        // $("#successMessageContainer").html(successMessage);
+        // them disable cho btn
         $.ajax({
             url: controller + "/update-status/" + itemId,
             method: "POST",
@@ -192,33 +233,35 @@ $(document).ready(function () {
         return serialized;
     }
 
-    var nestedSortables = [].slice.call(
-        document.querySelectorAll(".nested-sortable")
-    );
-    for (var i = 0; i < nestedSortables.length; i++) {
-        new Sortable(nestedSortables[i], {
-            group: "nested",
-            animation: 150,
-            fallbackOnBody: true,
-            swapThreshold: 0.65,
-            onEnd: function () {
-                // This event is triggered after a drag-and-drop operation completes
-                const element = document.querySelector(".nested-sortable");
-                const routeName = element.dataset.routename;
-                let url = "/admin/" + routeName + "/updateTree";
-                let data = serialize(root);
-                $.ajax({
-                    url: url,
-                    method: "POST",
-                    data: {
-                        data: data,
-                    },
-                    success: function (data) {},
-                });
-            },
-        });
+    function initSortable() {
+        var nestedSortables = [].slice.call(
+            document.querySelectorAll(".nested-sortable")
+        );
+        for (var i = 0; i < nestedSortables.length; i++) {
+            new Sortable(nestedSortables[i], {
+                group: "nested",
+                animation: 150,
+                fallbackOnBody: true,
+                swapThreshold: 0.65,
+                onEnd: function () {
+                    // This event is triggered after a drag-and-drop operation completes
+                    const element = document.querySelector(".nested-sortable");
+                    const routeName = element.dataset.routename;
+                    let url = "/admin/" + routeName + "/updateTree";
+                    let data = serialize(root);
+                    $.ajax({
+                        url: url,
+                        method: "POST",
+                        data: {
+                            data: data,
+                        },
+                        success: function (data) {},
+                    });
+                },
+            });
+        }
     }
-
+    initSortable();
     // ========================= MENUS MAGEMENT SUBMIT FORM ==========================================
     function submitMenu(url, categoryModelType) {
         var selectedValues = [];
@@ -236,17 +279,21 @@ $(document).ready(function () {
         $.ajax({
             url: url,
             method: "POST",
+            dataType: "html",
             data: {
                 selectedValues: selectedValues,
                 categoryModelType: categoryModelType,
             },
             success: function (data) {
-                window.location.reload();
-                // $(".accordion-body input[type='checkbox']:checked").prop(
-                //     "checked",
-                //     false
-                // );
-                // var nestedDemoDiv = $("#nestedDemo");
+                console.log(data);
+                // window.location.reload();
+                $(".accordion-body input[type='checkbox']:checked").prop(
+                    "checked",
+                    false
+                );
+                var nestedDemoDiv = $("#nestedDemo");
+                nestedDemoDiv.html(data);
+                initSortable();
                 // $.each(data.items.selectedValues, function (index, item) {
                 //     if (typeof item !== "object" || !item.name) {
                 //         console.error("Dữ liệu mục không hợp lệ:", item);
@@ -292,6 +339,57 @@ $(document).ready(function () {
             event.preventDefault(); // Ngăn chặn việc submit form
         }
     });
+
+    // ==========================================
+    $(document).on("click", function (event) {
+        if (!$(event.target).closest(".editable-field").length) {
+            // Mất focus trên tất cả các trường chỉnh sửa
+            $(".editable-field").blur();
+        }
+    });
+    // Gắn sự kiện 'keypress' vào trường chỉnh sửa
+    $(".editable-field")
+        .each(function () {
+            // Lưu giá trị ban đầu của mỗi trường vào data-oldValue
+            $(this).data("oldValue", $(this).val());
+        })
+        .keypress(function (event) {
+            if (event.which === 13) {
+                event.preventDefault();
+
+                var inputField = $(this);
+                var newValue = inputField.val();
+                var oldValue = inputField.data("oldValue"); // Lấy giá trị cũ từ data-oldValue
+                var itemId = inputField.closest("tr").data("id");
+                var routeName = inputField.closest("tr").data("routename");
+                var fieldName = inputField.attr("name");
+
+                if (oldValue !== newValue) {
+                    // So sánh giá trị mới và cũ
+                    $.ajax({
+                        url: routeName + "/update-field",
+                        method: "POST",
+                        data: {
+                            itemId: itemId,
+                            fieldName: fieldName,
+                            value: newValue,
+                        },
+                        success: function (response) {
+                            console.log(response);
+                            fireNotif("Update thành công", "success", 3000);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                            fireNotif("Lỗi khi cập nhật", "error", 3000);
+                        },
+                        complete: function () {
+                            inputField.data("oldValue", newValue); // Cập nhật giá trị cũ sau khi hoàn thành request
+                        },
+                    });
+                }
+                inputField.blur();
+            }
+        });
 });
 
 // ================ review image ==================

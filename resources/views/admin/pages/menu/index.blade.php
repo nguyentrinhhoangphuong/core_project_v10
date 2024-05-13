@@ -28,9 +28,13 @@
                                     </div>
                                 </div>
                             </div>
-                            @include('admin.pages.' . $controllerName . '.list', [
-                                'items' => $items,
-                            ])
+                            <div id="nestedDemo" class="list-group col nested-sortable"
+                                data-routename="{{ $routeName }}">
+
+                                @include('admin.pages.' . $controllerName . '.list', [
+                                    'items' => $items,
+                                ])
+                            </div>
                         </div>
                     </div>
                 </div>

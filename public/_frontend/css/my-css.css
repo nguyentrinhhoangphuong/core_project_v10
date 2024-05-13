@@ -1,0 +1,26 @@
+header .navbar.navbar-expand-xl .navbar-nav .nav-link::before {
+    content: "";
+}
+
+header
+    .navbar.navbar-expand-xl
+    .navbar-nav
+    .nav-item.dropdown
+    .nav-link::before {
+    content: "\f107";
+}
+
+header .navbar-nav .dropdown-menu .sub-dropdown-hover > a::before {
+    content: "";
+}
+
+header .navbar-nav .dropdown-menu .myli > a::before {
+    content: "\f105";
+    position: absolute;
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    right: 0;
+}

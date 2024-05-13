@@ -20,6 +20,19 @@ class AdminController extends Controller
         $this->model = new $model;
     }
 
+    public function updateField(Request $request)
+    {
+        $fieldName = $request->fieldName;
+        $newValue = $request->value;
+        $itemId = $request->itemId;
+
+        $this->model::where('id', $itemId)->update([
+            $fieldName => $newValue,
+        ]);
+        return response()->json([
+            'success' => true,
+        ]);
+    }
 
     public function getAllItems(&$params, $request)
     {

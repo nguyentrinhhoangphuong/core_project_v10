@@ -6,8 +6,6 @@
     ];
 @endphp
 
-<div id="nestedDemo" class="list-group col nested-sortable" data-routename="{{ $routeName }}">
-    @foreach ($items as $item)
-        @include('admin.pages.' . $controllerName . '.item_row', ['item' => $item])
-    @endforeach
-</div>
+@foreach ($items as $item)
+    @include('admin.pages.' . $controllerName . '.item_row', ['item' => $item])
+@endforeach
