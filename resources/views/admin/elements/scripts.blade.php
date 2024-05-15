@@ -1,7 +1,7 @@
 <!-- Libs JS -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-    crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
 
 <script src="{{ asset('_admin/ckeditor/ckeditor.js') }}"></script>
 <script>
@@ -161,6 +161,11 @@
     }
 </script>
 {{-- <script src="https://cdn.datatables.net/v/dt/dt-2.0.7/datatables.min.js"></script> --}}
+<!-- Drop Zone -->
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<!-- sort -->
+<script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.12/datatables.min.js"></script>
 

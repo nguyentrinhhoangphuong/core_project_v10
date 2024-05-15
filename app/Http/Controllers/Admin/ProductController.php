@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\CategoryProducts as MainMoDel;
-use App\Http\Requests\CategoryProductsRequest as MainRequest;
+use App\Models\Product as MainMoDel;
+use App\Http\Requests\ProductsRequest as MainRequest;
 use Illuminate\Http\Request;
 
-class CategoryProductsController extends AdminController
+class ProductController extends AdminController
 {
     public function __construct(MainMoDel $model)
     {
         parent::__construct($model);
-        $this->controllerName = 'categoryProducts';
-        $this->routeName = 'category-products';
+        $this->controllerName = 'product';
+        $this->routeName = 'products';
         $this->params['pagination']['totalItemsPerPage'] = 5;
         $this->pathViewController = 'admin.pages.' . $this->controllerName . '.';
         $this->routeIndex = 'admin.' . $this->routeName . '.index';
@@ -24,9 +24,8 @@ class CategoryProductsController extends AdminController
 
     public function index(Request $request)
     {
-        // return MainMoDel::fixTree();
         $params = $this->params; // Tạo một bản sao của $this->params
-        $items = MainModel::withDepth()->having('depth', '>', 0)->defaultOrder()->get()->toTree();
+        $items = $this->getAllItems($params, $request);
         return view($this->pathViewController . 'index', [
             'params' => $params,
             'title' => ucfirst($this->controllerName) . ' Management',
@@ -34,37 +33,66 @@ class CategoryProductsController extends AdminController
         ]);
     }
 
-    public function store(MainRequest $request)
+    public function store(Request $request)
     {
-        $this->save($request->all(), ['task' => 'add-item']);
+        dd($request->all());
+        $this->save($request, ['task' => 'add-item']);
         return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' created successfully');
+    }
+
+
+
+    public function upload()
+    {
+        $storeFolder = public_path('_admin/temp/');
+        if (!file_exists($storeFolder) && !is_dir($storeFolder)) {
+            mkdir($storeFolder);
+        }
+        if (!empty($_FILES)) {
+            foreach ($_FILES['file']['tmp_name'] as $key => $value) {
+                $tempFile = $_FILES['file']['tmp_name'][$key];
+                $targetFile = $storeFolder . $_FILES['file']['name'][$key];
+                move_uploaded_file($tempFile, $targetFile);
+            }
+        }
     }
 
     public function edit($item)
     {
-        $result = $this->getSingleItem($item);
-        $categories = MainModel::withDepth()->defaultOrder()
-            ->where('_lft', '<', $result->_lft)
-            ->orWhere('_lft', '>', $result->_rgt)
-            ->get()
-            ->toFlatTree();
+        $item = $this->getSingleItem($item);
         return view($this->pathViewController . 'edit', [
             'title' => 'Edit ' . $this->controllerName,
-            'item' => $result,
-            'categories' => $categories,
+            'item' => $item,
         ]);
     }
 
+    public function files($id)
+    {
+        $item = MainMoDel::findOrFail($id);
+        $files = $item['media'];
+        $items = [];
+        foreach ($files as $file) {
+            $items[] = [
+                'media_id' => $file['id'],
+                'name' => $file['file_name'],
+                'alt' => $file['custom_properties']['alt'],
+                'size' => $file['size'],
+                'order' => $file['order_column'],
+                'url' => $file->getUrl(),
+            ];
+        }
+        return response()->json($items);
+    }
     public function create()
     {
-        $items = MainMoDel::withDepth()->defaultOrder()->get()->toFlatTree();
+        $items = [];
         return view($this->pathViewController . 'create', [
             'title' => 'Add ' . $this->controllerName,
             'items' => $items,
         ]);
     }
 
-    public function update(MainRequest $request, MainMoDel $item)
+    public function update(Request $request, MainMoDel $item)
     {
         $this->updateItem($request, $item);
         return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' updated successfully');
@@ -87,16 +115,6 @@ class CategoryProductsController extends AdminController
                 'active' => config('zvn.template.status.active.name'),
                 'inactive' => config('zvn.template.status.inactive.name')
             ]
-        ]);
-    }
-
-    public function updateTree(Request $request)
-    {
-        $data = $request->data;
-        $root = MainModel::find(1);
-        MainModel::rebuildSubtree($root, $data);
-        return response()->json([
-            'success' => true
         ]);
     }
 }

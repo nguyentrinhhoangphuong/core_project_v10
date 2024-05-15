@@ -403,3 +403,127 @@ var openFile = function (event) {
     };
     reader.readAsDataURL(input.files[0]);
 };
+
+if (document.getElementById("myDropzone")) {
+    Dropzone.autoDiscover = false;
+    var altIndex = 0;
+    $(document).ready(function () {
+        var myDropzone = new Dropzone("#myDropzone", {
+            url: "/admin/products/upload",
+            paramName: "file",
+            maxFiles: 10,
+            uploadMultiple: true,
+            addRemoveLinks: true,
+            maxFilesize: 2,
+            dictDefaultMessage:
+                "Kéo và thả file vào đây hoặc nhấn để chọn file",
+            dictRemoveFile: "Xóa",
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            init: function () {
+                this.on("addedfile", function (file) {
+                    // Create container div for input fields
+                    var inputContainer = document.createElement("div");
+                    inputContainer.classList.add("dz-input-container");
+
+                    // Create input field for alt
+                    var altInput = document.createElement("input");
+                    altInput.setAttribute("type", "text");
+                    altInput.setAttribute("name", "alt[]");
+                    altInput.classList.add("dz-alt-input");
+
+                    // Create input field for text
+                    var textInput = document.createElement("input");
+                    textInput.setAttribute("type", "hidden");
+                    textInput.setAttribute("name", "images[]");
+                    textInput.value = file.name;
+
+                    // Create hidden input field for file size
+                    // var sizeInput = document.createElement("input");
+                    // sizeInput.setAttribute("type", "hidden");
+                    // sizeInput.setAttribute("name", "size[]");
+                    // sizeInput.value = file.size;
+
+                    // Append alt input field to the container
+                    inputContainer.appendChild(altInput);
+                    // Append text input field to the container
+                    inputContainer.appendChild(textInput);
+                    // Append size input field to the container
+                    // inputContainer.appendChild(sizeInput);
+                    // Append container to the Dropzone preview template
+                    file.previewElement.appendChild(inputContainer);
+                });
+
+                thisDropzone = this;
+                let id = getId();
+                $.get(`/admin/products/${id}/files`, function (data) {
+                    data.sort(function (a, b) {
+                        return a.order - b.order;
+                    });
+                    $.each(data, function (key, value) {
+                        var mockFile = {
+                            media_id: value.media_id,
+                            name: value.name,
+                            url: value.url,
+                            size: value.size,
+                            order: value.order,
+                            alt: value.alt,
+                        };
+
+                        var url =
+                            `/media/${mockFile.media_id}/` + mockFile.name;
+                        thisDropzone.options.addedfile.call(
+                            thisDropzone,
+                            mockFile
+                        );
+                        thisDropzone.options.thumbnail.call(
+                            thisDropzone,
+                            mockFile,
+                            url
+                        );
+                        mockFile.previewElement.classList.add("dz-success");
+                        mockFile.previewElement.classList.add("dz-complete");
+
+                        var alt = document.createElement("input");
+                        alt.setAttribute("type", "text");
+                        alt.setAttribute("name", "alt[]");
+                        alt.setAttribute("value", mockFile.alt);
+                        mockFile.previewElement.appendChild(alt);
+
+                        var images = document.createElement("input");
+                        images.setAttribute("type", "hidden");
+                        images.setAttribute("name", "images[]");
+                        images.setAttribute("value", mockFile.name);
+                        mockFile.previewElement.appendChild(images);
+                    });
+                });
+
+                this.on("removedfile", function (file) {
+                    console.log(file.name);
+                    $("form").append(
+                        '<input type="hidden" name="image_delete[]" value="' +
+                            file.name +
+                            '">' +
+                            '<input type="hidden" name="product_id" value="' +
+                            id +
+                            '">'
+                    );
+                });
+            },
+        });
+        $("#myDropzone").sortable({
+            items: ".dz-preview",
+            cursor: "move",
+            opacity: 0.5,
+            containment: "parent",
+        });
+        $("#myDropzone").disableSelection();
+    });
+}
+
+function getId() {
+    var url = window.location.href;
+    var segments = url.split("/");
+    return segments[segments.length - 2]; // Lấy phần tử thứ 2 từ cuối cùng (ID)
+}

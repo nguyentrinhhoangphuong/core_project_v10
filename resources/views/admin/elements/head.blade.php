@@ -10,7 +10,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+<!-- Drop Zone -->
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
 <!-- CSS files -->
 <link rel="stylesheet" href="{{ asset('_admin/select2/select2.min.css') }}">
 <link rel="stylesheet" href="{{ asset('_admin/dist/css/tabler.min.css?1692870487') }}" />
@@ -53,5 +54,25 @@
 
     table.dataTable.no-footer {
         border-bottom: 1px solid #ffffff;
+    }
+
+    .dropzone {
+        border: 2px dashed #0087f7;
+        border-radius: 5px;
+        background: white;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .dropzone .dz-preview .dz-image img {
+        width: auto !important;
+        height: auto !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+    }
+
+    .dz-progress {
+        display: none;
     }
 </style>

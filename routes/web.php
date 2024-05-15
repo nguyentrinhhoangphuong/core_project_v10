@@ -21,8 +21,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\
     Route::post('category-products/updateTree', ['uses' => 'CategoryProductsController@updateTree', 'as' => 'category-products.update.tree']);
     Route::resource('category-products', 'CategoryProductsController', ['parameters' => ['category-products' => 'item']]);
     // ======================= PRODUCT =================================
-    Route::post('products/update-status/{id}', ['uses' => 'ProductsController@updateStatus', 'as' => 'products.update.status']);
-    Route::resource('products', 'ProductsController', ['parameters' => ['products' => 'item']]);
+    // Route::post('products/update-status/{id}', ['uses' => 'ProductController@updateStatus', 'as' => 'products.update.status']);
+    Route::post('products/upload', ['uses' => 'ProductController@upload', 'as' => 'products.upload']);
+    Route::get('products/{id}/files', ['uses' => 'ProductController@files', 'as' => 'products.files']);
+    Route::resource('products', 'ProductController', ['parameters' => ['products' => 'item']]);
     // ======================= MENUS =================================
     Route::post('menus/updateTree', ['uses' => 'MenuController@updateTree', 'as' => 'menus.update.tree']);
     Route::post('menus/addCustomLink', ['uses' => 'MenuController@addCustomLink', 'as' => 'menus.add.custom.link']);

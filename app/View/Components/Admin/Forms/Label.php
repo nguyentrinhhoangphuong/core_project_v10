@@ -8,7 +8,6 @@ use Illuminate\View\Component;
 
 class Label extends Component
 {
-    public $testAbc = "asdjskd";
     /**
      * Create a new component instance.
      */

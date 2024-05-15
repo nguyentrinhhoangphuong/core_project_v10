@@ -16,17 +16,20 @@
                     <div class="row">
                         <div class="col-md-6 col-xl-12">
                             <div class="mb-3">
-                                <label class="form-label">{{ __('cruds.admin.slider.fields.name') }}</label>
-                                <x-admin.forms.label name="name"></x-admin.forms.label>
+                                <label class="form-label">{{ __('cruds.admin.product.fields.name') }}</label>
                                 <input type="text" class="form-control" name="name" value="{{ old('name') }}">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">{{ __('cruds.admin.slider.fields.description') }}</label>
+                                <label class="form-label">{{ __('cruds.admin.product.fields.price') }}</label>
+                                <input type="number" class="form-control" name="price" value="{{ old('price') }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">{{ __('cruds.admin.product.fields.description') }}</label>
                                 <input type="text" class="form-control" name="description"
                                     value="{{ old('description') }}">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Status</label>
+                                <label class="form-label">{{ __('cruds.admin.product.fields.status') }}</label>
                                 <select class="form-select" name="status">
                                     @foreach ($statusOptions as $key => $value)
                                         <option value="{{ $key }}"
@@ -35,14 +38,12 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">link</label>
-                                <input type="text" class="form-control" name="link" value="{{ old('link') }}">
+                                <label class="form-label">{{ __('cruds.admin.product.fields.content') }}</label>
+                                <input type="text" class="form-control" name="content" value="{{ old(' content') }}">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Thumb</label>
-                                <input type="file" class="form-control" name="thumb" name accept='image/*'
-                                    onchange='openFile(event)'> <br>
-                                <img id='output' width="25%">
+                                <label class="form-label">{{ __('cruds.admin.product.fields.images') }}</label>
+                                <div id="myDropzone" class="dropzone"></div>
                             </div>
                         </div>
                     </div>
