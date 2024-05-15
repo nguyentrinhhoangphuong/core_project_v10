@@ -121,7 +121,10 @@ class Product extends MainModel
             }
 
             // Xóa bớt hình ảnh
+            // 1, 2, 3, 4
+            // 1, 2, x
             if ($existingImages->count() > count($item['images'])) {
+
                 $deletedImageIndexes = array_diff(range(0, $existingImages->count()  - 1), array_keys($item['images']));
 
                 foreach ($deletedImageIndexes as $deletedIndex) {

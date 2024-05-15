@@ -35,7 +35,6 @@ class ProductController extends AdminController
 
     public function store(Request $request)
     {
-        dd($request->all());
         $this->save($request, ['task' => 'add-item']);
         return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' created successfully');
     }
