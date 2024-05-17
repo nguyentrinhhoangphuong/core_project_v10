@@ -11,7 +11,7 @@
             <th class="w-1">#</th>
             <th class="w-10">Hình</th>
             <th class="w-15">Tên sản phẩm</th>
-            <th class="w-10">Trạng thái</th>
+            <th class="w-5">Trạng thái</th>
             <th class="w-25">Mô tả</th>
             <th class="w-10">Giá</th>
             <th class="w-10">Hành động</th>
@@ -23,7 +23,13 @@
                 @php
                     // sap xep theo order_column
                     $sortedMedia = $item->media->sortBy('order_column');
-                    $mediaUrl = $sortedMedia->isNotEmpty() ? $sortedMedia->first()->getUrl('webp') : '';
+                    $media = $sortedMedia->isNotEmpty() ? $sortedMedia->first() : null;
+                    $mediaUrl = '';
+
+                    if ($media) {
+                        // Kiểm tra xem có phiên bản WebP không, nếu không thì dùng ảnh gốc
+                        $mediaUrl = $media->hasGeneratedConversion('webp') ? $media->getUrl('webp') : $media->getUrl();
+                    }
 
                     $images = json_decode($item['images'], true);
                     $index = $key + 1;
@@ -35,7 +41,7 @@
                     $btnStatus = $item->status == 'active' ? 'btn-outline-success' : 'btn-outline-danger';
                     $routeName = $routeName;
                 @endphp
-                <tr>
+                <tr data-id="{{ $id }}" data-routename="{{ $routeName }}">
                     <td>{!! $index !!}</td>
                     <td class="text-secondary">
                         <img src="{!! $mediaUrl !!}" width="100"alt="{!! $name !!}">

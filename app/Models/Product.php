@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 
+use function PHPUnit\Framework\isNull;
+
 class Product extends MainModel
 {
     use HasFactory;
@@ -12,14 +14,14 @@ class Product extends MainModel
     public $fieldSearchAccepted = ['all', 'name'];
 
 
-    protected static function boot()
-    {
-        parent::boot();
-        static::deleting(function ($product) {
-            // Delete associated media
-            $product->clearMediaCollection();
-        });
-    }
+    // protected static function boot()
+    // {
+    //     parent::boot();
+    //     static::deleting(function ($product) {
+    //         // Delete associated media
+    //         $product->clearMediaCollection();
+    //     });
+    // }
 
     public function listItems($params = null, $options = null)
     {
@@ -93,83 +95,74 @@ class Product extends MainModel
     public function saveItem($request, $options)
     {
         if ($options['task'] == 'add-item') {
-            $item = $request->all();
-            $fileObj = $item['images'];
-            $alts = $item['alt'];
-            $images = $this->uploadFileMulty_dropzone($fileObj, $alts);
-            $results = self::create($item);
-            foreach ($images as $image) {
-                $results->addMedia(public_path('_admin/temp/') . $image['image'])
-                    ->withCustomProperties(['alt' => $image['alt']])
-                    ->toMediaCollection();
+            $item = self::create($request->all());
+
+            $alts = $request->input('alt', []);
+            $images = $request->input('images', []);
+
+            foreach ($images as $index => $file) {
+                if (file_exists(public_path('_admin/temp/' . $file))) {
+                    $item->addMedia(public_path('_admin/temp/' . $file))
+                        ->withCustomProperties(['alt' => $alts[$index] ?? ''])
+                        ->toMediaCollection();
+                }
             }
-            $this->deleteFileTemp();
+            return redirect()->route('admin.products.index');
         }
 
         if ($options['task'] == 'edit-item') {
-            $item = $request->all();
-            $alts = $item['alt'];
-            $resource = self::findOrFail($item['id']);
-            $existingImages = $resource->media;
-            // update alt
-            foreach ($existingImages as $index => $image) {
+            $item = self::find($request->input('id'));
+            if (!isset($item)) {
+                return redirect()->route('admin.products.index')->withErrors('Project not found.');
+            }
+
+            $item->update($request->all());
+
+            $image_delete = $request->input('image_delete', []);
+            $images = $request->input('images', []);
+            $alts = $request->input('alt', []);
+            $mediaItems = $item->getMedia();
+            foreach ($images as $index => $file) {
                 if (isset($alts[$index])) {
-                    $alts[$index] = $alts[$index] ?? " ";
-                    $image->setCustomProperty('alt', $alts[$index]);
-                    $image->save();
+                    $mediaItem = $mediaItems->firstWhere('file_name', $file);
+                    if ($mediaItem) {
+                        $mediaItem->setCustomProperty('alt', $alts[$index]);
+                        $mediaItem->save();
+                    }
                 }
             }
 
-            // Xóa bớt hình ảnh
-            // 1, 2, 3, 4
-            // 1, 2, x
-            if ($existingImages->count() > count($item['images'])) {
-
-                $deletedImageIndexes = array_diff(range(0, $existingImages->count()  - 1), array_keys($item['images']));
-
-                foreach ($deletedImageIndexes as $deletedIndex) {
-                    $existingImages[$deletedIndex]->delete();
+            if (count($image_delete) > 0) {
+                foreach ($mediaItems as $media) {
+                    // Kiểm tra xem $media->file_name này có trong danh sách $image_delete cần xóa không
+                    if (in_array($media->file_name, $image_delete)) {
+                        $media->delete();
+                    }
                 }
             }
 
-            if ($existingImages->count() < count($item['images'])) {
-                // Thêm hình ảnh mới
-                foreach ($item['images'] as $index => $newImage) {
-                    if (!isset($existingImages[$index])) {
-                        // Tạo bản sao của hình ảnh trong thư mục tạm thời
-                        $copiedFilePath = $this->copyImageToTempFolder(public_path('_admin/temp/') . $newImage);
-                        $resource->addMedia($copiedFilePath)
-                            ->withCustomProperties(['alt' => $alts[$index]])
+
+            if (count($images) > 0) {
+                foreach ($images as $index => $file) {
+                    if (file_exists(public_path('_admin/temp/' . $file))) {
+                        $item->addMedia(public_path('_admin/temp/' . $file))
+                            ->withCustomProperties(['alt' => $alts[$index] ?? ''])
                             ->toMediaCollection();
                     }
                 }
             }
 
-            // Đảm bảo thứ tự hình ảnh đúng theo mảng 'images'
-            foreach ($item['images'] as $index => $imageName) {
-                $mediaItem = $resource->media->firstWhere('file_name', $imageName);
+            foreach ($images as $index => $item) {
+                $mediaItem = $mediaItems->firstWhere('file_name', $item);
                 if ($mediaItem && $mediaItem->order_column !== $index) {
                     $mediaItem->order_column = $index;
                     $mediaItem->save();
                 }
             }
-
-            $resource->fill($item);
-            $resource->save();
         }
     }
 
-    // Hàm để tạo bản sao của hình ảnh trong thư mục tạm thời
-    private function copyImageToTempFolder($filePath)
-    {
-        $extension = pathinfo($filePath, PATHINFO_EXTENSION);
-        $newFileName = uniqid() . '.' . $extension;
-        $copiedFilePath = public_path('_admin/temp/') . $newFileName;
-        copy($filePath, $copiedFilePath);
-        return $copiedFilePath;
-    }
-
-    public function uploadFileMulty_dropzone($fileObj, $alts)
+    public function assignAlttoImg($fileObj, $alts)
     {
         $arrImage = [];
         for ($i = 0; $i < count($fileObj); $i++) {
@@ -190,18 +183,6 @@ class Product extends MainModel
         $files = glob($tempDirectory . '/*');
         // Xóa tất cả các file trong một lần sử dụng array_map
         array_map('unlink', $files);
-    }
-
-
-    private function randomFileName($fileName, $length = 9)
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, strlen($characters) - 1)];
-        }
-        $extension = '.' . pathinfo($fileName, PATHINFO_EXTENSION);
-        return $randomString . $extension;
     }
 
     public function deleteItem($params = null, $options = null)

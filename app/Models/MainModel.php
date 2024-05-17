@@ -23,7 +23,7 @@ class MainModel extends Model implements HasMedia
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')->width(300)->height(300);
-        $this->addMediaConversion('webp')->format('webp');
+        $this->addMediaConversion('webp')->format('webp')->performOnCollections('images');
     }
 
     //  zvn_storage_image: nằm trong config/filesystems để cài đặt path cho hình

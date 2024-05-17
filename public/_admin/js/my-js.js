@@ -404,12 +404,12 @@ var openFile = function (event) {
     reader.readAsDataURL(input.files[0]);
 };
 
-if (document.getElementById("myDropzone")) {
+if (document.getElementById("document-dropzone")) {
     Dropzone.autoDiscover = false;
     var altIndex = 0;
     $(document).ready(function () {
-        var myDropzone = new Dropzone("#myDropzone", {
-            url: "/admin/products/upload",
+        var documentdropzone = new Dropzone("#document-dropzone", {
+            url: "/admin/products/media",
             paramName: "file",
             maxFiles: 10,
             uploadMultiple: true,
@@ -434,30 +434,24 @@ if (document.getElementById("myDropzone")) {
                     altInput.classList.add("dz-alt-input");
 
                     // Create input field for text
-                    var textInput = document.createElement("input");
-                    textInput.setAttribute("type", "hidden");
-                    textInput.setAttribute("name", "images[]");
-                    textInput.value = file.name;
+                    var imageInput = document.createElement("input");
+                    imageInput.setAttribute("type", "hidden");
+                    imageInput.setAttribute("name", "images[]");
+                    imageInput.setAttribute("value", file.name);
 
-                    // Create hidden input field for file size
-                    // var sizeInput = document.createElement("input");
-                    // sizeInput.setAttribute("type", "hidden");
-                    // sizeInput.setAttribute("name", "size[]");
-                    // sizeInput.value = file.size;
-
-                    // Append alt input field to the container
                     inputContainer.appendChild(altInput);
-                    // Append text input field to the container
-                    inputContainer.appendChild(textInput);
-                    // Append size input field to the container
-                    // inputContainer.appendChild(sizeInput);
-                    // Append container to the Dropzone preview template
+                    inputContainer.appendChild(imageInput);
+
                     file.previewElement.appendChild(inputContainer);
+
+                    // Thêm input hidden vào biểu mẫu
+                    document.querySelector("form").appendChild(imageInput);
                 });
 
                 thisDropzone = this;
                 let id = getId();
                 $.get(`/admin/products/${id}/files`, function (data) {
+                    console.log(data);
                     data.sort(function (a, b) {
                         return a.order - b.order;
                     });
@@ -512,13 +506,13 @@ if (document.getElementById("myDropzone")) {
                 });
             },
         });
-        $("#myDropzone").sortable({
+        $("#document-dropzone").sortable({
             items: ".dz-preview",
             cursor: "move",
             opacity: 0.5,
             containment: "parent",
         });
-        $("#myDropzone").disableSelection();
+        $("#document-dropzone").disableSelection();
     });
 }
 

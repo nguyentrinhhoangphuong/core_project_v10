@@ -14,7 +14,6 @@
         $description = $item['description'];
         $status = $item['status'];
         $content = $item['content'];
-        $mediaUrl = count($item['media']) > 0 ? $item['media'][0]->getUrl('webp') : '';
     @endphp
     <form action="{{ route('admin.' . $routeName . '.update', ['item' => $id]) }}" method="post" enctype="multipart/form-data"
         class="card">
@@ -27,11 +26,11 @@
                     <div class="row">
                         <div class="col-md-6 col-xl-12">
                             <div class="mb-3">
-                                <label class="form-label">name</label>
+                                <label class="form-label">Name</label>
                                 <input type="text" class="form-control" name="name" value="{{ old('name', $name) }}">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">description</label>
+                                <label class="form-label">Description</label>
                                 <input type="text" class="form-control" name="description"
                                     value="{{ old('description', $description) }}">
                             </div>
@@ -46,13 +45,13 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">content</label>
+                                <label class="form-label">Content</label>
                                 <input type="text" class="form-control" name="content"
                                     value="{{ old('content', $content) }}">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">{{ __('cruds.admin.product.fields.images') }}</label>
-                                <div id="myDropzone" class="dropzone"></div>
+                                <div class="needsclick dropzone" id="document-dropzone"></div>
                             </div>
                         </div>
                     </div>
@@ -61,7 +60,7 @@
         </div>
         <div class="card-footer d-flex justify-content-center">
             <a href="{{ route('admin.' . $routeName . '.index') }}" class="btn btn-link me-2">Cancel</a>
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="btn btn-primary">Update</button>
         </div>
         <input type="hidden" name="id" value="{!! $id !!}">
     </form>

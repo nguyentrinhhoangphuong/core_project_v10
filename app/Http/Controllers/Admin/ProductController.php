@@ -39,21 +39,23 @@ class ProductController extends AdminController
         return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' created successfully');
     }
 
-
-
-    public function upload()
+    // tự động lưu vào file tạm sau khi kéo thả, thêm image 
+    public function storeMedia(Request $request)
     {
-        $storeFolder = public_path('_admin/temp/');
-        if (!file_exists($storeFolder) && !is_dir($storeFolder)) {
-            mkdir($storeFolder);
+        $path = public_path('_admin/temp/');
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
         }
-        if (!empty($_FILES)) {
-            foreach ($_FILES['file']['tmp_name'] as $key => $value) {
-                $tempFile = $_FILES['file']['tmp_name'][$key];
-                $targetFile = $storeFolder . $_FILES['file']['name'][$key];
-                move_uploaded_file($tempFile, $targetFile);
-            }
+        $files = $request->file('file');
+        $arrImg = [];
+        foreach ($files as $key => $file) {
+            $nameFile = $file->getClientOriginalName();
+            $file->move($path, $nameFile);
+            $arrImg[] = $nameFile;
         }
+        return response()->json([
+            'original_name' => $arrImg,
+        ]);
     }
 
     public function edit($item)
@@ -74,7 +76,7 @@ class ProductController extends AdminController
             $items[] = [
                 'media_id' => $file['id'],
                 'name' => $file['file_name'],
-                'alt' => $file['custom_properties']['alt'],
+                'alt' => $file['custom_properties']['alt'] ?? "",
                 'size' => $file['size'],
                 'order' => $file['order_column'],
                 'url' => $file->getUrl(),
@@ -96,6 +98,8 @@ class ProductController extends AdminController
         $this->updateItem($request, $item);
         return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' updated successfully');
     }
+
+
 
     public function destroy(MainMoDel $item)
     {

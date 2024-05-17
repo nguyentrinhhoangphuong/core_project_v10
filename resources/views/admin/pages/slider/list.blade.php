@@ -43,10 +43,12 @@
                         </button>
                     </td>
                     <td>
-                        <input type="text" class="editable-field" name="description" value="{{ $description }}">
+                        <input type="text" class="form-control editable-field" name="description"
+                            value="{{ $description }}">
                     </td>
                     <td>
-                        <input type="text" class="editable-field" name="link" value="{!! $link !!}">
+                        <input type="text" class="form-control editable-field" name="link"
+                            value="{!! $link !!}">
                     </td>
                     <td>
                         <a class="btn btn-outline-primary"

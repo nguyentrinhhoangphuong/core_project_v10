@@ -22,6 +22,7 @@
         </div>
     </div>
     @include('admin.elements.scripts')
+    @yield('scripts')
 </body>
 
 </html>

@@ -23,7 +23,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\
     // ======================= PRODUCT =================================
     // Route::post('products/update-status/{id}', ['uses' => 'ProductController@updateStatus', 'as' => 'products.update.status']);
     Route::post('products/upload', ['uses' => 'ProductController@upload', 'as' => 'products.upload']);
+    Route::post('products/media', ['uses' => 'ProductController@storeMedia', 'as' => 'products.storeMedia']);
     Route::get('products/{id}/files', ['uses' => 'ProductController@files', 'as' => 'products.files']);
+    Route::post('products/update-field', ['uses' => 'ProductController@updateField', 'as' => 'products.update.field']);
     Route::resource('products', 'ProductController', ['parameters' => ['products' => 'item']]);
     // ======================= MENUS =================================
     Route::post('menus/updateTree', ['uses' => 'MenuController@updateTree', 'as' => 'menus.update.tree']);

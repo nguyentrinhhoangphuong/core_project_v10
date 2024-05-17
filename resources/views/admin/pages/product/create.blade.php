@@ -43,7 +43,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">{{ __('cruds.admin.product.fields.images') }}</label>
-                                <div id="myDropzone" class="dropzone"></div>
+                                <div class="needsclick dropzone" id="document-dropzone"></div>
                             </div>
                         </div>
                     </div>
