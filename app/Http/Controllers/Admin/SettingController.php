@@ -33,7 +33,7 @@ class SettingController extends AdminController
         ]);
     }
 
-    public function store(Request $request)
+    public function store(MainRequest $request)
     {
         $task = '';
         if ($request['add-item-config'] === 'add-item-social') {
@@ -45,11 +45,11 @@ class SettingController extends AdminController
         } else {
             $task = 'add-item-general';
         }
-        $this->save($request->all(), ['task' => $task]);
+        $this->save($request, ['task' => $task]);
         return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' created successfully');
     }
 
-    // ===================================================================
+    // ================================SOCIAL===================================
 
     public function addSocialConfig()
     {
@@ -85,7 +85,49 @@ class SettingController extends AdminController
         return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' updated successfully');
     }
 
-    // ======================================================================
+    public function ajaxUpdateSocialConfig(Request $request)
+    {
+        $getItems = $this->getSingleItem($request->keyValue);
+        $this->save($request, ['task' => 'ajax-update-social-config', 'getItems' => $getItems]);
+        return response()->json(['message' => 'Cập nhật thành công.']);
+    }
+
+    public function ajaxUpdateSocialPositions(Request $request)
+    {
+        $getItems = $this->getSingleItem($request->keyValue);
+        $this->save($request, ['task' => 'ajax-update-social-positions', 'getItems' => $getItems]);
+        return response()->json(['message' => 'Cập nhật thành công.']);
+    }
+
+    public function ajaxDeleteSocialConfig(Request $request)
+    {
+        $getItems = $this->getSingleItem($request->keyValue);
+        $this->save($request, ['task' => 'ajax-delete-social-config', 'getItems' => $getItems]);
+        return response()->json(['message' => 'Đã xóa thành công.']);
+    }
+
+    public function ajaxInsertSocialConfig(Request $request)
+    {
+        $getItems = $this->getSingleItem($request->keyValue);
+        $this->save($request, ['task' => 'ajax-insert-social-config', 'getItems' => $getItems]);
+        return response()->json(['message' => 'Đã thêm thành công.']);
+    }
+
+    public function ajaxUpdateOrdering(Request $request)
+    {
+        $getItems = $this->getSingleItem($request->order[0]['keyValue']);
+        $this->save($request, ['task' => 'ajax-update-ordering-social-config', 'getItems' => $getItems]);
+        return response()->json(['message' => 'Đã sắp xếp thành công.']);
+    }
+
+    public function ajaxDeleteItem(Request $request)
+    {
+        $getItems = $this->getSingleItem($request->keyValue);
+        $this->save($request, ['task' => 'ajax-delete-item', 'getItems' => $getItems]);
+        return response()->json(['message' => 'Đã xóa thành công.']);
+    }
+
+    // ==================================Useful Links====================================
 
     public function addUsefulLinksConfig()
     {

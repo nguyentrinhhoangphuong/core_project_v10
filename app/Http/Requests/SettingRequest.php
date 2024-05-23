@@ -22,15 +22,9 @@ class SettingRequest extends FormRequest
      */
     public function rules(): array
     {
-        // bail: nghĩa là nếu vi phạm 'min:5' thì sẽ dừng lại ngay chứ k cần phải tới 'url' 'link' => 'bail|required|min:5|url',
-        $id = $this->id;
-        $condName = 'bail|required|between:1,100|unique:' . $this->table . ',name';
-        if (!empty($id)) {
-            $condName .= ',' . $id; // nếu có id (edit) thì ta thêm $id để không phải unique
-        }
         return [
-            'name' => $condName,
-            'ordering' => 'bail|required'
+            'icon' => 'bail|required',
+            'links' => 'bail|required'
         ];
     }
 
@@ -42,9 +36,8 @@ class SettingRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Trường tên là bắt buộc.',
-            'name.between' => 'Trường tên phải chứa ít nhất từ :min đến :max ký tự.',
-            'name.unique' => 'Tên đã được sử dụng.',
+            'icon.required' => 'Trường icon là bắt buộc.',
+            'links.required' => 'Trường link là bắt buộc.',
         ];
     }
 }

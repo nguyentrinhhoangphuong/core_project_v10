@@ -45,6 +45,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\
     Route::post('settings/update-social-config', ['uses' => 'SettingController@updateSocialConfig', 'as' => 'settings.update.social.config']);
     Route::post('settings/update-useful-links-config', ['uses' => 'SettingController@updateUsefulLinksConfig', 'as' => 'settings.update.useful.links.config']);
     Route::post('settings/update-help-center-config', ['uses' => 'SettingController@updateHelpCenterConfig', 'as' => 'settings.update.help.center.config']);
+
+    Route::post('settings/ajax-update-social-config/{id}', ['uses' => 'SettingController@ajaxUpdateSocialConfig', 'as' => 'settings.ajax.update.social.config']);
+    Route::post('settings/ajax-update-social-position/{id}', ['uses' => 'SettingController@ajaxUpdateSocialPositions', 'as' => 'settings.ajax.update.social.positions']);
+    Route::delete('settings/ajax-delete-social-config/{id}', ['uses' => 'SettingController@ajaxDeleteSocialConfig', 'as' => 'settings.ajax.delete.social.config']);
+    Route::post('settings/ajax-insert-social-config', ['uses' => 'SettingController@ajaxInsertSocialConfig', 'as' => 'settings.ajax.insert.social.config']);
+    Route::post('settings/update-ordering', ['uses' => 'SettingController@ajaxUpdateOrdering', 'as' => 'settings.ajax.update.ordering']);
+    Route::delete('settings/ajax-delete-item', ['uses' => 'SettingController@ajaxDeleteItem', 'as' => 'settings.ajax.delete.item']);
+
     Route::resource('settings', 'SettingController', ['parameters' => ['settings' => 'item']]);
     // ======================= laravel-filemanager ===================
     Route::get('filemanager', ['uses' => 'FileManagerController@index', 'as' => 'fileManager.index']);

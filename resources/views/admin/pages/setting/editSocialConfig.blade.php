@@ -1,7 +1,6 @@
 @php
     $icon = $items['icon'];
     $link = $items['link'];
-    $ordering = $items['ordering'];
     $id = $items['id'];
     $key_value = $items['key_value'];
 @endphp
@@ -31,13 +30,6 @@
                                     <div class="col-sm-9">
                                         <input type="text" class="form-control" id="link" name="link"
                                             placeholder="Social Link" value="{{ $link }}">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label for="ordering" class="col-sm-3 col-form-label">Ordering</label>
-                                    <div class="col-sm-9">
-                                        <input type="number" class="form-control" id="ordering" name="ordering"
-                                            placeholder="Ordering" value="{{ $ordering }}">
                                     </div>
                                 </div>
                             </div>

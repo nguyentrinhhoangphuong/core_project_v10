@@ -59,5 +59,11 @@ return [
         'button' => [
             'slider' => ['edit', 'delete'],
         ]
+    ],
+
+    'icon' => [
+        'facebook' => 'fa-brands fa-facebook-f',
+        'youtube' => 'fa-brands fa-youtube',
+        'instagram' => 'fa-brands fa-instagram',
     ]
 ];

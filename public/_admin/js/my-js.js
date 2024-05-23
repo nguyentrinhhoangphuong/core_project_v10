@@ -6,7 +6,7 @@ $(document).ready(function () {
     });
 
     // ======================================= DATA TABLE =========================================
-
+    // SLIDER
     $("#myTable").DataTable({
         iDisplayLength: 100,
         aLengthMenu: [
@@ -32,6 +32,9 @@ $(document).ready(function () {
         $("tr.row1").each(function (index, element) {
             order.push({
                 id: $(this).attr("data-id"),
+                keyValue: $(this)
+                    .find("input[name='links']")
+                    .attr("data-key-value"),
                 position: index + 1,
             });
         });
@@ -340,7 +343,7 @@ $(document).ready(function () {
         }
     });
 
-    // ==========================================
+    // ========================================== Update trức tiếp từ field ========================
     $(document).on("click", function (event) {
         if (!$(event.target).closest(".editable-field").length) {
             // Mất focus trên tất cả các trường chỉnh sửa
@@ -404,6 +407,7 @@ var openFile = function (event) {
     reader.readAsDataURL(input.files[0]);
 };
 
+// ===================== DROPZONE =================
 if (document.getElementById("document-dropzone")) {
     Dropzone.autoDiscover = false;
     var altIndex = 0;

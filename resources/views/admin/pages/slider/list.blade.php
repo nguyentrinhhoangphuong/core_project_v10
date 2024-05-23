@@ -31,7 +31,7 @@
                     $routeName = $routeName;
                 @endphp
                 <tr class="row1" data-id="{{ $id }}" data-routename="{{ $routeName }}">
-                    <td><i class="fa fa-sort"></i></td>
+                    <td class="handle"><i class="fa fa-sort"></i></td>
                     <td class="text-secondary">
                         <img src="{!! $mediaUrl !!}" width="100"alt="{!! $name !!}">
                     </td>

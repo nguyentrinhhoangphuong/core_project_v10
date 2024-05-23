@@ -59,6 +59,7 @@
                 <div class="col-12">
                     <div id="successMessageContainer"></div>
                     <div class="row align-items-start">
+
                         <div class="col-lg-4 col-md-6 mb-3">
                             <form class="card" action="{{ route('admin.settings.store') }}" method="post"
                                 enctype="multipart/form-data">
@@ -70,7 +71,7 @@
                                     <div class="mb-3 row">
                                         <label class="col-3 col-form-label">Logo</label>
                                         <div class="col">
-                                            <img src="{{ $mediaUrl }}" class="img-fluid blur-up lazyload" alt=""
+                                            <img src="{{ @$mediaUrl }}" class="img-fluid blur-up lazyload" alt=""
                                                 width="100">
                                             <input type="file" name="logo" accept='image/*'
                                                 onchange='openFile(event)'>
@@ -82,42 +83,42 @@
                                         <label class="col-3 col-form-label">Hotline</label>
                                         <div class="col">
                                             <input type="text" class="form-control" name="hotline"
-                                                value="{{ $hotline }}">
+                                                value="{{ @$hotline }}">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
                                         <label class="col-3 col-form-label">Address</label>
                                         <div class="col">
                                             <input type="text" class="form-control" name="address"
-                                                value="{{ $address }}">
+                                                value="{{ @$address }}">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
                                         <label class="col-3 col-form-label">Email</label>
                                         <div class="col">
                                             <input type="email" class="form-control" name="email"
-                                                value="{{ $email }}">
+                                                value="{{ @$email }}">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
                                         <label class="col-3 col-form-label">Email Support</label>
                                         <div class="col">
                                             <input type="email" class="form-control" name="email-support"
-                                                value="{{ $emailSupport }}">
+                                                value="{{ @$emailSupport }}">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
                                         <label class="col-3 col-form-label">Introduce</label>
                                         <div class="col">
                                             <input type="text" class="form-control" name="introduce"
-                                                value="{{ $introduce }}">
+                                                value="{{ @$introduce }}">
                                         </div>
                                     </div>
                                     <div class="mb-3 row">
                                         <label class="col-3 col-form-label">Copyright</label>
                                         <div class="col">
                                             <input type="text" class="form-control" name="copyright"
-                                                value="{{ $copyright }}">
+                                                value="{{ @$copyright }}">
                                         </div>
                                     </div>
                                 </div>
@@ -128,32 +129,9 @@
                         </div>
 
                         <x-admin.setting.social-config />
+                        <x-admin.setting.useful-links-config />
 
-                        <div class="col-lg-4 col-md-6 mb-3">
-                            <div class="card">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h3 class="card-title mb-0">Useful Links Config</h3>
-                                    <a href="{{ route('admin.settings.add.useful.links.config') }}"
-                                        class="btn btn-primary">Thêm
-                                        mới</a>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table table-vcenter card-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th class="w-1"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {!! $xhtmlUsefulLinks !!}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                         <div class="col-lg-4 col-md-6 mb-3">
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
