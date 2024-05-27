@@ -67,7 +67,7 @@
     </div>
 @endsection
 
-@section('scripts')
+@section('scripts_admin_footer_Social')
     <script>
         var input = document.querySelector("input[name=links]"),
             tagify = new Tagify(input);

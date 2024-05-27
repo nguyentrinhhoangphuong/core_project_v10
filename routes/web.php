@@ -36,23 +36,33 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\
     Route::post('articles/update-category/{id}', ['uses' => 'ArticleController@updateCategory', 'as' => 'articles.update.category']);
     Route::resource('articles', 'ArticleController', ['parameters' => ['articles' => 'item']]);
     // ======================= SETTING =================================
-    Route::get('settings/add-social-config', ['uses' => 'SettingController@addSocialConfig', 'as' => 'settings.add.social.config']);
-    Route::get('settings/add-useful-links-config', ['uses' => 'SettingController@addUsefulLinksConfig', 'as' => 'settings.add.useful.links.config']);
-    Route::get('settings/add-help-center-config', ['uses' => 'SettingController@addHelpCenterConfig', 'as' => 'settings.add.help.center.config']);
-    Route::get('settings/edit-social-config/{id}', ['uses' => 'SettingController@editSocialConfig', 'as' => 'settings.edit.social.config']);
-    Route::get('settings/edit-useful-links-config/{id}', ['uses' => 'SettingController@editUsefulLinksConfig', 'as' => 'settings.edit.useful.links.config']);
-    Route::get('settings/edit-help-center-config/{id}', ['uses' => 'SettingController@editHelpCenterConfig', 'as' => 'settings.edit.help.center.config']);
-    Route::post('settings/update-social-config', ['uses' => 'SettingController@updateSocialConfig', 'as' => 'settings.update.social.config']);
-    Route::post('settings/update-useful-links-config', ['uses' => 'SettingController@updateUsefulLinksConfig', 'as' => 'settings.update.useful.links.config']);
-    Route::post('settings/update-help-center-config', ['uses' => 'SettingController@updateHelpCenterConfig', 'as' => 'settings.update.help.center.config']);
+    // General Config
+    Route::post('settings/ajax-update-general-config', ['uses' => 'SettingController@ajaxUpdateGeneralConfig', 'as' => 'settings.ajax.update.general.config']);
 
+    // help center
+    Route::get('settings/add-help-center-config', ['uses' => 'SettingController@addHelpCenterConfig', 'as' => 'settings.add.help.center.config']);
+    Route::post('settings/help-center-config-store', ['uses' => 'SettingController@helpCenterConfigStore', 'as' => 'settings.add.help.center.config.store']);
+    Route::post('settings/ajax-update-help-center-ordering', ['uses' => 'SettingController@ajaxUpdateHelpCenterOrdering', 'as' => 'settings.ajax.update.help.center.ordering']);
+    Route::post('settings/ajax-update-help-center-field', ['uses' => 'SettingController@ajaxUpdateHelpCenterField', 'as' => 'settings.ajax.update.help.center.field']);
+
+    // useful link
+    Route::get('settings/add-useful-links-config', ['uses' => 'SettingController@addUsefulLinksConfig', 'as' => 'settings.add.useful.links.config']);
+    Route::post('settings/useful-links-config-store', ['uses' => 'SettingController@usefulLinksConfigStore', 'as' => 'settings.add.useful.links.config.store']);
+    Route::post('settings/ajax-update-useful-link-ordering', ['uses' => 'SettingController@ajaxUpdateUsefulLinkOrdering', 'as' => 'settings.ajax.update.useful.link.ordering']);
+    Route::post('settings/ajax-update-useful-link-field', ['uses' => 'SettingController@ajaxUpdateUsefulLinkField', 'as' => 'settings.ajax.update.useful.link.field']);
+
+    // social
+    Route::post('settings/update-social-config', ['uses' => 'SettingController@updateSocialConfig', 'as' => 'settings.update.social.config']);
+    Route::get('settings/edit-social-config/{id}', ['uses' => 'SettingController@editSocialConfig', 'as' => 'settings.edit.social.config']);
+    Route::get('settings/add-social-config', ['uses' => 'SettingController@addSocialConfig', 'as' => 'settings.add.social.config']);
     Route::post('settings/ajax-update-social-config/{id}', ['uses' => 'SettingController@ajaxUpdateSocialConfig', 'as' => 'settings.ajax.update.social.config']);
     Route::post('settings/ajax-update-social-position/{id}', ['uses' => 'SettingController@ajaxUpdateSocialPositions', 'as' => 'settings.ajax.update.social.positions']);
     Route::delete('settings/ajax-delete-social-config/{id}', ['uses' => 'SettingController@ajaxDeleteSocialConfig', 'as' => 'settings.ajax.delete.social.config']);
     Route::post('settings/ajax-insert-social-config', ['uses' => 'SettingController@ajaxInsertSocialConfig', 'as' => 'settings.ajax.insert.social.config']);
     Route::post('settings/update-ordering', ['uses' => 'SettingController@ajaxUpdateOrdering', 'as' => 'settings.ajax.update.ordering']);
-    Route::delete('settings/ajax-delete-item', ['uses' => 'SettingController@ajaxDeleteItem', 'as' => 'settings.ajax.delete.item']);
 
+
+    Route::delete('settings/ajax-delete-item', ['uses' => 'SettingController@ajaxDeleteItem', 'as' => 'settings.ajax.delete.item']);
     Route::resource('settings', 'SettingController', ['parameters' => ['settings' => 'item']]);
     // ======================= laravel-filemanager ===================
     Route::get('filemanager', ['uses' => 'FileManagerController@index', 'as' => 'fileManager.index']);

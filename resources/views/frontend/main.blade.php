@@ -5,7 +5,7 @@
     @include('frontend.elements.head')
 </head>
 
-<body class="bg-effect">
+<body class="container">
 
     <!-- Loader Start -->
     {{-- @include('frontend.components.home.loader-start') --}}

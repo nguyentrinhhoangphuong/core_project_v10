@@ -1,5 +1,5 @@
 <footer class="section-t-space">
-    <div class="container-fluid-lg">
+    <div class="container">
         <div class="main-footer section-b-space section-t-space">
             <div class="row g-md-4 g-3">
 

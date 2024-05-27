@@ -1,10 +1,11 @@
 @php
+    $xhtml = '';
     if (isset($items['value'])) {
         $result = json_decode($items['value'], true);
         $xhtml = null;
         foreach ($result as $item) {
             $url = $item['url'];
-            $name = $item['name'];
+            $name = ucwords($item['name']);
             $xhtml .= sprintf('<li><a href="%s" class="text-content">%s</a></li>', $url, $name);
         }
     }

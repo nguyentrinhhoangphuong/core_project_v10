@@ -24,3 +24,14 @@ header .navbar-nav .dropdown-menu .myli > a::before {
     transform: translateY(-50%);
     right: 0;
 }
+
+footer {
+    background-color: white !important;
+    position: relative;
+    z-index: 0;
+}
+
+footer::after,
+footer:before {
+    display: none !important;
+}

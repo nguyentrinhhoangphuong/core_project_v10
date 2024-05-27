@@ -22,7 +22,10 @@
         </div>
     </div>
     @include('admin.elements.scripts')
-    @yield('scripts')
+    @yield('scripts_admin_footer_Social')
+    @yield('scripts_admin_footer_UsefulLinks')
+    @yield('scripts_admin_footer_HelpCenter')
+
 </body>
 
 </html>

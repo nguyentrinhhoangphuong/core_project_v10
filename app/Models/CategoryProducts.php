@@ -17,6 +17,11 @@ class CategoryProducts extends MainModel
         return $this->hasMany(CategoryProducts::class, 'parent_id', 'id')->with('category_products');
     }
 
+    public function children()
+    {
+        return $this->hasMany(CategoryProducts::class, 'parent_id');
+    }
+
     public function listItems($params = null, $options = null)
     {
         $result = null;

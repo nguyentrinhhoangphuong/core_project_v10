@@ -23,7 +23,7 @@ class SubFooterConfig extends Component
     public function render(): View|Closure|string
     {
         $itemsGeneral = $this->model->getItem('general-config', ['task' => 'get-item']);
-        $itemsSocial = $this->model->getItem('social-config', ['task' => 'get-item']);
+        $itemsSocial = $this->model->getItem('social', ['task' => 'get-item']);
         return view('components.frontend.footer.sub-footer-config', compact('itemsGeneral', 'itemsSocial'));
     }
 }

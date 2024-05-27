@@ -6,8 +6,8 @@
             <div class="row row-cards">
                 <div class="col-12">
                     <div class="table-responsive">
-                        <form class="card" action="{{ route('admin.settings.store') }}" method="post"
-                            enctype="multipart/form-data">
+                        <form class="card" action="{{ route('admin.settings.add.useful.links.config.store') }}"
+                            method="post">
                             @csrf
                             <div class="card-header">
                                 <h3 class="card-title">Useful Links Config</h3>

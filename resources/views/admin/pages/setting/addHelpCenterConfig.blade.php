@@ -6,7 +6,8 @@
             <div class="row row-cards">
                 <div class="col-12">
                     <div class="table-responsive">
-                        <form class="card" action="{{ route('admin.settings.store') }}" method="post">
+                        <form class="card" action="{{ route('admin.settings.add.help.center.config.store') }}"
+                            method="post">
                             @csrf
                             <div class="card-header">
                                 <h3 class="card-title">Help Center Config</h3>

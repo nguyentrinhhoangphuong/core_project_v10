@@ -23,7 +23,7 @@
                 @php
                     $index = $key + 1;
                     $id = $item['id'];
-                    $mediaUrl = count($item['media']) > 0 ? $item['media'][0]->getUrl('webp') : '';
+                    $mediaUrl = count($item['media']) > 0 ? $item['media'][0]->getUrl() : '';
                     $name = $item['name'];
                     $link = $item['link'];
                     $description = $item['description'];

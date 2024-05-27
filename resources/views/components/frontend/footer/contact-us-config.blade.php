@@ -1,4 +1,6 @@
 @php
+    $hotline = '';
+    $email = '';
     if (isset($items['value'])) {
         $result = json_decode($items['value'], true);
         $hotline = $result['hotline'];

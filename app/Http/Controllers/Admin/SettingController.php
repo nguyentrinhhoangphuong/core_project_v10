@@ -35,46 +35,22 @@ class SettingController extends AdminController
 
     public function store(MainRequest $request)
     {
-        $task = '';
-        if ($request['add-item-config'] === 'add-item-social') {
-            $task = 'add-item-social';
-        } elseif ($request['add-item-config'] === 'add-item-useful-links') {
-            $task = 'add-item-useful-links';
-        } elseif ($request['add-item-config'] === 'add-item-help-center') {
-            $task = 'add-item-help-center';
-        } else {
-            $task = 'add-item-general';
-        }
-        $this->save($request, ['task' => $task]);
+        $this->save($request, ['task' => 'add-item-social']);
         return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' created successfully');
     }
 
-    // ================================SOCIAL===================================
+    // ================================ General Config ================================
+    public function ajaxUpdateGeneralConfig(Request $request)
+    {
+        $this->save($request, ['task' => 'add-item-general']);
+        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' updated successfully');
+    }
+
+    // ================================ SOCIAL ===================================
 
     public function addSocialConfig()
     {
         return view($this->pathViewController . 'addSocialConfig', [
-            'title' => ucfirst($this->controllerName) . 's Management',
-        ]);
-    }
-
-    public function editSocialConfig(Request $request)
-    {
-        $getItems = $this->getSingleItem($request->key_value);
-        $decodeItems = json_decode($getItems['value'], true);
-        $items = NULL;
-        foreach ($decodeItems as $item) {
-            if ($item['id'] == $request->id) {
-                $items = $item;
-                $items['key_value'] = $request->key_value;
-                break;
-            }
-        }
-        if (!$items) {
-            abort(404);
-        }
-        return view($this->pathViewController . 'editSocialConfig', [
-            'items' => $items,
             'title' => ucfirst($this->controllerName) . 's Management',
         ]);
     }
@@ -120,14 +96,13 @@ class SettingController extends AdminController
         return response()->json(['message' => 'Đã sắp xếp thành công.']);
     }
 
-    public function ajaxDeleteItem(Request $request)
-    {
-        $getItems = $this->getSingleItem($request->keyValue);
-        $this->save($request, ['task' => 'ajax-delete-item', 'getItems' => $getItems]);
-        return response()->json(['message' => 'Đã xóa thành công.']);
-    }
+    // ================================== Useful Links ====================================
 
-    // ==================================Useful Links====================================
+    public function usefulLinksConfigStore(Request $request)
+    {
+        $this->save($request, ['task' => 'add-item-useful-links']);
+        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' created successfully');
+    }
 
     public function addUsefulLinksConfig()
     {
@@ -136,34 +111,26 @@ class SettingController extends AdminController
         ]);
     }
 
-    public function editUsefulLinksConfig(Request $request)
+    public function ajaxUpdateUsefulLinkOrdering(Request $request)
     {
-        $getItems = $this->getSingleItem($request->key_value);
-        $decodeItems = json_decode($getItems['value'], true);
-        $items = NULL;
-        foreach ($decodeItems as $item) {
-            if ($item['id'] == $request->id) {
-                $items = $item;
-                $items['key_value'] = $request->key_value;
-                break;
-            }
-        }
-        if (!$items) {
-            abort(404);
-        }
-        return view($this->pathViewController . 'editUsefulLinksConfig', [
-            'items' => $items,
-            'title' => ucfirst($this->controllerName) . 's Management',
-        ]);
+        $getItems = $this->getSingleItem($request->order[0]['keyValue']);
+        $this->save($request, ['task' => 'ajax-update-useful-link-ordering', 'getItems' => $getItems]);
+        return response()->json(['message' => 'Đã sắp xếp thành công.']);
     }
 
-    public function updateUsefulLinksConfig(Request $request)
+    public function ajaxUpdateUsefulLinkField(Request $request)
     {
-        $this->save($request->all(), ['task' => 'update-useful-links-config']);
-        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' updated successfully');
+        $getItems = $this->getSingleItem($request->keyValue);
+        $this->save($request, ['task' => 'ajax-update-useful-link-field', 'getItems' => $getItems]);
     }
 
-    // =========================================================================
+    // =================================== Help Center ======================================
+    public function helpCenterConfigStore(Request $request)
+    {
+        $this->save($request, ['task' => 'add-item-help-center']);
+        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' created successfully');
+    }
+
     public function addHelpCenterConfig()
     {
         return view($this->pathViewController . 'addHelpCenterConfig', [
@@ -171,30 +138,24 @@ class SettingController extends AdminController
         ]);
     }
 
-    public function editHelpCenterConfig(Request $request)
+    public function ajaxUpdateHelpCenterOrdering(Request $request)
     {
-        $getItems = $this->getSingleItem($request->key_value);
-        $decodeItems = json_decode($getItems['value'], true);
-        $items = NULL;
-        foreach ($decodeItems as $item) {
-            if ($item['id'] == $request->id) {
-                $items = $item;
-                $items['key_value'] = $request->key_value;
-                break;
-            }
-        }
-        if (!$items) {
-            abort(404);
-        }
-        return view($this->pathViewController . 'editHelpCenterConfig', [
-            'items' => $items,
-            'title' => ucfirst($this->controllerName) . 's Management',
-        ]);
+        $getItems = $this->getSingleItem($request->order[0]['keyValue']);
+        $this->save($request, ['task' => 'ajax-update-help-center-ordering', 'getItems' => $getItems]);
+        return response()->json(['message' => 'Đã sắp xếp thành công.']);
     }
 
-    public function updateHelpCenterConfig(Request $request)
+    public function ajaxUpdateHelpCenterField(Request $request)
     {
-        $this->save($request->all(), ['task' => 'update-help-center-config']);
-        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' updated successfully');
+        $getItems = $this->getSingleItem($request->keyValue);
+        $this->save($request, ['task' => 'ajax-update-help-center-field', 'getItems' => $getItems]);
+    }
+
+    //===========================================================================
+    public function ajaxDeleteItem(Request $request)
+    {
+        $getItems = $this->getSingleItem($request->keyValue);
+        $this->save($request, ['task' => 'ajax-delete-item', 'getItems' => $getItems]);
+        return response()->json(['message' => 'Đã xóa thành công.']);
     }
 }

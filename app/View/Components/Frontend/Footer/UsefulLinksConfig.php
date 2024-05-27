@@ -23,7 +23,7 @@ class UsefulLinksConfig extends Component
      */
     public function render(): View|Closure|string
     {
-        $items = $this->model->getItem('useful-links-config', ['task' => 'get-item']);
+        $items = $this->model->getItem('useful-links', ['task' => 'get-item']);
         return view('components.frontend.footer.useful-links-config', compact('items'));
     }
 }

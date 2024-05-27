@@ -25,7 +25,7 @@
 <script src="{{ asset('_frontend/assets/js/auto-height.js') }}"></script>
 
 <!-- Timer Js -->
-<script src="{{ asset('_frontend/assets/js/timer1.js') }}"></script>
+{{-- <script src="{{ asset('_frontend/assets/js/timer1.js') }}"></script> --}}
 
 <!-- Fly Cart Js -->
 <script src="{{ asset('_frontend/assets/js/fly-cart.js') }}"></script>
@@ -41,4 +41,4 @@
 <script src="{{ asset('_frontend/assets/js/script.js') }}"></script>
 
 <!-- theme setting js -->
-<script src="{{ asset('_frontend/assets/js/theme-setting.js') }}"></script>
+{{-- <script src="{{ asset('_frontend/assets/js/theme-setting.js') }}"></script> --}}

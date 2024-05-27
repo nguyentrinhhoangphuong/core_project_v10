@@ -64,61 +64,7 @@ class Setting extends MainModel
 
     public function saveItem($request, $options)
     {
-        // =================================== useful links ===================================
-        if ($options['task'] == 'add-item-useful-links') {
-            echo '<pre style="color:red">';
-            print_r("ok");
-            echo '</pre>';
-            die;
-            $keyValue = "useful-links";
-            // $existingItem = self::where('key_value', $keyValue)->first();
-            $existingItem = $this->isexistsKeyValue($keyValue);
-            $request['id'] = uniqid();
-            $newItem = $this->prepareParams($request);
-            if ($existingItem) {
-                // Lấy ds hiện tại
-                $existingItems = json_decode($existingItem->value, true);
-                // Thêm mục mới vào ds hiện tại
-                $existingItems[] = $newItem;
-                $jsonValue = json_encode($existingItems);
-                $existingItem->update([
-                    'value' => $jsonValue
-                ]);
-            } else {
-                echo '<pre style="color:red">';
-                print_r("có vào");
-                echo '</pre>';
-                die;
-                $jsonValue = json_encode([$newItem]);
-                $item = self::create([
-                    'key_value' => $keyValue,
-                    'value' => $jsonValue
-                ]);
-            }
-        }
-
-        if ($options['task'] == 'update-useful-links-config') {
-            // Trích xuất dữ liệu JSON từ cơ sở dữ liệu
-            $existingItem = self::where('key_value', $request['key_value'])->first();
-            $items = json_decode($existingItem['value'], true);
-
-            // Lặp qua các mục trong mảng và cập nhật mục tương ứng
-            foreach ($items as &$item) {
-                if ($item['id'] == $request['id']) {
-                    // Cập nhật các giá trị mới từ $request
-                    $item['name'] = $request['name'];
-                    $item['url'] = $request['url'];
-                    break;
-                }
-            }
-            // Encode lại mảng thành JSON
-            $jsonValue = json_encode($items);
-            // Lưu lại mảng JSON đã cập nhật vào cơ sở dữ liệu
-            $existingItem->value = $jsonValue;
-            $existingItem->save();
-        }
-
-        // =====================================================================
+        // ================================= General Config ==================================
         if ($options['task'] == 'add-item-general') {
             $keyValue = "general-config";
             // Lấy dòng cấu hình hiện tại nếu tồn tại
@@ -168,48 +114,33 @@ class Setting extends MainModel
             }
         }
 
-        if ($options['task'] == 'add-item-help-center') {
-            $keyValue = "help-center-config";
-            $existingItem = self::where('key_value', $keyValue)->first();
-            $request['id'] = uniqid();
-            $newItem = $this->prepareParams($request);
-            if ($existingItem) {
-                // Lấy ds hiện tại
-                $existingItems = json_decode($existingItem->value, true);
-                // Thêm mục mới vào ds hiện tại
-                $existingItems[] = $newItem;
-                $jsonValue = json_encode($existingItems);
-                $existingItem->update([
-                    'value' => $jsonValue
-                ]);
-            } else {
-                $jsonValue = json_encode([$newItem]);
-                $item = self::create([
-                    'key_value' => $keyValue,
-                    'value' => $jsonValue
-                ]);
-            }
+        // =================================== useful links ===================================
+        if ($options['task'] == 'add-item-useful-links') {
+            $keyValue = "useful-links";
+            $this->addItems($keyValue, $request);
         }
 
-        if ($options['task'] == 'update-help-center-config') {
-            // Trích xuất dữ liệu JSON từ cơ sở dữ liệu
-            $existingItem = self::where('key_value', $request['key_value'])->first();
-            $items = json_decode($existingItem['value'], true);
+        if ($options['task'] == 'ajax-update-useful-link-ordering') {
+            $this->ajaxSortItem($options['getItems'], $request);
+        }
 
-            // Lặp qua các mục trong mảng và cập nhật mục tương ứng
-            foreach ($items as &$item) {
-                if ($item['id'] == $request['id']) {
-                    // Cập nhật các giá trị mới từ $request
-                    $item['name'] = $request['name'];
-                    $item['url'] = $request['url'];
-                    break;
-                }
-            }
-            // Encode lại mảng thành JSON
-            $jsonValue = json_encode($items);
-            // Lưu lại mảng JSON đã cập nhật vào cơ sở dữ liệu
-            $existingItem->value = $jsonValue;
-            $existingItem->save();
+        if ($options['task'] == 'ajax-update-useful-link-field') {
+            $this->ajaxUpdateField($options['getItems'], $request);
+        }
+
+        // ==============================help-center=======================================
+
+        if ($options['task'] == 'add-item-help-center') {
+            $keyValue = "help-center";
+            $this->addItems($keyValue, $request);
+        }
+
+        if ($options['task'] == 'ajax-update-help-center-ordering') {
+            $this->ajaxSortItem($options['getItems'], $request);
+        }
+
+        if ($options['task'] == 'ajax-update-help-center-field') {
+            $this->ajaxUpdateField($options['getItems'], $request);
         }
 
         // =============================== social ================================
@@ -342,20 +273,7 @@ class Setting extends MainModel
         }
 
         if ($options['task'] == 'ajax-update-ordering-social-config') {
-            $getItems = $options['getItems'];
-            $items = json_decode($getItems['value'], true);
-
-            $positionMap = [];
-            foreach ($request->order as $data) {
-                $positionMap[$data['id']] = $data['position'];
-            }
-
-            // Sắp xếp mảng $items dựa trên vị trí từ $positionMap
-            usort($items, function ($a, $b) use ($positionMap) {
-                return $positionMap[$a['id']] - $positionMap[$b['id']];
-            });
-            $newPosition = json_encode($items);
-            $getItems->update(['value' => $newPosition]);
+            $this->ajaxSortItem($options['getItems'], $request);
         }
 
         if ($options['task'] == 'ajax-delete-item') {
@@ -440,5 +358,60 @@ class Setting extends MainModel
         }
 
         return $result;
+    }
+
+    public function ajaxSortItem($getItems, $request)
+    {
+        $items = json_decode($getItems['value'], true);
+
+        $positionMap = [];
+        foreach ($request->order as $data) {
+            $positionMap[$data['id']] = $data['position'];
+        }
+
+        // Sắp xếp mảng $items dựa trên vị trí từ $positionMap
+        usort($items, function ($a, $b) use ($positionMap) {
+            return $positionMap[$a['id']] - $positionMap[$b['id']];
+        });
+
+        $newPosition = json_encode($items);
+        $getItems->update(['value' => $newPosition]);
+    }
+
+    public function ajaxUpdateField($getItems, $request)
+    {
+        $items = json_decode($getItems['value'], true);
+        foreach ($items as &$item) {
+            if ($item['id'] == $request->itemId) {
+                if (in_array($request->fieldName, ['name', 'url'])) {
+                    $item[$request->fieldName] = $request->value;
+                }
+            }
+        }
+        $getItems->update(['value' => json_encode($items)]);
+    }
+
+    public function addItems($keyValue, $request)
+    {
+        $existingItem = $this->isexistsKeyValue($keyValue);
+        $request['id'] = uniqid();
+        $newItem = $this->prepareParams($request->all());
+        if ($existingItem) {
+            // Lấy ds hiện tại
+            $existingItem = self::where('key_value', $keyValue)->first();
+            $existingItems = json_decode($existingItem->value, true);
+            // Thêm mục mới vào ds hiện tại
+            $existingItems[] = $newItem;
+            $jsonValue = json_encode($existingItems);
+            $existingItem->update([
+                'value' => $jsonValue
+            ]);
+        } else {
+            $jsonValue = json_encode([$newItem]);
+            $item = self::create([
+                'key_value' => $keyValue,
+                'value' => $jsonValue
+            ]);
+        }
     }
 }

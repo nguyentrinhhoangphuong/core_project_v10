@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class CategoryProductsRequest extends FormRequest
 {
     private $table = 'category_products';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -22,11 +23,10 @@ class CategoryProductsRequest extends FormRequest
      */
     public function rules(): array
     {
-        // bail: nghĩa là nếu vi phạm 'min:5' thì sẽ dừng lại ngay chứ k cần phải tới 'url' 'link' => 'bail|required|min:5|url',
         $id = $this->id;
-        $condName = 'bail|required|between:1,100|unique:' . $this->table . ',name';
+        $condName = 'bail|required';
         if (!empty($id)) {
-            $condName .= ',' . $id; // nếu có id (edit) thì ta thêm $id để không phải unique
+            $condName .= ',' . $id;
         }
         return [
             'name' => $condName,
@@ -43,7 +43,6 @@ class CategoryProductsRequest extends FormRequest
         return [
             'name.required' => 'Trường tên là bắt buộc.',
             'name.between' => 'Trường tên phải chứa ít nhất từ :min đến :max ký tự.',
-            'name.unique' => 'Tên đã được sử dụng.',
         ];
     }
 }

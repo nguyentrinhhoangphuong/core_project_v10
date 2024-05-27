@@ -2,18 +2,20 @@
 
 namespace App\View\Components\Admin\Setting;
 
+use App\Models\Setting;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class UsefulLinksConfig extends Component
 {
+    protected $model;
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public function __construct(Setting $model)
     {
-        //
+        $this->model = $model;
     }
 
     /**
@@ -21,6 +23,7 @@ class UsefulLinksConfig extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.admin.setting.useful-links-config');
+        $items = $this->model->getItem('useful-links', ['task' => 'get-item']);
+        return view('components.admin.setting.useful-links-config', compact('items'));
     }
 }

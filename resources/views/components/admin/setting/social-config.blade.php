@@ -14,7 +14,7 @@
 
             $xhtmlSocial .= sprintf(
                 '<tr class="row1" data-id="%s" data-routename="%s">
-                    <td class="handle"><i class="fa fa-sort"></i></td>
+                    <td class="handle" style="cursor: move"><i class="fa fa-sort"></i></td>
                     <td>
                         <i class="%s"></i>
                     </td>
@@ -65,17 +65,11 @@
         </div>
     </div>
 </div>
-@section('scripts')
+@section('scripts_admin_footer_Social')
     <script>
-        var reloadCount = 0;
-        var reloadConfig1 = true; // Đánh dấu liệu có tải lại phần social-config-1 hay không
-        if (performance.navigation.type == 2 && reloadConfig1) {
-            reloadCount++;
-            if (reloadCount < 2) { // Tải lại chỉ khi reloadCount < 2
-                location.reload();
-            }
+        if (performance.navigation.type == 2) {
+            location.reload();
         }
-
 
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll('input[name="links"]').forEach((input) => {
@@ -225,19 +219,21 @@
             let keyValue = button.data("key-value");
             let routeName = button.data("route-name");
             let row = button.closest('tr'); // Find the closest row (tr) containing the "Xóa" button
-            $.ajax({
-                type: "DELETE",
-                dataType: "json",
-                url: routeName + "/ajax-delete-item",
-                data: {
-                    id: tagId,
-                    keyValue: keyValue,
-                },
-                success: function(response) {
-                    fireNotif(response.message, "success", 3000);
-                    row.remove(); // Remove the row from the table
-                },
-            });
+            if (confirm("Bạn có chắc chắn muốn xóa mục này không?")) {
+                $.ajax({
+                    type: "DELETE",
+                    dataType: "json",
+                    url: routeName + "/ajax-delete-item",
+                    data: {
+                        id: tagId,
+                        keyValue: keyValue,
+                    },
+                    success: function(response) {
+                        fireNotif(response.message, "success", 3000);
+                        row.remove(); // Remove the row from the table
+                    },
+                });
+            }
         }
     </script>
 @endsection

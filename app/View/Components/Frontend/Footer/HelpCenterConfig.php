@@ -23,7 +23,7 @@ class HelpCenterConfig extends Component
      */
     public function render(): View|Closure|string
     {
-        $items = $this->model->getItem('help-center-config', ['task' => 'get-item']);
+        $items = $this->model->getItem('help-center', ['task' => 'get-item']);
         return view('components.frontend.footer.help-center-config', compact('items'));
     }
 }
