@@ -16,3 +16,23 @@
         </div>
     </div>
 @endsection
+@section('scripts')
+    <script>
+        function deleteSession(key) {
+            $.ajax({
+                url: '/session/delete', // URL của route xử lý xóa session
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "key": key // Key của session cần xóa
+                },
+                success: function() {
+                    console.log("Session '" + key + "' has been deleted.");
+                }
+            });
+        }
+        @if (session('success'))
+            fireNotif("{{ session('success') }}", "success", 3000);
+        @endif
+    </script>
+@endsection

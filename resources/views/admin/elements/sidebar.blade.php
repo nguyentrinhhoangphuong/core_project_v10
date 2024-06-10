@@ -290,8 +290,9 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('admin.products.index') }}">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
+                        data-bs-auto-close="false" role="button" aria-expanded="false">
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/mail-opened -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -304,9 +305,20 @@
                             </svg>
                         </span>
                         <span class="nav-link-title">
-                            Products
+                            Catalog
                         </span>
                     </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{{ route('admin.products.index') }}">
+                            Products
+                        </a>
+                        <a class="dropdown-item" href="{{ route('admin.attributes.index') }}">
+                            Attributes
+                        </a>
+                        <a class="dropdown-item" href="{{ route('admin.brand.index') }}">
+                            Brand
+                        </a>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('admin.menus.index') }}">

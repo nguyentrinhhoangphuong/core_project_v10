@@ -5,14 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
 
-use function PHPUnit\Framework\isNull;
-
 class Product extends MainModel
 {
     use HasFactory;
 
     public $fieldSearchAccepted = ['all', 'name'];
-
 
     // protected static function boot()
     // {
@@ -22,6 +19,17 @@ class Product extends MainModel
     //         $product->clearMediaCollection();
     //     });
     // }
+
+    // // Định nghĩa mối quan hệ một-nhiều với ProductVariant
+    // public function variants()
+    // {
+    //     return $this->hasMany(ProductVariant::class, 'product_id', 'id');
+    // }
+
+    public function categoryProduct()
+    {
+        return $this->belongsTo(CategoryProducts::class, 'category_product_id');
+    }
 
     public function listItems($params = null, $options = null)
     {
@@ -63,7 +71,7 @@ class Product extends MainModel
     {
         $result = null;
         if ($options['task'] == 'get-item') {
-            $result = self::select('id', 'name', 'price', 'description', 'content', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by')->where('id', $params)->first();
+            $result = self::select('id', 'name', 'status', 'price', 'brand_id', 'category_product_id', 'original_price', 'is_top', 'is_featured', 'slug', 'qty', 'description', 'content', 'status', 'created_at', 'updated_at', 'seo_title', 'seo_description')->where('id', $params)->first();
         }
         return $result;
     }

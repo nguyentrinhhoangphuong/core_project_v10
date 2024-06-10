@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Product as MainMoDel;
 use App\Http\Requests\ProductsRequest as MainRequest;
+use App\Models\Brand;
+use App\Models\CategoryProducts;
 use Illuminate\Http\Request;
 
 class ProductController extends AdminController
 {
-    public function __construct(MainMoDel $model)
+    protected CategoryProducts $categoryProduct;
+    protected Brand $brand;
+
+    public function __construct(MainMoDel $model, CategoryProducts $categoryProduct, Brand $brand)
     {
         parent::__construct($model);
         $this->controllerName = 'product';
@@ -20,6 +25,8 @@ class ProductController extends AdminController
         view()->share('controllerName', $this->controllerName);
         view()->share('routeName', $this->routeName);
         view()->share('routeCreate', $this->routeCreate);
+        $this->categoryProduct = $categoryProduct;
+        $this->brand = $brand;
     }
 
     public function index(Request $request)
@@ -61,9 +68,13 @@ class ProductController extends AdminController
     public function edit($item)
     {
         $item = $this->getSingleItem($item);
+        $categoryProduct = $this->categoryProduct::withDepth()->defaultOrder()->get()->toFlatTree();
+        $brands = $this->brand::all();
         return view($this->pathViewController . 'edit', [
             'title' => 'Edit ' . $this->controllerName,
             'item' => $item,
+            'categoryProduct' => $categoryProduct,
+            'brands' => $brands,
         ]);
     }
 
@@ -86,10 +97,12 @@ class ProductController extends AdminController
     }
     public function create()
     {
-        $items = [];
+        $categoryProduct = $this->categoryProduct::withDepth()->defaultOrder()->get()->toFlatTree();
+        $brands = $this->brand::all();
         return view($this->pathViewController . 'create', [
             'title' => 'Add ' . $this->controllerName,
-            'items' => $items,
+            'categoryProduct' => $categoryProduct,
+            'brands' => $brands,
         ]);
     }
 

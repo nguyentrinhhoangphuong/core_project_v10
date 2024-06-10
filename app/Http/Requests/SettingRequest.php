@@ -25,8 +25,6 @@ class SettingRequest extends FormRequest
         return [
             'icon' => 'bail|required',
             'links' => 'bail|required',
-            // 'name' => 'bail|required',
-            // 'url' => 'bail|required',
         ];
     }
 
@@ -40,8 +38,6 @@ class SettingRequest extends FormRequest
         return [
             'icon.required' => 'Trường icon là bắt buộc.',
             'links.required' => 'Trường link là bắt buộc.',
-            // 'name.required' => 'Trường name là bắt buộc.',
-            // 'url.required' => 'Trường url là bắt buộc.',
         ];
     }
 }

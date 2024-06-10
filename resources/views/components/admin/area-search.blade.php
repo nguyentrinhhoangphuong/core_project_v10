@@ -34,6 +34,7 @@
         <input type="text" class="form-control" name="search_value" value="{{ $oldValue }}"
             placeholder="Nhập từ khóa tìm kiếm">
         <button class="btn btn-outline-primary" type="button" id="btn-search">Tìm kiếm</button>
+        <a class="btn btn-outline-primary" href="{{ route('admin.' . $routeName . '.index') }}">Xóa</a>
     </div>
     <input type="hidden" name="search_field">
 </div>

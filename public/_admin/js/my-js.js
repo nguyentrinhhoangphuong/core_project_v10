@@ -162,26 +162,8 @@ $(document).ready(function () {
         var itemId = $(this).data("item-id");
         var currentStatus = $(this).data("item-status");
         var controller = $(this).data("controller");
-        var newStatus = currentStatus === "active" ? "inactive" : "active";
+        var newStatus = currentStatus === 1 ? 0 : 1;
         var csrfToken = $('meta[name="csrf-token"]').attr("content");
-        var successMessage = `
-                    <div class="alert alert-success alert-dismissible" role="alert">
-                        <div class="d-flex">
-                            <div>
-                                <!-- Download SVG icon from http://tabler-icons.io/i/check -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon alert-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                    <path d="M5 12l5 5l10 -10"></path>
-                                </svg>
-                            </div>
-                            <div>
-                                Cập nhật status thành công
-                            </div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                `;
-        // $("#successMessageContainer").html(successMessage);
         // them disable cho btn
         $.ajax({
             url: controller + "/update-status/" + itemId,
@@ -194,6 +176,7 @@ $(document).ready(function () {
                 let active = response.data.active;
                 let inactive = response.data.inactive;
                 if (response.success) {
+                    fireNotif("cập nhật status thành công", "success", 3000);
                     // Update the status button text and class
                     button.text(newStatus === "active" ? active : inactive);
                     button

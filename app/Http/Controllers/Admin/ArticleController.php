@@ -16,7 +16,7 @@ class ArticleController extends AdminController
         parent::__construct($model);
         $this->controllerName = 'article';
         $this->routeName = 'articles';
-        $this->params['pagination']['totalItemsPerPage'] = 5;
+        $this->params['pagination']['totalItemsPerPage'] = 3;
         $this->pathViewController = 'admin.pages.' . $this->controllerName . '.';
         $this->routeIndex = 'admin.' . $this->routeName . '.index';
         $this->routeCreate = $this->routeName . '/create';

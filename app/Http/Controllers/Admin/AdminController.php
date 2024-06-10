@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 class AdminController extends Controller
 {
     protected $model;
+    protected $title;
     protected $pathViewController;
     protected $controllerName;
     protected $routeIndex;
@@ -39,6 +40,7 @@ class AdminController extends Controller
         $params['filter']['status'] = $request->input('filter_status', 'all');
         $params['search']['field'] = $request->input('search_field', '');
         $params['search']['value'] = $request->input('search_value', '');
+
         return $this->model->listItems($params, ['task' => 'admin-list-item']);
     }
 

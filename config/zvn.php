@@ -14,7 +14,19 @@ return [
         'status' => [
             'all' => ['name' => 'Lọc trạng thái', 'class' => 'dropdown-item'],
             'active' => ['name' => 'Kích hoạt', 'class' => 'dropdown-item'],
-            'inactive' => ['name' => 'Chưa kích hoạt', 'class' => 'dropdown-item'],
+            'inactive' => ['name' => 'Không kích hoạt', 'class' => 'dropdown-item'],
+        ],
+
+        'isTop' => [
+            'normal' => ['name' => 'normal', 'class' => 'dropdown-item'],
+            'active' => ['name' => 'Kích hoạt', 'class' => 'dropdown-item'],
+            'inactive' => ['name' => 'Không kích hoạt', 'class' => 'dropdown-item'],
+        ],
+
+        'isFeatured' => [
+            'normal' => ['name' => 'normal', 'class' => 'btn-info'],
+            'active' => ['name' => 'Kích hoạt', 'class' => 'btn-info'],
+            'inactive' => ['name' => 'Không kích hoạt', 'class' => 'btn-warning']
         ],
 
         'isHome' => [
@@ -54,7 +66,9 @@ return [
         'search' => [
             'slider' => ['all', 'name', 'description', 'link'],
             'category' => ['all', 'name'],
-            'article' => ['all', 'title', 'content']
+            'article' => ['all', 'title', 'content'],
+            'attributes' => ['all', 'name'],
+            'brand' => ['all', 'name'],
         ],
         'button' => [
             'slider' => ['edit', 'delete'],

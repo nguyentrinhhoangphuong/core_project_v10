@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\Controllers\\Admin\\'], function () {
@@ -61,9 +62,21 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\
     Route::post('settings/ajax-insert-social-config', ['uses' => 'SettingController@ajaxInsertSocialConfig', 'as' => 'settings.ajax.insert.social.config']);
     Route::post('settings/update-ordering', ['uses' => 'SettingController@ajaxUpdateOrdering', 'as' => 'settings.ajax.update.ordering']);
 
-
     Route::delete('settings/ajax-delete-item', ['uses' => 'SettingController@ajaxDeleteItem', 'as' => 'settings.ajax.delete.item']);
     Route::resource('settings', 'SettingController', ['parameters' => ['settings' => 'item']]);
+    // ===================================== ATTRIBUTE ==================================
+    Route::post('attributes/update-field', ['uses' => 'AttributesController@updateField', 'as' => 'attributes.update.field']);
+    Route::resource('attributes', 'AttributesController', ['parameters' => ['attributes' => 'item']]);
+    // ===================================== ATTRIBUTE VALUE ==================================
+    Route::post('attribute-values/update-field', ['uses' => 'AttributeValuesController@updateField', 'as' => 'attribute.values.update.field']);
+    Route::resource('attribute-values', 'AttributeValuesController', ['parameters' => ['attribute-values' => 'item']]);
+    // ===================================== PRODUCT ATTRIBUTES ==================================
+    Route::post('product-attributes/get-attribute-value-by-id', ['uses' => 'ProductAttributesController@getAttributeValueById', 'as' => 'product.attributes.getAttributeValueById']);
+    Route::resource('product-attributes', 'ProductAttributesController', ['parameters' => ['product-attributes' => 'item']]);
+    // ===================================== BRAND ==================================
+    Route::post('brand/update-field', ['uses' => 'BrandController@updateField', 'as' => 'brand.update.field']);
+    Route::resource('brand', 'BrandController', ['parameters' => ['brand' => 'item']]);
+
     // ======================= laravel-filemanager ===================
     Route::get('filemanager', ['uses' => 'FileManagerController@index', 'as' => 'fileManager.index']);
 });
@@ -81,4 +94,9 @@ Route::group(['prefix' => '', 'as' => '', 'namespace' => 'App\\Http\\Controllers
     Route::get('register', ['uses' => 'HomeController@register', 'as' => 'register']);
     Route::get('/', ['uses' => 'HomeController@index', 'as' => 'home.index']);
     Route::resource('home', 'HomeController');
+});
+
+
+Route::post('/session/delete', function (Request $request) {
+    $request->session()->forget($request->key);
 });

@@ -25,7 +25,7 @@
     @yield('scripts_admin_footer_Social')
     @yield('scripts_admin_footer_UsefulLinks')
     @yield('scripts_admin_footer_HelpCenter')
-
+    @yield('scripts')
 </body>
 
 </html>
