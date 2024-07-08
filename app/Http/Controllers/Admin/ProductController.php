@@ -7,6 +7,8 @@ use App\Http\Requests\ProductsRequest as MainRequest;
 use App\Models\Brand;
 use App\Models\CategoryProducts;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\FacadesLog;
 
 class ProductController extends AdminController
 {
@@ -35,7 +37,7 @@ class ProductController extends AdminController
         $items = $this->getAllItems($params, $request);
         return view($this->pathViewController . 'index', [
             'params' => $params,
-            'title' => ucfirst($this->controllerName) . ' Management',
+            'title' => 'Tất cả sản phẩm',
             'items' => $items,
         ]);
     }
@@ -122,15 +124,22 @@ class ProductController extends AdminController
 
     public function updateStatus(Request $request)
     {
-        $category = MainMoDel::find($request->id);
-        $category->status = $request->status;
-        $category->save();
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'active' => config('zvn.template.status.active.name'),
-                'inactive' => config('zvn.template.status.inactive.name')
-            ]
-        ]);
+        $product = MainMoDel::find($request->id);
+        if ($product && in_array($request->field, ['status', 'is_top', 'is_featured'])) {
+            $field = $request->field;
+            $product->$field = $request->status;
+            $product->save();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['error' => 'Invalid field or item not found'], 400);
+    }
+
+    public function filterProduct(Request $request)
+    {
+        $items = $request->all();
+        array_shift($items);
+        $data = MainMoDel::getFilterProduct($items, ['task' => 'collection']);
+        $html = view('admin.pages.' . $this->controllerName . '.list_row', ['items' => $data])->render();
+        return response()->json(['success' => true, 'data' => $html]);
     }
 }

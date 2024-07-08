@@ -5,6 +5,7 @@
         foreach ($categories as $key => $item) {
             $sub = '';
             $name = $item['name'];
+            $id = $item['id'];
             $iconRight = count($item['children']) > 0 ? '<i class="fa-solid fa-angle-right"></i>' : '';
             if (count($item['children']) > 0) {
                 $sub = '<div class="onhover-category-box" style="height: 33vh;">';
@@ -12,11 +13,14 @@
                     $sub .= sprintf(
                         '<div class="list-%s">
                             <div class="category-title-box">
-                                <h5>%s</h5>
+                                <h5><a href="%s">%s</a></h5>
                             </div>
                             <ul>%s</ul>
                         </div>',
                         $key + 1,
+                        route('frontend.home.showProductbyCategory', [
+                            'slug' => Str::slug($value['name']) . '-' . $value['id'],
+                        ]),
                         $value['name'],
                         buildSubMenuHtml($value),
                     );
@@ -28,13 +32,14 @@
                 '
                 <ul class="category-list">
                     <li class="onhover-category-list">
-                        <a href="javascript:void(0)" class="category-name">
+                        <a href="%s" class="category-name">
                             <h6>%s</h6>
                             %s
                         </a>
                         %s
                     </li>
                 </ul>',
+                route('frontend.home.showProductbyCategory', ['slug' => Str::slug($name) . '-' . $id]),
                 $name,
                 $iconRight,
                 $sub,
@@ -51,8 +56,11 @@
                 $name = $value['name'];
                 $subMenuXhtml .= sprintf(
                     '<li>
-                        <a href="javascript:void(0)">%s</a>
+                        <a href="%s">%s</a>
                     </li>',
+                    route('frontend.home.showProductbyCategory', [
+                        'slug' => Str::slug($value['name']) . '-' . $value['id'],
+                    ]),
                     $name,
                 );
             }

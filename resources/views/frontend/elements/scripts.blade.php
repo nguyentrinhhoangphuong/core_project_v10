@@ -33,9 +33,13 @@
 <!-- Quantity js -->
 <script src="{{ asset('_frontend/assets/js/quantity-2.js') }}"></script>
 
+{{-- Filter sidebar --}}
+<script src="{{ asset('_frontend/assets/js/filter-sidebar.js') }}"></script>
+
+
 <!-- WOW js -->
-<script src="{{ asset('_frontend/assets/js/wow.min.js') }}"></script>
-<script src="{{ asset('_frontend/assets/js/custom-wow.js') }}"></script>
+{{-- <script src="{{ asset('_frontend/assets/js/wow.min.js') }}"></script>
+<script src="{{ asset('_frontend/assets/js/custom-wow.js') }}"></script> --}}
 
 <!-- script js -->
 <script src="{{ asset('_frontend/assets/js/script.js') }}"></script>

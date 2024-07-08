@@ -12,6 +12,11 @@ class Attributes extends MainModel
         $this->fieldSearchAccepted = config('zvn.config.search')['attributes'];
     }
 
+    public function attributeValue()
+    {
+        return $this->hasMany(AttributeValue::class, 'attribute_id');
+    }
+
     public function baseQuery()
     {
         return self::from('attributes as a');
@@ -21,7 +26,7 @@ class Attributes extends MainModel
     {
         $result = null;
         if ($options['task'] == 'admin-list-item') {
-            $query = $this->baseQuery()->select('a.id', 'a.name');
+            $query = $this->baseQuery()->select('a.id', 'a.name', 'a.slug', 'a.is_filter', 'a.ordering');
 
             if (!empty($params['search']['value'])) {
                 $searchValue = "%{$params['search']['value']}%";
@@ -37,7 +42,7 @@ class Attributes extends MainModel
                 }
             }
 
-            $result = $query->orderBy('a.id', 'desc')->paginate($params['pagination']['totalItemsPerPage']);
+            $result = $query->orderBy('a.ordering')->paginate($params['pagination']['totalItemsPerPage']);
         }
         return $result;
     }

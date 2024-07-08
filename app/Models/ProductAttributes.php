@@ -9,6 +9,21 @@ class ProductAttributes extends MainModel
 {
     use HasFactory;
 
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function attribute()
+    {
+        return $this->belongsTo(Attributes::class);
+    }
+
+    public function attributeValue()
+    {
+        return $this->belongsTo(AttributeValue::class);
+    }
+
     public static function getAttrValueById($id)
     {
         $results = DB::table('attribute_values as av')
@@ -39,6 +54,7 @@ class ProductAttributes extends MainModel
             ->join('attributes', 'product_attributes.attribute_id', '=', 'attributes.id')
             ->join('attribute_values', 'product_attributes.attribute_value_id', '=', 'attribute_values.id')
             ->select('product_attributes.id as product_attributes_id', 'attributes.id', 'attributes.name', 'attribute_values.value')
+            ->orderBy('attributes.name')
             ->get();
         return $productAttributes;
     }

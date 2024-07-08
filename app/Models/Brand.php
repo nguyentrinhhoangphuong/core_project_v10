@@ -12,6 +12,16 @@ class Brand extends MainModel
         $this->fieldSearchAccepted = config('zvn.config.search')['brand'];
     }
 
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'brand_id');
+    }
+
+    public function getProductCountAttribute()
+    {
+        return $this->products()->count();
+    }
+
     public function baseQuery()
     {
         return self::from('brands as b');

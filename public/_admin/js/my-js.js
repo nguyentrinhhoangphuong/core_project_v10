@@ -26,6 +26,11 @@ $(document).ready(function () {
                 : fireNotif("Update không thành công", "error", 3000);
         },
     });
+    $("#tablecontents").on("mouseenter", "tr", function () {
+        $(this).css("cursor", "move"); // Hoặc sử dụng "move" thay cho "pointer" tùy thuộc vào thiết kế bạn muốn
+    }).on("mouseleave", "tr", function () {
+        $(this).css("cursor", "default");
+    });
     function sendOrderToServer() {
         var order = [];
         var routeName = $(".row1").attr("data-routename");

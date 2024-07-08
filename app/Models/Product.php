@@ -2,8 +2,13 @@
 
 namespace App\Models;
 
+use App\Helpers\Template;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class Product extends MainModel
 {
@@ -11,31 +16,27 @@ class Product extends MainModel
 
     public $fieldSearchAccepted = ['all', 'name'];
 
-    // protected static function boot()
-    // {
-    //     parent::boot();
-    //     static::deleting(function ($product) {
-    //         // Delete associated media
-    //         $product->clearMediaCollection();
-    //     });
-    // }
-
-    // // Định nghĩa mối quan hệ một-nhiều với ProductVariant
-    // public function variants()
-    // {
-    //     return $this->hasMany(ProductVariant::class, 'product_id', 'id');
-    // }
+    // một sản phẩm (Product) có thể có nhiều thuộc tính sản phẩm (ProductAttribute).
+    public function productAttributes()
+    {
+        return $this->hasMany(ProductAttributes::class);
+    }
 
     public function categoryProduct()
     {
         return $this->belongsTo(CategoryProducts::class, 'category_product_id');
     }
 
+    public function brandProduct()
+    {
+        return $this->belongsTo(Brand::class, 'brand_id');
+    }
+
     public function listItems($params = null, $options = null)
     {
         $result = null;
         if ($options['task'] == 'admin-list-item') {
-            $query = self::select('id', 'name', 'price', 'description', 'content', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by');
+            $query = self::with('categoryProduct')->select('id', 'name', 'is_top', 'is_featured', 'category_product_id', 'price', 'description', 'content', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by');
 
             if ($params['filter']['status'] != 'all') {
                 $query->where('status', $params['filter']['status']);
@@ -71,7 +72,7 @@ class Product extends MainModel
     {
         $result = null;
         if ($options['task'] == 'get-item') {
-            $result = self::select('id', 'name', 'status', 'price', 'brand_id', 'category_product_id', 'original_price', 'is_top', 'is_featured', 'slug', 'qty', 'description', 'content', 'status', 'created_at', 'updated_at', 'seo_title', 'seo_description')->where('id', $params)->first();
+            $result = self::select('id', 'name', 'is_top', 'is_featured', 'status', 'price', 'brand_id', 'original_price', 'is_top', 'slug', 'qty', 'description', 'content', 'created_at', 'updated_at', 'seo_title', 'seo_description')->where('id', $params)->first();
         }
         return $result;
     }
@@ -198,5 +199,77 @@ class Product extends MainModel
         if ($options['task'] == 'delete-item') {
             $this->find($params->id)->delete();
         }
+    }
+
+    public static function getFilterProduct($items,  $options = null)
+    {
+        $brandId = isset($items['brand']) ? $items['brand'] : null;
+        unset($items['brand']);
+
+        $attributeValueIds = array_filter($items, function ($value) {
+            return ($value !== null && $value !== '');
+        });
+        $ids = array_values($attributeValueIds);
+        $ids = Template::flattenArray($ids);
+
+        $query = self::with(['productAttributes.attribute', 'productAttributes.attributeValue', 'categoryProduct']);
+        $query->select('id', 'name', 'status', 'is_top', 'category_product_id', 'price', 'original_price', 'is_featured');
+
+        // Thêm điều kiện lọc theo brand_id nếu brandId không rỗng
+        if (!is_null($brandId)) {
+            $query->whereIn('brand_id', $brandId);
+        }
+        // Thêm điều kiện lọc theo attribute_value_id nếu attributeValueIds không rỗng
+        if (!empty($ids)) {
+            $query->whereHas('productAttributes', function ($q) use ($ids) {
+                $q->whereIn('attribute_value_id', $ids);
+            });
+        }
+
+        if (isset($options['task']) && $options['task'] == 'collection') {
+            return new Collection($query->get());
+        }
+    }
+
+    public function scopeWithRelations(Builder $query)
+    {
+        return $query->with(['productAttributes.attribute', 'productAttributes.attributeValue', 'categoryProduct', 'brandProduct']);
+    }
+
+    public function scopeInCategories(Builder $query, $categoryProductID)
+    {
+        return $query->whereIn('category_product_id', $categoryProductID);
+    }
+
+    public function scopeSortBy(Builder $query, $sort)
+    {
+        switch ($sort) {
+            case 'price-asc':
+                return $query->orderBy('price', 'asc');
+            case 'price-desc':
+                return $query->orderBy('price', 'desc');
+            case 'featured':
+                return $query->where('is_featured', 1);
+            default:
+                return $query; // Không sắp xếp nếu không có tùy chọn hợp lệ
+        }
+    }
+
+    public function scopeFilterByBrands(Builder $query, $brands)
+    {
+        if (!empty($brands)) {
+            return $query->whereIn('brand_id', $brands);
+        }
+        return $query;
+    }
+
+    public function scopeFilterByAttributes(Builder $query, $filters)
+    {
+        foreach ($filters as $attribute => $attributeValuesId) {
+            $query->whereHas('productAttributes', function ($q) use ($attributeValuesId) {
+                $q->whereIn('attribute_value_id', $attributeValuesId);
+            });
+        }
+        return $query;
     }
 }

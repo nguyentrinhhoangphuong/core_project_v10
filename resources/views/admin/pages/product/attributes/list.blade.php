@@ -3,24 +3,32 @@
         <tr>
             <th>#</th>
             <th>{{ __('cruds.admin.product-variant.fields.name') }}</th>
+            <th>Hiển thị Filter</th>
             <th>Hành động</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="tablecontents">
         @if (count($items) > 0)
             @foreach ($items as $key => $item)
                 @php
-                    $index = $key + 1;
                     $id = $item['id'];
                     $productId = $item['product_id'];
+                    $is_filter = $item['is_filter'];
                     $name = $item['name'];
                     $routeName = $routeName;
                 @endphp
                 <tr class="row1" data-id="{{ $id }}" data-routename="{{ $routeName }}">
-                    <td>{!! $index !!}</td>
+                    <td class="handle"><i class="fa fa-sort"></i></td>
                     <td class="text-secondary">
                         <input type="text" class="form-control editable-field" name="name"
                             value="{{ old('name', $name) }}" style="width: 50%">
+                    </td>
+                    <td>
+                        <label class="dropdown-item form-switch">
+                            <input class="form-check-input m-0 me-2 toggle-is_filter" type="checkbox"
+                                data-item-id="{{ $id }}" data-item-status="{{ $is_filter }}"
+                                data-controller="{{ $routeName }}" {{ $is_filter === 1 ? 'checked' : '' }}>
+                        </label>
                     </td>
                     <td>
                         <a class="btn btn-outline-primary"
@@ -149,9 +157,33 @@
                 }
             });
 
+            $('.toggle-is_filter').on('change', function() {
+                var checkbox = $(this);
+                var itemId = checkbox.data('item-id');
+                var status = checkbox.is(':checked') ? 1 : 0;
+                var controller = checkbox.data('controller');
+                var field = 'is_filter';
+
+                $.ajax({
+                    url: '/admin/' + controller + '/update-status',
+                    method: 'POST',
+                    data: {
+                        field: field,
+                        status: status,
+                        id: itemId,
+                    },
+                    success: function(response) {
+                        fireNotif("Cập nhật thành công", "success", 3000);
+                    }
+                });
+            });
+
         });
         @if (session('success'))
             fireNotif("{{ session('success') }}", "success", 3000);
+        @endif
+        @if (session('info'))
+            fireNotif("{{ session('info') }}", "info", 3000);
         @endif
     </script>
 @endsection

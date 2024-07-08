@@ -2,11 +2,49 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class Template
 {
     public $arrItems = [];
+
+    public static function slug($string)
+    {
+        return Str::slug($string);
+    }
+
+    public static function logQuery($query)
+    {
+        DB::listen(function ($query) {
+            Log::info('SQL Query', [
+                'sql' => $query->sql,
+                'bindings' => $query->bindings,
+                'time' => $query->time,
+            ]);
+        });
+    }
+
+    public static function numberFormatVND($num)
+    {
+        return number_format($num, 0, ',', '.') . 'đ';
+    }
+
+    public static function flattenArray($array)
+    {
+        $result = array();
+        foreach ($array as $element) {
+            if (is_array($element)) {
+                $result = array_merge($result, self::flattenArray($element));
+            } else {
+                $result[] = $element;
+            }
+        }
+
+        return $result;
+    }
 
 
     public static function showAreaSearch($controllerName, $params, $routeName)

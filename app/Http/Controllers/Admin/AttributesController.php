@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Attributes as MainMoDel;
 use App\Models\AttributeValue;
+use App\Models\ProductAttributes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class AttributesController extends AdminController
 {
     protected AttributeValue $attributeValues;
-    public function __construct(MainMoDel $model, AttributeValue $attributeValues)
+    protected ProductAttributes $productAttributes;
+    public function __construct(MainMoDel $model, AttributeValue $attributeValues, ProductAttributes $productAttributes)
     {
         parent::__construct($model);
         $this->controllerName = 'attributes';
@@ -22,6 +26,7 @@ class AttributesController extends AdminController
         view()->share('routeName', $this->routeName);
         view()->share('routeCreate', $this->routeCreate);
         $this->attributeValues = $attributeValues;
+        $this->productAttributes = $productAttributes;
     }
     /**
      * Display a listing of the resource.
@@ -58,7 +63,11 @@ class AttributesController extends AdminController
      */
     public function store(Request $request)
     {
-        $item = MainMoDel::create($request->all());
+        $slug = Str::slug($request->name, '-');
+        $request['ordering'] = MainModel::max('ordering') + 1;
+        $data = $request->all();
+        $data['slug'] = $slug;
+        $item = MainMoDel::create($data);
         $count = MainMoDel::count();
         return response()->json([
             'success' => true,
@@ -94,7 +103,51 @@ class AttributesController extends AdminController
      */
     public function destroy(MainMoDel $item)
     {
+        $counts = $this->productAttributes::where('attribute_id', $item->id)
+            ->groupBy('product_id')
+            ->select(DB::raw('count(*) as count'))
+            ->get();
+        $totalCount = $counts->sum('count');
+        if ($totalCount > 0) {
+            return redirect()->route($this->routeIndex)
+                ->with('info', 'Không xóa được vì thuộc tính đang được ' . $totalCount . ' sản phẩm sử dụng');
+        }
         $item->delete();
         return redirect()->route($this->routeIndex)->with('success', 'Đã xóa thành công');
+    }
+
+    public function updateStatus(Request $request)
+    {
+        $product = MainMoDel::find($request->id);
+        $field = $request->field;
+        $product->$field = $request->status;
+        $product->save();
+        return response()->json(['success' => true]);
+    }
+
+    public function updateOrdering(Request $request)
+    {
+        // dd($request->all());
+        DB::beginTransaction(); // Bắt đầu giao dịch
+        try {
+            // Lấy danh sách ID:
+            $ids = array_column($request->order, 'id');
+
+            // Cập nhật hàng loạt:
+            $updated = MainModel::whereIn('id', $ids)->update([
+                'ordering' => DB::raw('FIELD(id, ' . implode(',', $ids) . ')'),
+            ]);
+
+            if ($updated !== count($ids)) {
+                DB::rollBack(); // Quay lại trạng thái trước đó nếu cập nhật không thành công
+                return response('Update failed.', 500);
+            }
+
+            DB::commit(); // Xác nhận giao dịch thành công
+            return response('Update Successfully.', 200);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Quay lại trạng thái trước đó nếu có lỗi xảy ra
+            return response('An error occurred.', 500);
+        }
     }
 }

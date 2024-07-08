@@ -62,7 +62,7 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label">{{ __('cruds.admin.product.fields.price') }}</label>
-                                        <input type="number" class="form-control" name="price"
+                                        <input type="text" class="form-control" name="price"
                                             value="{{ old('price', $price) }}">
                                     </div>
                                 </div>
@@ -70,7 +70,7 @@
                                     <div class="mb-3">
                                         <label
                                             class="form-label">{{ __('cruds.admin.product.fields.original_price') }}</label>
-                                        <input type="number" class="form-control" name="original_price"
+                                        <input type="text" class="form-control" name="original_price"
                                             value="{{ old('original_price', $original_price) }}">
                                     </div>
                                 </div>

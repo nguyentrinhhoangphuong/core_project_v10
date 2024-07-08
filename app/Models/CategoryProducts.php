@@ -19,7 +19,12 @@ class CategoryProducts extends MainModel
 
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class, 'category_product_id');
+    }
+
+    public function getProductCountAttribute()
+    {
+        return $this->products()->count();
     }
 
     public function children()

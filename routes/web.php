@@ -22,11 +22,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\
     Route::post('category-products/updateTree', ['uses' => 'CategoryProductsController@updateTree', 'as' => 'category-products.update.tree']);
     Route::resource('category-products', 'CategoryProductsController', ['parameters' => ['category-products' => 'item']]);
     // ======================= PRODUCT =================================
-    // Route::post('products/update-status/{id}', ['uses' => 'ProductController@updateStatus', 'as' => 'products.update.status']);
+    Route::post('products/update-status', ['uses' => 'ProductController@updateStatus', 'as' => 'products.update.status']);
     Route::post('products/upload', ['uses' => 'ProductController@upload', 'as' => 'products.upload']);
     Route::post('products/media', ['uses' => 'ProductController@storeMedia', 'as' => 'products.storeMedia']);
     Route::get('products/{id}/files', ['uses' => 'ProductController@files', 'as' => 'products.files']);
     Route::post('products/update-field', ['uses' => 'ProductController@updateField', 'as' => 'products.update.field']);
+    Route::post('products/filter-product', ['uses' => 'ProductController@filterProduct', 'as' => 'products.filter']);
     Route::resource('products', 'ProductController', ['parameters' => ['products' => 'item']]);
     // ======================= MENUS =================================
     Route::post('menus/updateTree', ['uses' => 'MenuController@updateTree', 'as' => 'menus.update.tree']);
@@ -65,6 +66,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'App\\Http\\
     Route::delete('settings/ajax-delete-item', ['uses' => 'SettingController@ajaxDeleteItem', 'as' => 'settings.ajax.delete.item']);
     Route::resource('settings', 'SettingController', ['parameters' => ['settings' => 'item']]);
     // ===================================== ATTRIBUTE ==================================
+    Route::post('attributes/update-ordering', ['uses' => 'AttributesController@updateOrdering', 'as' => 'attributes.update.ordering']);
+    Route::post('attributes/update-status', ['uses' => 'AttributesController@updateStatus', 'as' => 'attributes.update.status']);
     Route::post('attributes/update-field', ['uses' => 'AttributesController@updateField', 'as' => 'attributes.update.field']);
     Route::resource('attributes', 'AttributesController', ['parameters' => ['attributes' => 'item']]);
     // ===================================== ATTRIBUTE VALUE ==================================
@@ -90,10 +93,11 @@ Route::group(['prefix' => 'laravel-filemanager'], function () {
 
 Route::group(['prefix' => '', 'as' => '', 'namespace' => 'App\\Http\\Controllers\\Frontend\\'], function () {
     // ======================= Home ===============================
-    Route::get('login', ['uses' => 'HomeController@login', 'as' => 'login']);
-    Route::get('register', ['uses' => 'HomeController@register', 'as' => 'register']);
-    Route::get('/', ['uses' => 'HomeController@index', 'as' => 'home.index']);
-    Route::resource('home', 'HomeController');
+    Route::get('login', ['uses' => 'HomeController@login', 'as' => 'frontend.home.login']);
+    Route::get('register', ['uses' => 'HomeController@register', 'as' => 'frontend.home.register']);
+    Route::get('laptop', ['uses' => 'HomeController@filter', 'as' => 'frontend.home.filterProduct']);
+    Route::get('{slug}', ['uses' => 'HomeController@showProductbyCategory', 'as' => 'frontend.home.showProductbyCategory']);
+    Route::get('/', ['uses' => 'HomeController@index', 'as' => 'frontend.home.index']);
 });
 
 

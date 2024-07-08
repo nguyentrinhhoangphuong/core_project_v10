@@ -50,6 +50,7 @@
     <div class="bg-overlay"></div>
     <!-- Bg overlay End -->
 
+    @yield('scripts_frontend_filter')
     @include('frontend.elements.scripts')
 </body>
 
