@@ -15,6 +15,7 @@ class Product extends MainModel
     use HasFactory;
 
     public $fieldSearchAccepted = ['all', 'name'];
+    public $requiredAttributes = ['cpu', 'ram', 'ssd'];
 
     // một sản phẩm (Product) có thể có nhiều thuộc tính sản phẩm (ProductAttribute).
     public function productAttributes()
@@ -63,7 +64,6 @@ class Product extends MainModel
             $query = self::select('id', 'name')->where('parent_id', '>', 0)->orderBy('name', 'asc');
             $result = $query->pluck('name', 'id')->toArray();
         }
-
 
         return $result;
     }
@@ -250,8 +250,10 @@ class Product extends MainModel
                 return $query->orderBy('price', 'desc');
             case 'featured':
                 return $query->where('is_featured', 1);
+            case 'top':
+                return $query->where('is_top', 1);
             default:
-                return $query; // Không sắp xếp nếu không có tùy chọn hợp lệ
+                return $query;
         }
     }
 
@@ -266,10 +268,59 @@ class Product extends MainModel
     public function scopeFilterByAttributes(Builder $query, $filters)
     {
         foreach ($filters as $attribute => $attributeValuesId) {
+            $attributeValuesId = (array) $attributeValuesId;
             $query->whereHas('productAttributes', function ($q) use ($attributeValuesId) {
                 $q->whereIn('attribute_value_id', $attributeValuesId);
             });
         }
         return $query;
+    }
+
+    public function scopeGetTopProducts()
+    {
+        return self::where('is_top', 1)->paginate(8);
+    }
+
+    public function scopeGetFeaturedProducts()
+    {
+        return self::where('is_featured', 1)->paginate(8);
+    }
+
+    public function processAttributes()
+    {
+        $processedAttributes = [];
+        foreach ($this->requiredAttributes as $requiredAttribute) {
+            foreach ($this->productAttributes as $attribute) {
+                if ($attribute->attribute && $attribute->attributeValue) {
+                    if ($attribute->attribute->slug === $requiredAttribute) {
+                        $attributeName = $attribute->attribute->name;
+                        $attributeValue = $attribute->attributeValue->value;
+
+                        $found = false;
+                        foreach ($processedAttributes as &$processedAttribute) {
+                            if ($processedAttribute['attribute_name'] === $attributeName) {
+                                $processedAttribute['attribute_values'][] = $attributeValue;
+                                $found = true;
+                                break;
+                            }
+                        }
+
+                        if (!$found) {
+                            $processedAttributes[] = [
+                                'attribute_name' => $attributeName,
+                                'attribute_values' => [$attributeValue],
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        return $processedAttributes;
+    }
+
+    public static function scopeGetProductByBrainId(Brand $id)
+    {
+        self::where('brand_id', $id)->paginate(8);
     }
 }

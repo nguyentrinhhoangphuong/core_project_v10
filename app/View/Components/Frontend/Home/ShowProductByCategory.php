@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Frontend\Home;
 
+use App\Models\Product;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
@@ -17,47 +18,50 @@ class ShowProductByCategory extends Component
     public function __construct($products)
     {
         $this->products = $products;
-        $this->processProductAttributes();
+        $this->products = $products->map(function ($product) {
+            $product->setAttribute('processed_attributes', $product->processAttributes());
+            return $product;
+        });
     }
 
-    protected function processProductAttributes()
-    {
-        foreach ($this->products as $product) {
-            $processedAttributes = [];
-            // Tạo một mảng tạm thời để lưu các thuộc tính theo thứ tự 'cpu', 'ram', 'ssd'
-            foreach ($this->requiredAttributes as $requiredAttribute) {
-                foreach ($product->productAttributes as $attribute) {
-                    if ($attribute->attribute && $attribute->attributeValue) {
-                        if ($attribute->attribute->slug === $requiredAttribute) {
-                            $attributeName = $attribute->attribute->name;
-                            $attributeValue = $attribute->attributeValue->value;
+    // protected function processProductAttributes()
+    // {
+    //     foreach ($this->products as $product) {
+    //         $processedAttributes = [];
+    //         // Tạo một mảng tạm thời để lưu các thuộc tính theo thứ tự 'cpu', 'ram', 'ssd'
+    //         foreach ($this->requiredAttributes as $requiredAttribute) {
+    //             foreach ($product->productAttributes as $attribute) {
+    //                 if ($attribute->attribute && $attribute->attributeValue) {
+    //                     if ($attribute->attribute->slug === $requiredAttribute) {
+    //                         $attributeName = $attribute->attribute->name;
+    //                         $attributeValue = $attribute->attributeValue->value;
 
-                            // Kiểm tra xem đã có thuộc tính này trong mảng $processedAttributes chưa
-                            $found = false;
-                            foreach ($processedAttributes as &$processedAttribute) {
-                                if ($processedAttribute['attribute_name'] === $attributeName) {
-                                    // Nếu đã có, thêm giá trị vào mảng giá trị
-                                    $processedAttribute['attribute_values'][] = $attributeValue;
-                                    $found = true;
-                                    break;
-                                }
-                            }
+    //                         // Kiểm tra xem đã có thuộc tính này trong mảng $processedAttributes chưa
+    //                         $found = false;
+    //                         foreach ($processedAttributes as &$processedAttribute) {
+    //                             if ($processedAttribute['attribute_name'] === $attributeName) {
+    //                                 // Nếu đã có, thêm giá trị vào mảng giá trị
+    //                                 $processedAttribute['attribute_values'][] = $attributeValue;
+    //                                 $found = true;
+    //                                 break;
+    //                             }
+    //                         }
 
-                            // Nếu chưa có, thêm mới vào mảng $processedAttributes
-                            if (!$found) {
-                                $processedAttributes[] = [
-                                    'attribute_name' => $attributeName,
-                                    'attribute_values' => [$attributeValue],
-                                ];
-                            }
-                        }
-                    }
-                }
-            }
-            // Gán mảng $processedAttributes vào thuộc tính tùy chỉnh 'processed_attributes' của sản phẩm
-            $product->setAttribute('processed_attributes', $processedAttributes);
-        }
-    }
+    //                         // Nếu chưa có, thêm mới vào mảng $processedAttributes
+    //                         if (!$found) {
+    //                             $processedAttributes[] = [
+    //                                 'attribute_name' => $attributeName,
+    //                                 'attribute_values' => [$attributeValue],
+    //                             ];
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //         // Gán mảng $processedAttributes vào thuộc tính tùy chỉnh 'processed_attributes' của sản phẩm
+    //         $product->setAttribute('processed_attributes', $processedAttributes);
+    //     }
+    // }
 
 
     /**

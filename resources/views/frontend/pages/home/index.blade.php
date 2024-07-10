@@ -1,18 +1,18 @@
 @extends('frontend.main')
 @section('content')
     <!-- Home Section Start -->
-    @include('frontend.components.home.home-section-start')
+    <x-frontend.slider.carousel />
     <!-- Home Section End -->
 
-    <!-- Banner Section Start -->
-    {{-- @include('frontend.components.home.banner-section') --}}
-    <!-- Banner Section End -->
+    {{-- Top Product --}}
+    <x-frontend.home.top-products />
+    {{-- End Top Product --}}
 
-    <!-- Product Section Start -->
-    {{-- @include('frontend.components.home.product-section') --}}
-    <!-- Product Section End -->
+    {{-- Featured Product --}}
+    <x-frontend.home.featured-products />
+    {{-- End Featured Product --}}
 
-    <!-- Newsletter Section Start -->
-    {{-- @include('frontend.components.home.newsletter-section') --}}
-    <!-- Newsletter Section End -->
+    {{-- Product Grouped By Brand --}}
+    <x-frontend.home.products-grouped-by-brand />
+    {{-- End Product Grouped By Brand --}}
 @endsection

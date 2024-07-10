@@ -15,6 +15,7 @@ class HomeController extends FrontendController
     public function __construct(CategoryProducts $categoryProducts, Product $product)
     {
         $this->controllerName = 'home';
+        $this->numberOfPage = 12;
         $this->params['pagination']['totalItemsPerPage'] = 5;
         $this->pathViewController = 'frontend.pages.' . $this->controllerName . '.';
         view()->share('controllerName', $this->controllerName);
@@ -24,7 +25,6 @@ class HomeController extends FrontendController
 
     public function index()
     {
-
         return view('frontend.pages.home.index');
     }
 
@@ -52,19 +52,25 @@ class HomeController extends FrontendController
             $sort = $request->input('sort');
             $productsQuery->sortBy($sort);
         }
-        $products = $productsQuery->paginate(3);
+        $products = $productsQuery->paginate($this->numberOfPage);
         return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb'));
     }
 
     public function filter(Request $request)
     {
         $brands = $request->input('brand', []);
+        if (!is_array($brands)) $brands = [$brands];
         $filters = $request->input('filters', []);
+        // Kiểm tra nếu filters không phải là một mảng, chuyển đổi thành mảng với giá trị đó
+        if (!is_array($filters))  $filters = [$filters];
+
+        $sort = $request->input('sort');
         $products = Product::withRelations()
-            ->select('id', 'name', 'price', 'original_price', 'category_product_id', 'brand_id')
+            ->select('id', 'name', 'price', 'is_featured', 'original_price', 'category_product_id', 'brand_id')
             ->filterByBrands($brands)
             ->filterByAttributes($filters)
-            ->paginate(3);
+            ->sortBy($sort)
+            ->paginate($this->numberOfPage);
         $breadcrumb = "Tất cả sản phẩm";
         return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb'));
     }

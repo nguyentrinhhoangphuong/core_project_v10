@@ -9,6 +9,7 @@ class FrontendController extends Controller
 {
   protected $model;
   protected $title;
+  protected $numberOfPage;
   protected $pathViewController;
   protected $controllerName;
   protected $routeIndex;

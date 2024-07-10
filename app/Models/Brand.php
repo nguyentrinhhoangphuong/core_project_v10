@@ -51,4 +51,34 @@ class Brand extends MainModel
         }
         return $result;
     }
+
+    public static function getProductsGroupedByBrand()
+    {
+        $brands = self::with('products')->get();
+        $products = [];
+        foreach ($brands as $brand) {
+            $brand_id = $brand->id;
+            $products[$brand->name] = [
+                'brand_id' => $brand_id,
+                'products' => $brand->products->take(4)->map(function ($product) {
+                    $product->setAttribute('processed_attributes', $product->processAttributes());
+                    $sortedMedia = $product->media->sortBy('order_column');
+                    $media = $sortedMedia->isNotEmpty() ? $sortedMedia->first() : null;
+                    $mediaUrl = $media ? ($media->hasGeneratedConversion('webp') ? $media->getUrl('webp') : $media->getUrl()) : '';
+                    return [
+                        'id' => $product->id,
+                        'name' => $product->name,
+                        'price' => $product->price,
+                        'original_price' => $product->original_price,
+                        'image' => $mediaUrl,
+                        'processed_attributes' => $product->getAttribute('processed_attributes'),
+                    ];
+                })->toArray()
+            ];
+        }
+        $products = array_filter($products, function ($brandProducts) {
+            return !empty($brandProducts['products']);
+        });
+        return $products;
+    }
 }

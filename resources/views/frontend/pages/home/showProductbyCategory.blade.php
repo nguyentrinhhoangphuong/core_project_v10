@@ -59,6 +59,7 @@
                                                 'price-asc' => 'Giá tăng dần',
                                                 'price-desc' => 'Giá giảm dần',
                                                 'featured' => 'Nổi bật',
+                                                'top' => 'top',
                                             ];
                                         @endphp
                                         <span>{{ $sortText[$currentSort] }}</span> <i class="fa-solid fa-angle-down"></i>
@@ -67,6 +68,10 @@
                                         <li>
                                             <a class="dropdown-item" id="pop"
                                                 href="{{ request()->fullUrlWithQuery(['sort' => 'featured']) }}">Nổi bật</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" id="high"
+                                                href="{{ request()->fullUrlWithQuery(['sort' => 'top']) }}">Top</a>
                                         </li>
                                         <li>
                                             <a class="dropdown-item" id="low"
