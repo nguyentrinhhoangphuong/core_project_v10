@@ -74,4 +74,27 @@ class HomeController extends FrontendController
         $breadcrumb = "Tất cả sản phẩm";
         return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb'));
     }
+
+    public function productDetails($slug)
+    {
+        $arrSlug = explode('-', $slug);
+        $productId = array_pop($arrSlug);
+        $product = $this->product->getProductDetailsById($productId);
+        $trendingProducts = $this->product->getTopProducts(5);
+        $relatedProducts = $this->product->getRelatedProductsByBrand($productId, $product->brand_id, 10);
+        $categoryBreadcrumb = $this->categoryProducts->ancestorsAndSelf($product->category_product_id);
+        $attributes = [];
+        foreach ($product->productAttributes as $attribute) {
+            if ($attribute->attribute && $attribute->attributeValue) {
+                $attributes[$attribute->attribute->name] = $attribute->attributeValue->value;
+            }
+        }
+        return view('frontend.pages.home.productDetails', [
+            'product' => $product,
+            'attributes' => $attributes,
+            'trendingProducts' => $trendingProducts,
+            'relatedProducts' => $relatedProducts,
+            'categoryBreadcrumb' => array_slice($categoryBreadcrumb->toArray(), -2),
+        ]);
+    }
 }

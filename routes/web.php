@@ -96,6 +96,7 @@ Route::group(['prefix' => '', 'as' => '', 'namespace' => 'App\\Http\\Controllers
     Route::get('login', ['uses' => 'HomeController@login', 'as' => 'frontend.home.login']);
     Route::get('register', ['uses' => 'HomeController@register', 'as' => 'frontend.home.register']);
     Route::get('laptop', ['uses' => 'HomeController@filter', 'as' => 'frontend.home.filterProduct']);
+    Route::get('products/{slug}', ['uses' => 'HomeController@productDetails', 'as' => 'frontend.home.productDetails']);
     Route::get('{slug}', ['uses' => 'HomeController@showProductbyCategory', 'as' => 'frontend.home.showProductbyCategory']);
     Route::get('/', ['uses' => 'HomeController@index', 'as' => 'frontend.home.index']);
 });

@@ -276,9 +276,9 @@ class Product extends MainModel
         return $query;
     }
 
-    public function scopeGetTopProducts()
+    public function scopeGetTopProducts(Builder $query, $num = 8)
     {
-        return self::where('is_top', 1)->paginate(8);
+        return self::where('is_top', 1)->paginate($num);
     }
 
     public function scopeGetFeaturedProducts()
@@ -322,5 +322,20 @@ class Product extends MainModel
     public static function scopeGetProductByBrainId(Brand $id)
     {
         self::where('brand_id', $id)->paginate(8);
+    }
+
+    public function scopeGetProductDetailsById(Builder $query, $id)
+    {
+        $product = $query->with(['productAttributes.attribute', 'productAttributes.attributeValue'])
+            ->where('id', $id)
+            ->firstOrFail();
+        return $product;
+    }
+
+    public function scopeGetRelatedProductsByBrand(Builder $query, $id, $brandId, $num = 10)
+    {
+        return self::where('brand_id', $brandId)
+            ->where('id', '<>', $id)
+            ->paginate($num);
     }
 }

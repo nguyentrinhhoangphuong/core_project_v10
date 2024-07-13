@@ -16,11 +16,16 @@
                 <div
                     class="row g-sm-4 g-3 row-cols-xxl-4 row-cols-xl-3 row-cols-lg-2 row-cols-md-3 row-cols-2 product-list-section">
                     @foreach ($products['products'] as $product)
+                        @php
+                            $url = route('frontend.home.productDetails', [
+                                'slug' => Str::slug($product['name']) . '-' . $product['id'],
+                            ]);
+                        @endphp
                         <div class="col">
                             <div class="product-box-3 h-100 wow fadeInUp">
                                 <div class="product-header">
                                     <div class="product-image">
-                                        <a href="product-left-thumbnail.html">
+                                        <a href="{{ $url }}">
                                             <img src="{{ $product['image'] }}" class="img-fluid blur-up lazyload"
                                                 alt="{{ $product['name'] }}">
                                         </a>
@@ -28,7 +33,7 @@
                                 </div>
                                 <div class="product-footer">
                                     <div class="product-detail">
-                                        <a href="product-left-thumbnail.html">
+                                        <a href="{{ $url }}">
                                             <h5 class="name text-center">{{ $product['name'] }}</h5>
                                         </a>
                                         <table style="width: 100%">

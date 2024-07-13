@@ -6,6 +6,7 @@
         $name = $product['name'];
         $price = Template::numberFormatVND($product->price);
         $original_price = Template::numberFormatVND($product->original_price);
+        $url = route('frontend.home.productDetails', ['slug' => Str::slug($name) . '-' . $id]);
         $sortedMedia = $product->media->sortBy('order_column');
         $media = $sortedMedia->isNotEmpty() ? $sortedMedia->first() : null;
         $mediaUrl = '';
@@ -28,7 +29,9 @@
                 <div class="product-box-3 h-100 wow fadeInUp">
                     <div class="product-header">
                         <div class="product-image">
-                            <a href="product-left-thumbnail.html">
+                            <a href="' .
+            $url .
+            '">
                                 <img src="' .
             $mediaUrl .
             '" class="img-fluid blur-up lazyload" alt="">
@@ -37,7 +40,9 @@
                     </div>
                     <div class="product-footer">
                         <div class="product-detail">
-                            <a href="product-left-thumbnail.html">
+                            <a href="' .
+            $url .
+            '">
                                 <h5 class="name text-center">' .
             $name .
             '</h5>
@@ -69,14 +74,18 @@
                                 <div class="product-box-3 h-100 wow fadeInUp">
                                     <div class="product-header">
                                         <div class="product-image">
-                                            <a href="product-left-thumbnail.html">
+                                            <a href="' .
+            $url .
+            '">
                                                 <img src="http://127.0.0.1:8000/media/385/n4i5497w1-fix_9823d4347b6844ac9f3d8f5ad49efa13_grande.png" class="img-fluid blur-up lazyloaded" alt="">
                                             </a>
                                         </div>
                                     </div>
                                     <div class="product-footer">
                                         <div class="product-detail">
-                                            <a href="product-left-thumbnail.html">
+                                            <a href="' .
+            $url .
+            '">
                                                 <h5 class="name text-center">' .
             $name .
             '</h5>
