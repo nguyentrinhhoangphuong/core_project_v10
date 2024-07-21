@@ -51,6 +51,7 @@
     <!-- Bg overlay End -->
 
     @include('frontend.elements.scripts')
+    @yield('scripts_frontend_add_product_to_cart')
 </body>
 
 </html>

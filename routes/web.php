@@ -89,12 +89,18 @@ Route::group(['prefix' => 'laravel-filemanager'], function () {
 });
 
 
-
-
 Route::group(['prefix' => '', 'as' => '', 'namespace' => 'App\\Http\\Controllers\\Frontend\\'], function () {
+    // ======================= ORDER =============================
+    Route::get('order', ['uses' => 'OrderController@create', 'as' => 'frontend.order.create']);
+    Route::post('order/store', ['uses' => 'OrderController@store', 'as' => 'frontend.order.store']);
+    // ======================= CART ==============================
+    Route::get('cart', ['uses' => 'CartController@index', 'as' => 'frontend.cart.index']);
+    Route::post('addtocart', ['uses' => 'ProductCartController@store', 'as' => 'frontend.productcart.store']);
+    Route::post('cart/destroy', ['uses' => 'ProductCartController@destroy', 'as' => 'frontend.productcart.destroy']);
+    Route::post('update-quantity', ['uses' => 'ProductCartController@updateQuantity', 'as' => 'frontend.productcart.updateQuantity']);
     // ======================= Home ===============================
     Route::get('login', ['uses' => 'HomeController@login', 'as' => 'frontend.home.login']);
-    Route::get('register', ['uses' => 'HomeController@register', 'as' => 'frontend.home.register']);
+    // Route::get('register', ['uses' => 'HomeController@register', 'as' => 'frontend.home.register']);
     Route::get('laptop', ['uses' => 'HomeController@filter', 'as' => 'frontend.home.filterProduct']);
     Route::get('products/{slug}', ['uses' => 'HomeController@productDetails', 'as' => 'frontend.home.productDetails']);
     Route::get('{slug}', ['uses' => 'HomeController@showProductbyCategory', 'as' => 'frontend.home.showProductbyCategory']);

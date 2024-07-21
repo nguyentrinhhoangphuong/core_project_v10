@@ -42,6 +42,9 @@ class HomeController extends FrontendController
     {
         $arrSlug = explode('-', $slug);
         $categoryProductID = $this->categoryProducts->descendantsAndSelf($arrSlug[count($arrSlug) - 1])->pluck('id');
+        if ($categoryProductID->isEmpty()) {
+            abort(404);
+        }
         array_pop($arrSlug);
         $breadcrumb = implode(" ", $arrSlug);
         $productsQuery = Product::withRelations()
@@ -53,6 +56,7 @@ class HomeController extends FrontendController
             $productsQuery->sortBy($sort);
         }
         $products = $productsQuery->paginate($this->numberOfPage);
+        // Kiểm tra xem có sản phẩm nào không
         return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb'));
     }
 

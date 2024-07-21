@@ -48,17 +48,15 @@
         <div class="pickup-detail">
             <h4 class="text-content">{{ $product->description }}</h4>
         </div>
+        <form action=""></form>
         <div class="note-box product-package">
-            <button onclick="location.href = 'cart.html';" class="btn btn-md bg-dark cart-button text-white w-100">
-                Mua Ngay
-            </button>
-        </div>
-
-        <div class="buy-box">
-            <a href="wishlist.html">
-                <i data-feather="heart"></i>
-                <span>Thêm vào danh sách yêu thích</span>
-            </a>
+            <form action="{{ route('frontend.productcart.store') }}" method="POST" class="w-100">
+                @csrf
+                <input type="hidden" name="productid" value="{{ $product->id }}">
+                <button type="submit" class="btn btn-md bg-dark cart-button text-white w-100" id="buyNowButton">
+                    Mua Ngay
+                </button>
+            </form>
         </div>
 
         <div class="pickup-box" style="border-bottom: 0px ">
@@ -125,3 +123,26 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const buyNowButton = document.getElementById('buyNowButton');
+
+        function resetButton() {
+            buyNowButton.disabled = false;
+            buyNowButton.innerText = 'Mua Ngay';
+        }
+        // Reset nút khi trang được hiển thị lại từ cache
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                resetButton();
+            }
+        });
+        buyNowButton.addEventListener('click', function(event) {
+            setTimeout(function() {
+                buyNowButton.disabled = true;
+                buyNowButton.innerText = 'Đang xử lý...';
+            }, 50);
+        });
+    });
+</script>

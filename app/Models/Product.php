@@ -14,8 +14,34 @@ class Product extends MainModel
 {
     use HasFactory;
 
+    protected $fillable = [];
+
     public $fieldSearchAccepted = ['all', 'name'];
     public $requiredAttributes = ['cpu', 'ram', 'ssd'];
+
+    /**
+     * MANY-TO-MANY KHÔNG ĐA HÌNH
+     public function carts()
+     {
+        return $this->belongsToMany(Cart::class)->withPivot('quantity');
+     }
+
+     public function orders()
+     {
+        return $this->belongsToMany(Order::class)->withPivot('quantity');
+     }
+     */
+
+    //  MANY-TO-MANY ĐA HÌNH
+    public function carts()
+    {
+        return $this->morphedByMany(Cart::class, 'productable')->withPivot('quantity');
+    }
+
+    public function orders()
+    {
+        return $this->morphedByMany(Order::class, 'productable')->withPivot('quantity');
+    }
 
     // một sản phẩm (Product) có thể có nhiều thuộc tính sản phẩm (ProductAttribute).
     public function productAttributes()
@@ -31,6 +57,11 @@ class Product extends MainModel
     public function brandProduct()
     {
         return $this->belongsTo(Brand::class, 'brand_id');
+    }
+
+    public function getTotalAttribute()
+    {
+        return $this->price * $this->pivot->quantity;
     }
 
     public function listItems($params = null, $options = null)
