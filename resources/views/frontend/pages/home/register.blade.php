@@ -7,7 +7,7 @@
     <!-- log in section start -->
     <section class="log-in-section section-b-space">
         <div class="container">
-            <div class="col-lg-12 col-sm-8 mx-auto">
+            <div class="col-lg-4 col-sm-8 mx-auto">
                 <div class="log-in-box">
                     <div class="text-center mb-3">
                         <h3><strong>Tạo tài khoản mới</strong></h3>

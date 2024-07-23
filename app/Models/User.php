@@ -44,8 +44,4 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
-    protected $dates = [
-        'admin_since'
-    ];
 }
