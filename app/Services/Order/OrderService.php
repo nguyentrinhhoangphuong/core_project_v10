@@ -79,4 +79,10 @@ class OrderService
     $order->status = $status;
     return $order->save();
   }
+
+  public function trackingCode($code)
+  {
+    $tracking = $this->order->where('code', $code)->value('status');
+    return $tracking;
+  }
 }

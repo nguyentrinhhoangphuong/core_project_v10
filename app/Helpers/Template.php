@@ -49,6 +49,13 @@ class Template
         return $statuses[$status] ?? 'Không xác định';
     }
 
+    public static function getOrderStatusHandle($currentStatus, $statusKey, $statuses)
+    {
+        $currentStatusIndex = array_search($currentStatus, array_keys($statuses));
+        $statusIndex = array_search($statusKey, array_keys($statuses));
+        return $statusIndex <= $currentStatusIndex ? 'done' : 'todo';
+    }
+
     public static function flattenArray($array)
     {
         $result = array();

@@ -369,4 +369,19 @@ class Product extends MainModel
             ->where('id', '<>', $id)
             ->paginate($num);
     }
+
+
+    public function search($request)
+    {
+        $query = $this->query();
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%')
+                    ->orWhereRaw("CONVERT(content USING utf8) LIKE ?", ["%{$searchTerm}%"])
+                    ->orWhereRaw("description LIKE ?", ["%{$searchTerm}%"]);
+            });
+        }
+        return $query->paginate(10);
+    }
 }

@@ -101,4 +101,11 @@ class HomeController extends FrontendController
             'categoryBreadcrumb' => array_slice($categoryBreadcrumb->toArray(), -2),
         ]);
     }
+
+    public function search(Request $request)
+    {
+        $products = $this->product->search($request);
+        $breadcrumb = "Tìm kiếm: " . $request->search;
+        return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb'));
+    }
 }
