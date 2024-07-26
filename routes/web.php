@@ -85,6 +85,11 @@ Route::prefix('admin')
             // ===================================== BRAND ==================================
             Route::post('brand/update-field', ['uses' => 'BrandController@updateField', 'as' => 'brand.update.field']);
             Route::resource('brand', 'BrandController', ['parameters' => ['brand' => 'item']]);
+            // ===================================== ORDER ==================================
+            Route::get('order/{id}', ['uses' => 'OrderController@orderDetail', 'as' => 'order.detail']);
+            Route::post('order/status-change', ['uses' => 'OrderController@orderChangeStatus', 'as' => 'order.status.change']);
+            Route::resource('order', 'OrderController', ['parameters' => ['order' => 'item']]);
+
 
             // ======================= laravel-filemanager ===================
             Route::get('filemanager', ['uses' => 'FileManagerController@index', 'as' => 'fileManager.index']);
@@ -178,6 +183,7 @@ Route::group(['prefix' => 'laravel-filemanager'], function () {
 });
 
 // ====================== AUTH ===============================
+
 Route::post('login-submit', [AuthController::class, 'login'])->name('auth.login.submit');
 Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
 
@@ -191,8 +197,10 @@ Route::group(['prefix' => '', 'as' => '', 'namespace' => 'App\\Http\\Controllers
     Route::post('cart/destroy', ['uses' => 'ProductCartController@destroy', 'as' => 'frontend.productcart.destroy']);
     Route::post('update-quantity', ['uses' => 'ProductCartController@updateQuantity', 'as' => 'frontend.productcart.updateQuantity']);
     // ======================= Home ===============================
-    Route::get('login', ['uses' => 'HomeController@login', 'as' => 'frontend.home.login']);
-    // Route::get('register', ['uses' => 'HomeController@register', 'as' => 'frontend.home.register']);
+    Route::middleware('guest')->group(function () {
+        Route::get('login', ['uses' => 'HomeController@login', 'as' => 'frontend.home.login']);
+        // Route::get('register', ['uses' => 'HomeController@register', 'as' => 'frontend.home.register']);
+    });
     Route::get('laptop', ['uses' => 'HomeController@filter', 'as' => 'frontend.home.filterProduct']);
     Route::get('products/{slug}', ['uses' => 'HomeController@productDetails', 'as' => 'frontend.home.productDetails']);
     Route::get('{slug}', ['uses' => 'HomeController@showProductbyCategory', 'as' => 'frontend.home.showProductbyCategory']);

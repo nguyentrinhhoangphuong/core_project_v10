@@ -32,6 +32,23 @@ class Template
         return number_format($num, 0, ',', '.') . 'đ';
     }
 
+    public static function dateFormat($date)
+    {
+        return date("d-m-Y", strtotime($date));
+    }
+
+    public static function getOrderStatus($status)
+    {
+        $statuses = config('order_status.status');
+        return $statuses[$status] ?? 'Không xác định';
+    }
+
+    public static function getBadgeStatus($status)
+    {
+        $statuses = config('order_status.badge');
+        return $statuses[$status] ?? 'Không xác định';
+    }
+
     public static function flattenArray($array)
     {
         $result = array();

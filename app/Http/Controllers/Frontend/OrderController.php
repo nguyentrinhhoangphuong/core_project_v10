@@ -31,6 +31,7 @@ class OrderController extends Controller
         $order = Order::create([
             'code' => $this->generateOrderCode(),
             'status' => 'pending',
+            'total_amount' => $request->get('total_amount'),
             'gender' => $request->get('gender'),
             'name' => $request['name'],
             'phone' => $request['phone'],

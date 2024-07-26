@@ -63,7 +63,7 @@
                         <div class="mb-3">
                             <textarea class="form-control" rows="3" name="options" placeholder="Lưu ý yêu cầu khác (Không bắt buộc)"></textarea>
                         </div>
-
+                        <input type="hidden" name="total_amount" value="{{ $cart->total }}">
                         <button type="submit" class="btn w-100" style="color: white; background-color: brown">
                             ĐẶT HÀNG NGAY
                         </button>
@@ -74,7 +74,8 @@
                         <div class="table-responsive-xl">
                             <div class="text-center pb-4">
                                 <h4>Tổng tiền</h4>
-                                <h3 class="price theme-color"><strong>{{ Template::numberFormatVND($cart->total) }}</strong>
+                                <h3 class="price theme-color">
+                                    <strong>{{ Template::numberFormatVND($cart->total) }}</strong>
                                 </h3>
                             </div>
                             <table class="table">
