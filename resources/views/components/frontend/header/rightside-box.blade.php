@@ -1,3 +1,9 @@
+@inject('cartService', 'App\Services\Cart\CartService')
+@php
+    use App\Helpers\Template;
+    $cart = $cartService->getFromCookie();
+@endphp
+
 <div class="rightside-box">
     <div class="search-full">
         <div class="input-group">
@@ -11,6 +17,7 @@
         </div>
     </div>
     <ul class="right-side-menu">
+        {{-- ========================== WISH LIST ================================= --}}
         <li class="right-side">
             <div class="delivery-login-box">
                 <div class="delivery-icon">
@@ -21,15 +28,104 @@
             </div>
         </li>
         <li class="right-side">
+            <a href="{{ route('frontend.home.wishList') }}" class="btn p-0 position-relative header-wishlist">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-heart">
+                    <path
+                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                    </path>
+                </svg>
+                @inject('wishListService', 'App\Services\WishList\WishListService')
+                <span class="position-absolute top-0 start-100 translate-middle badge" id="wishlist-count">
+                    {{ $wishListService->countProducts() }}
+                </span>
+            </a>
+        </li>
+        {{-- ==================== CART ======================== --}}
+        <li class="right-side">
             <div class="onhover-dropdown header-badge">
                 <a href="{{ route('frontend.cart.index') }}" class="btn p-0 position-relative header-wishlist">
                     <i data-feather="shopping-cart"></i>
-                    @inject('cartService', 'App\Services\Cart\CartService')
-                    <span class="position-absolute top-0 start-100 translate-middle badge">
+                    <span class="position-absolute top-0 start-100 translate-middle badge" id="cart-count">
                         {{ $cartService->countProducts() }}
                     </span>
                 </a>
+                <!-- Notification Popup -->
+                <div id="cartNotification" class="notification-popup"
+                    style="display: none; position: fixed; bottom: 10px; right: 10px; background-color: #333; color: #fff; padding: 10px; border-radius: 5px; z-index: 1000;">
+                    <div class="d-flex align-items-center">
+                        <div class="me-2">
+                            <img src="" id="notificationImage" class="img-fluid"
+                                style="width: 60px; height: 60px; object-fit: cover;" alt="">
+                        </div>
+                        <div>
+                            <h6 class="mb-0">Thêm vào giỏ hàng:</h6>
+                            <span id="notificationProductName"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="wishListNotification" class="notification-popup"
+                    style="display: none; position: fixed; bottom: 10px; right: 10px; background-color: #333; color: #fff; padding: 10px; border-radius: 5px; z-index: 1000;">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <span id="message"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="onhover-div">
+                    @if ($cartService->countProducts())
+                        <ul class="cart-list">
+                            @if ($cart && $cart->products->count())
+                                @foreach ($cart->products as $item)
+                                    <li class="product-box-contain">
+                                        <div class="drop-cart">
+                                            <a href="{{ route('frontend.home.productDetails', ['slug' => Str::slug($item->name) . '-' . $item->id]) }}"
+                                                class="drop-image">
+                                                <img src="{{ $item->media[0]->getUrl() }}" class="blur-up lazyload"
+                                                    alt="">
+                                            </a>
+
+                                            <div class="drop-contain">
+                                                <a
+                                                    href="{{ route('frontend.home.productDetails', ['slug' => Str::slug($item->name) . '-' . $item->id]) }}">
+                                                    <h5>{{ $item->name }}</h5>
+                                                </a>
+                                                <h6>
+                                                    <span>{{ $item->pivot->quantity }}x
+                                                    </span>{{ Template::numberFormatVND($item->price) }}
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            @endif
+
+                        </ul>
+                        <div class="price-box">
+                            <h5>Tổng cộng :</h5>
+                            <h4 class="theme-color fw-bold">
+                                {{ Template::numberFormatVND($cart->total) }}
+                            </h4>
+                        </div>
+
+                        <div class="button-group">
+                            <a href="{{ route('frontend.cart.index') }}" class="btn btn-sm cart-button w-100">
+                                Xem giỏ hàng
+                            </a>
+                        </div>
+                    @else
+                        <div class="button-group">
+                            <a href="#" class="btn btn-sm cart-button w-100">
+                                Giỏ hàng trống
+                            </a>
+                        </div>
+                    @endif
+                </div>
             </div>
+
         </li>
         {{-- <li class="right-side onhover-dropdown">
             <div class="delivery-login-box">

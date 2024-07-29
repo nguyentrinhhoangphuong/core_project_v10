@@ -195,6 +195,7 @@ Route::group(['prefix' => '', 'as' => '', 'namespace' => 'App\\Http\\Controllers
     Route::post('order/store', ['uses' => 'OrderController@store', 'as' => 'frontend.order.store']);
     // ======================= CART ==============================
     Route::get('cart', ['uses' => 'CartController@index', 'as' => 'frontend.cart.index']);
+    Route::post('cartDropdown', ['uses' => 'ProductCartController@cartDropdown', 'as' => 'frontend.productcart.cartDropdown']);
     Route::post('addtocart', ['uses' => 'ProductCartController@store', 'as' => 'frontend.productcart.store']);
     Route::post('cart/destroy', ['uses' => 'ProductCartController@destroy', 'as' => 'frontend.productcart.destroy']);
     Route::post('update-quantity', ['uses' => 'ProductCartController@updateQuantity', 'as' => 'frontend.productcart.updateQuantity']);
@@ -203,6 +204,10 @@ Route::group(['prefix' => '', 'as' => '', 'namespace' => 'App\\Http\\Controllers
         Route::get('login', ['uses' => 'HomeController@login', 'as' => 'frontend.home.login']);
         // Route::get('register', ['uses' => 'HomeController@register', 'as' => 'frontend.home.register']);
     });
+    Route::get('wishList', ['uses' => 'HomeController@wishList', 'as' => 'frontend.home.wishList']);
+    Route::post('addToWishList', ['uses' => 'HomeController@addToWishList', 'as' => 'frontend.home.addToWishList']);
+    Route::delete('removeFromWishList/{productId}', ['uses' => 'HomeController@removeFromWishList', 'as' => 'frontend.home.removeFromWishList']);
+
     Route::get('laptop', ['uses' => 'HomeController@filter', 'as' => 'frontend.home.filterProduct']);
     Route::get('laptop/search', ['uses' => 'HomeController@search', 'as' => 'frontend.home.search']);
     Route::get('products/{slug}', ['uses' => 'HomeController@productDetails', 'as' => 'frontend.home.productDetails']);

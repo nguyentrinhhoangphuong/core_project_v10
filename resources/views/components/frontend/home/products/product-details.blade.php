@@ -1,7 +1,7 @@
 @php
     use App\Helpers\Template;
 @endphp
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <div class="col-xl-6 wow fadeInUp">
     <div class="product-left-box">
         <div class="row g-2">
@@ -48,14 +48,33 @@
         <div class="pickup-detail">
             <h4 class="text-content">{{ $product->description }}</h4>
         </div>
-        <form action=""></form>
         <div class="note-box product-package">
-            <form action="{{ route('frontend.productcart.store') }}" method="POST" class="w-100">
+            <form id="addToCartForm" action="{{ route('frontend.productcart.store') }}" method="POST" class="w-100">
                 @csrf
                 <input type="hidden" name="productid" value="{{ $product->id }}">
-                <button type="submit" class="btn btn-md bg-dark cart-button text-white w-100" id="buyNowButton">
+                <button type="submit" class="btn btn-md bg-dark cart-button text-white w-100">
                     Mua Ngay
                 </button>
+                <div class="buy-box">
+                    <a href="#" class="add-to-wishlist" data-product-id="{{ $product->id }}">
+                        <input type="hidden" name="productid" value="{{ $product->id }}">
+                        @inject('wishListService', 'App\Services\WishList\WishListService')
+                        @php
+                            $isAddToWithList = $wishListService->isAddToWithList($product->id);
+                        @endphp
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="{{ $isAddToWithList == true ? 'full' : 'none' }}" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-heart">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                        <span
+                            id="text-heart">{{ $isAddToWithList == true ? 'Đã thêm vào danh sách yêu thích' : 'Thêm vào danh sách yêu thích' }}</span>
+                    </a>
+                </div>
+
             </form>
         </div>
 
@@ -125,24 +144,130 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const buyNowButton = document.getElementById('buyNowButton');
-
-        function resetButton() {
-            buyNowButton.disabled = false;
-            buyNowButton.innerText = 'Mua Ngay';
+    $('.add-to-wishlist').on('click', function(event) {
+        event.preventDefault();
+        var productId = $(this).data('product-id');
+        var $svg = $(this).find('svg');
+        var textHeart = $('#text-heart');
+        var isInWishlist = $svg.attr('fill') === 'full';
+        var url, method;
+        if (isInWishlist) {
+            url = '{{ route('frontend.home.removeFromWishList', ':productId') }}'.replace(':productId',
+                productId);
+            method = 'DELETE';
+        } else {
+            url = '{{ route('frontend.home.addToWishList') }}';
+            method = 'POST';
         }
-        // Reset nút khi trang được hiển thị lại từ cache
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted) {
-                resetButton();
+        $.ajax({
+            url: url,
+            method: method,
+            data: {
+                _token: '{{ csrf_token() }}',
+                product_id: productId
+            },
+            success: function(res) {
+                if (res.success) {
+                    showNotificationForWishList(res.message)
+                    $('#wishlist-count').text(res.wishlistCount);
+                    if (isInWishlist) {
+                        // Xóa khỏi danh sách yêu thích
+                        $svg.attr('fill', 'none');
+                        textHeart.text('Thêm vào danh sách yêu thích');
+                    } else {
+                        // Thêm vào danh sách yêu thích
+                        $svg.attr('fill', 'full');
+                        textHeart.text('Đã thêm vào danh sách yêu thích');
+                    }
+                } else {
+                    alert('Có lỗi xảy ra.');
+                }
             }
         });
-        buyNowButton.addEventListener('click', function(event) {
-            setTimeout(function() {
-                buyNowButton.disabled = true;
-                buyNowButton.innerText = 'Đang xử lý...';
-            }, 50);
+    });
+
+    $('#addToCartForm').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: $(this).serialize(),
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(res) {
+                if (res.success) {
+                    $('#cart-count').text(res.countProducts == 0 ? res.countProducts + 1 : res
+                        .countProducts);
+                    var lastProduct = res.cartData.products[res.cartData.products.length - 1];
+                    updateCartHover(res.cartData);
+                    showNotification(lastProduct.name, lastProduct.image);
+                } else {
+                    alert('Có lỗi xảy ra. Vui lòng thử lại.');
+                }
+            }
         });
     });
+
+    function showNotification(productName, productImageUrl) {
+        $('#notificationProductName').text(productName);
+        $('#notificationImage').attr('src', productImageUrl);
+        $('#cartNotification').fadeIn().delay(3000).fadeOut(); // Show for 3 seconds
+    }
+
+    function showNotificationForWishList(message) {
+        $('#message').text(message);
+        $('#wishListNotification').fadeIn().delay(3000).fadeOut(); // Show for 3 seconds
+    }
+
+    function updateCartHover(cartData) {
+        if (cartData.products.length > 0) {
+            var cartHtml = '<ul class="cart-list">';
+            cartData.products.forEach(function(item) {
+                var productSlug = item.name.toLowerCase().replace(/ /g, '-') + '-' + item.id;
+                var productDetailUrl = '/products/' + productSlug;
+
+                cartHtml += `
+                <li class="product-box-contain">
+                    <div class="drop-cart">
+                        <a href="${productDetailUrl}" class="drop-image">
+                            <img src="${item.image}" class="blur-up lazyload" alt="">
+                        </a>
+                        <div class="drop-contain">
+                            <a href="${productDetailUrl}">
+                                <h5>${item.name}</h5>
+                            </a>
+                            <h6>
+                                <span>${item.quantity}x </span>${item.price_formatted}
+                            </h6>
+                        </div>
+                    </div>
+                </li>
+            `;
+            });
+            cartHtml += '</ul>';
+            cartHtml += `
+            <div class="price-box">
+                <h5>Tổng cộng :</h5>
+                <h4 class="theme-color fw-bold">${cartData.total_formatted}</h4>
+            </div>
+            <div class="button-group">
+                <a href="${cartData.cart_url}" class="btn btn-sm cart-button w-100">
+                    Xem giỏ hàng
+                </a>
+            </div>
+        `;
+            $('.onhover-div').html(cartHtml);
+
+        } else {
+            $('.onhover-div').html(`
+            <div class="button-group">
+                <a href="#" class="btn btn-sm cart-button w-100">
+                    Giỏ hàng trống
+                </a>
+            </div>
+        `);
+        }
+    }
 </script>

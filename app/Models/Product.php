@@ -381,6 +381,13 @@ class Product extends MainModel
                     ->orWhereRaw("CONVERT(content USING utf8) LIKE ?", ["%{$searchTerm}%"])
                     ->orWhereRaw("description LIKE ?", ["%{$searchTerm}%"]);
             });
+
+            // Tìm kiếm trong các thuộc tính
+            $query->orWhereHas('productAttributes', function ($q) use ($searchTerm) {
+                $q->WhereHas('attributeValue', function ($q) use ($searchTerm) {
+                    $q->where('value', 'like', '%' . $searchTerm . '%');
+                });
+            });
         }
         return $query->paginate(10);
     }

@@ -23,7 +23,8 @@
                                                 <tr class="product-box-contain">
                                                     <td class="product-detail">
                                                         <div class="product border-0">
-                                                            <a href="product-left-thumbnail.html" class="product-image">
+                                                            <a href="{{ route('frontend.home.productDetails', ['slug' => Str::slug($item->name) . '-' . $item->id]) }}"
+                                                                class="product-image">
                                                                 <img src="{{ $item->media[0]->getUrl() }}"
                                                                     class="img-fluid blur-up lazyload"
                                                                     alt="{{ $item->name }}">
@@ -32,25 +33,13 @@
                                                                 <ul>
                                                                     <li class="name">
                                                                         <a
-                                                                            href="product-left-thumbnail.html">{{ $item->name }}</a>
+                                                                            href="{{ route('frontend.home.productDetails', ['slug' => Str::slug($item->name) . '-' . $item->id]) }}">{{ $item->name }}</a>
                                                                     </li>
                                                                     <li class="text-content" style="cursor: pointer">
                                                                         <button type="button"
                                                                             class="remove close_button btn btn-light btn-sm"
                                                                             data-product-id="{{ $item->pivot->product_id }}">Xóa</button>
                                                                     </li>
-                                                                    {{-- <li class="text-content" style="cursor: pointer">
-                                                                        <form
-                                                                            action="{{ route('frontend.productcart.destroy') }}"
-                                                                            method="POST">
-                                                                            @csrf
-                                                                            <input type="hidden" name="product_id"
-                                                                                value="{{ $item->pivot->product_id }}">
-                                                                            <button type="submit"
-                                                                                class="remove close_button btn btn-light btn-sm">Xóa</button>
-                                                                        </form>
-                                                                    </li> --}}
-
                                                                 </ul>
                                                             </div>
                                                         </div>

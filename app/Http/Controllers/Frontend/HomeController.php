@@ -5,14 +5,17 @@ namespace App\Http\Controllers\Frontend;
 use App\Models\CategoryProducts;
 use App\Models\Product;
 use App\Models\ProductAttributes;
+use App\Services\WishList\WishListService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 
 class HomeController extends FrontendController
 {
     protected CategoryProducts $categoryProducts;
     protected Product $product;
+    protected $wishListService;
 
-    public function __construct(CategoryProducts $categoryProducts, Product $product)
+    public function __construct(CategoryProducts $categoryProducts, Product $product, WishListService $wishListService)
     {
         $this->controllerName = 'home';
         $this->numberOfPage = 12;
@@ -21,6 +24,7 @@ class HomeController extends FrontendController
         view()->share('controllerName', $this->controllerName);
         $this->categoryProducts = $categoryProducts;
         $this->product = $product;
+        $this->wishListService = $wishListService;
     }
 
     public function index()
@@ -107,5 +111,32 @@ class HomeController extends FrontendController
         $products = $this->product->search($request);
         $breadcrumb = "Tìm kiếm: " . $request->search;
         return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb'));
+    }
+
+    public function wishList(Request $request)
+    {
+        $wishListID = json_decode(Cookie::get('wishlist'));
+        $products = $this->wishListService->getProductWithList($wishListID);
+        $breadcrumb = "Danh sách yêu thích";
+        return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb'));
+    }
+
+    public function addToWishList(Request $request)
+    {
+        $productId = $request->product_id;
+        $this->wishListService->addToWithList($productId);
+        $wishlistCount = $this->wishListService->countProducts() + 1;
+        return response()->json(['success' => true, 'wishlistCount' => $wishlistCount, 'message' => 'Đã lưu sản phẩm vào danh sách yêu thích'], 201);
+    }
+
+    public function removeFromWishList($productId)
+    {
+        $this->wishListService->removeFromWishList($productId);
+        $wishlistCount = $this->wishListService->countProducts() - 1;
+        return response()->json([
+            'success' => true,
+            'message' => 'Đã xóa sản phẩm khỏi danh sách yêu thích',
+            'wishlistCount' => $wishlistCount
+        ]);
     }
 }

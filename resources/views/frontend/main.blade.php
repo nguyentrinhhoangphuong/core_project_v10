@@ -27,7 +27,7 @@
         <!-- Footer Section End -->
 
         <!-- Quick View Modal Box Start -->
-        @include('frontend.components.home.quick-view-modal')
+        {{-- @include('frontend.components.home.quick-view-modal') --}}
         <!-- Quick View Modal Box End -->
 
         <!-- Location Modal Start -->

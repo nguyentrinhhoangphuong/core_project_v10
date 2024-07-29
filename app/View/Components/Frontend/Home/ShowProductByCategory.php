@@ -17,11 +17,13 @@ class ShowProductByCategory extends Component
      */
     public function __construct($products)
     {
-        $this->products = $products;
-        $this->products = $products->map(function ($product) {
-            $product->setAttribute('processed_attributes', $product->processAttributes());
-            return $product;
-        });
+        if ($products) {
+            $this->products = $products;
+            $this->products = $products->map(function ($product) {
+                $product->setAttribute('processed_attributes', $product->processAttributes());
+                return $product;
+            });
+        }
     }
 
     // protected function processProductAttributes()

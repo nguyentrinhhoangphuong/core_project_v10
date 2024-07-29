@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Helpers\Template;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Product;
@@ -32,8 +33,33 @@ class ProductCartController extends Controller
 
         $cart->products()->syncWithoutDetaching([$productid => ['quantity' => $quantity + 1]]);
         $cookie = $this->cartService->makeCookie($cart);
-        return redirect()->route('frontend.cart.index')->withCookie($cookie);
+        $countProducts = $this->cartService->countProducts();
+
+        // Lấy thông tin chi tiết về giỏ hàng
+        $cartData = [
+            'products' => $cart->products->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'price_formatted' => Template::numberFormatVND($product->price),
+                    'quantity' => $product->pivot->quantity,
+                    'image' => $product->media[0]->getUrl(),
+                ];
+            }),
+            'total' => $cart->total,
+            'total_formatted' => Template::numberFormatVND($cart->total),
+            'cart_url' => route('frontend.cart.index'),
+        ];
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sản phẩm đã được thêm vào giỏ hàng',
+            'countProducts' => $countProducts,
+            'cartData' => $cartData
+        ])->withCookie($cookie);
     }
+
 
     public function updateQuantity(Request $request)
     {
@@ -67,10 +93,10 @@ class ProductCartController extends Controller
         // Kiểm tra giỏ hàng và xóa sản phẩm nếu tồn tại
         if ($cart) {
             $cart->products()->detach($request->product_id);
-            // Tạo lại cookie với giỏ hàng hiện tại
-            $cart->delete();
+            if ($cart->products->isEmpty()) {
+                $cart->delete();
+            }
             $cookie = $this->cartService->makeCookie($cart);
-            // Trả về redirect với cookie
             return redirect()->back()->withCookie($cookie);
         }
         return redirect()->back()->with('error', 'Giỏ hàng không tồn tại');
