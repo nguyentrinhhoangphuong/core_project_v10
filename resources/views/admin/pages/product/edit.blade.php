@@ -18,6 +18,7 @@
     @php
         $id = $item['id'];
         $name = $item['name'];
+        $sku = $item['sku'];
         $price = $item['price'];
         $original_price = $item['original_price'];
         $slug = $item['slug'];
@@ -30,6 +31,7 @@
         $seo_description = $item['seo_description'];
         $content = $item['content'];
         $brand_id = $item['brand_id'];
+        $series_id = $item['series_id'];
         $category_product_id = $item['category_product_id'];
     @endphp
     <form action="{{ route('admin.' . $routeName . '.update', ['item' => $id]) }}" method="post" enctype="multipart/form-data"
@@ -76,10 +78,10 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="mb-3">
                                         <label class="form-label">{{ __('cruds.admin.product.fields.brand') }}</label>
-                                        <select class="form-select brand" name="brand_id">
+                                        <select class="form-select brand" name="brand_id" id="brand_id">
                                             <option value="" selected>Tùy chọn</option>
                                             @foreach ($brands as $key => $item)
                                                 <option value="{{ $item->id }}"
@@ -90,7 +92,22 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Dòng sản phẩm</label>
+                                        <select class="form-select brand" name="series_id" id="series_id">
+                                            <option value="" selected>Tùy chọn</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">SKU</label>
+                                        <input type="text" class="form-control" name="sku"
+                                            value="{{ old('sku', $sku) }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
                                     <div class="mb-3">
                                         <label
                                             class="form-label">{{ __('cruds.admin.product.fields.description') }}</label>
@@ -195,6 +212,37 @@
         $(document).ready(function() {
             $('.category_product').select2();
             $('.brand').select2();
+
+            var initialBrandId = $('#brand_id').val();
+            if (initialBrandId) {
+                loadSeries(initialBrandId, {{ $series_id }});
+            }
+
+            $('#brand_id').change(function() {
+                var brandId = $(this).val();
+                $('#series_id').empty();
+                $('#series_id').append('<option value="" selected>Tùy chọn</option>');
+                if (brandId) {
+                    loadSeries(brandId, null);
+                }
+            });
+
+            function loadSeries(brandId, selectedSeriesId) {
+                var url = "{{ route('admin.get.series.by.brandid', ['brand_id' => ':brandId']) }}";
+                url = url.replace(':brandId', brandId);
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        $.each(data, function(key, value) {
+                            var selected = selectedSeriesId == value.id ? 'selected' : '';
+                            $('#series_id').append('<option value="' + value.id + '" ' +
+                                selected + '>' + value.name + '</option>');
+                        });
+                    }
+                });
+            }
         });
     </script>
 @endsection

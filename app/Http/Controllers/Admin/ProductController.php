@@ -69,7 +69,8 @@ class ProductController extends AdminController
 
     public function edit($item)
     {
-        $item = $this->getSingleItem($item);
+        $item = MainMoDel::findOrFail($item);
+        $series = $item->brandProduct->series;
         $categoryProduct = $this->categoryProduct::withDepth()->defaultOrder()->get()->toFlatTree();
         $brands = $this->brand::all();
         return view($this->pathViewController . 'edit', [
@@ -77,6 +78,7 @@ class ProductController extends AdminController
             'item' => $item,
             'categoryProduct' => $categoryProduct,
             'brands' => $brands,
+            'series' => $series,
         ]);
     }
 

@@ -77,4 +77,8 @@
     .dz-progress {
         display: none;
     }
+
+    #cke_notifications_area_editor1 {
+        display: none !important;
+    }
 </style>

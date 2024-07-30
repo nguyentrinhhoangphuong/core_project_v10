@@ -443,7 +443,6 @@ if (document.getElementById("document-dropzone")) {
                 thisDropzone = this;
                 let id = getId();
                 $.get(`/admin/products/${id}/files`, function (data) {
-                    console.log(data);
                     data.sort(function (a, b) {
                         return a.order - b.order;
                     });

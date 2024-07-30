@@ -47,7 +47,7 @@ return [
 
     'folder_categories'        => [
         'file'  => [
-            'folder_name'  => 'files',
+            'folder_name'  => 'photos',
             'startup_view' => 'list',
             'max_size'     => 50000, // size in KB
             'thumb' => true,

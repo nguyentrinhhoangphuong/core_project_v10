@@ -4,7 +4,7 @@
             <th class="">#</th>
             <th class="">Hình</th>
             <th class="">Tên sản phẩm</th>
-            <th class="">Danh mục</th>
+            <th class="">Thương hiệu</th>
             <th class="">Giá</th>
             <th class="">Trạng thái</th>
             <th class="">Top</th>

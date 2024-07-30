@@ -85,6 +85,9 @@ Route::prefix('admin')
             // ===================================== BRAND ==================================
             Route::post('brand/update-field', ['uses' => 'BrandController@updateField', 'as' => 'brand.update.field']);
             Route::resource('brand', 'BrandController', ['parameters' => ['brand' => 'item']]);
+            // ===================================== SERIES ==================================
+            Route::get('series/brand/{brand_id}', ['uses' => 'SeriController@getSeriesByBrainId', 'as' => 'get.series.by.brandid']);
+            Route::resource('series', 'SeriController', ['parameters' => ['series' => 'item']]);
             // ===================================== ORDER ==================================
             Route::get('order/{id}', ['uses' => 'OrderController@orderDetail', 'as' => 'order.detail']);
             Route::post('order/status-change', ['uses' => 'OrderController@orderChangeStatus', 'as' => 'order.status.change']);
