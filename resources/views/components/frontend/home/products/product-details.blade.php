@@ -1,6 +1,64 @@
 @php
     use App\Helpers\Template;
 @endphp
+<style>
+    .product-variants {
+        margin-bottom: 20px;
+    }
+
+    .variant-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+        height: 100%;
+        background-color: #fff;
+    }
+
+    .variant-card.active {
+        border-color: #28a745;
+        background-color: #e8f5e9;
+    }
+
+    .variant-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .variant-name {
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin-bottom: 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .variant-price {
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    .variant-card:hover {
+        border-color: #28a745;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 767px) {
+        .row-cols-md-3>* {
+            flex: 0 0 auto;
+            width: 50%;
+        }
+    }
+
+    @media (max-width: 575px) {
+        .row-cols-md-3>* {
+            width: 100%;
+        }
+    }
+</style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <div class="col-xl-6 wow fadeInUp">
     <div class="product-left-box">
@@ -52,6 +110,19 @@
             <form id="addToCartForm" action="{{ route('frontend.productcart.store') }}" method="POST" class="w-100">
                 @csrf
                 <input type="hidden" name="productid" value="{{ $product->id }}">
+                <div class="product-variants mt-4">
+                    <div class="row row-cols-1 row-cols-md-3 g-3">
+                        @foreach ($seriesProducts as $index => $item)
+                            <div class="variant-card {{ $item['productId'] === $product->id ? 'active' : '' }}">
+                                <a href="{{ route('frontend.home.productDetails', ['slug' => Str::slug($item['productName']) . '-' . $item['productId']]) }}"
+                                    class="variant-link">
+                                    <div class="variant-name">{{ $item['attributeString'] }}</div>
+                                    <div class="variant-price">{{ Template::numberFormatVND($item['price']) }}</div>
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
                 <button type="submit" class="btn btn-md bg-dark cart-button text-white w-100">
                     Mua Ngay
                 </button>

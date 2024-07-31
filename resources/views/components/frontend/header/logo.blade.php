@@ -3,7 +3,7 @@
     foreach ($items as $item) {
         if ($item['key_value'] == 'general-config') {
             $url = $item->media[0]->getUrl();
-            $xhtml .= sprintf('<img src="%s" class="img-fluid blur-up lazyload" alt="" style="width: 5rem;">', $url);
+            $xhtml .= sprintf('<img src="%s" class="img-fluid blur-up lazyload" alt="" style="width: 3rem;">', $url);
         }
     }
 @endphp

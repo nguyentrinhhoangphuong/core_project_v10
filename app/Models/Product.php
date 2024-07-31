@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Builder;
-
+use Illuminate\Support\Facades\Request;
 
 class Product extends MainModel
 {
@@ -57,6 +57,11 @@ class Product extends MainModel
     public function brandProduct()
     {
         return $this->belongsTo(Brand::class, 'brand_id');
+    }
+
+    public function series()
+    {
+        return $this->belongsTo(Series::class, 'series_id');
     }
 
     public function getTotalAttribute()
@@ -357,7 +362,7 @@ class Product extends MainModel
 
     public function scopeGetProductDetailsById(Builder $query, $id)
     {
-        $product = $query->with(['productAttributes.attribute', 'productAttributes.attributeValue'])
+        $product = $query->with(['productAttributes.attribute', 'productAttributes.attributeValue', 'series'])
             ->where('id', $id)
             ->firstOrFail();
         return $product;
@@ -370,6 +375,11 @@ class Product extends MainModel
             ->paginate($num);
     }
 
+    public function scopeGetProductsBySeries(Builder $query, $seriedId)
+    {
+        $product = $query->with(['productAttributes.attribute', 'productAttributes.attributeValue', 'series'])->where('series_id', $seriedId)->get();
+        return $product;
+    }
 
     public function search($request)
     {

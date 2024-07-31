@@ -10,12 +10,14 @@ use Illuminate\View\Component;
 class ProductDetails extends Component
 {
     protected $product;
+    public $seriesProducts;
     /**
      * Create a new component instance.
      */
-    public function __construct(Product $product)
+    public function __construct(Product $product, $seriesProducts = [])
     {
         $this->product = $product;
+        $this->seriesProducts = $seriesProducts;
     }
 
     /**
@@ -24,7 +26,8 @@ class ProductDetails extends Component
     public function render(): View|Closure|string
     {
         return view('components.frontend.home.products.product-details', [
-            'product' => $this->product
+            'product' => $this->product,
+            'seriesProducts' => $this->seriesProducts
         ]);
     }
 }

@@ -97,12 +97,34 @@ class HomeController extends FrontendController
                 $attributes[$attribute->attribute->name] = $attribute->attributeValue->value;
             }
         }
+
+        $productsInSeries = $this->product->getProductsBySeries($product->series_id);
+        $desiredKeys = ['CPU', 'Ram', 'SSD', 'Kích thước màn hình'];
+
+        foreach ($productsInSeries as $productInSeries) {
+            $attributes = [];
+            foreach ($productInSeries->productAttributes as $attribute) {
+                if ($attribute->attribute && $attribute->attributeValue) {
+                    $attributes[$attribute->attribute->name] = $attribute->attributeValue->value;
+                }
+            }
+            $filteredAttributes = array_intersect_key($attributes, array_flip($desiredKeys));
+            $attributeString = implode(' + ', $filteredAttributes);
+            $seriesProducts[] = [
+                'productId' => $productInSeries->id,
+                'productName' => $productInSeries->name,
+                'attributeString' => $attributeString,
+                'price' => $productInSeries->price
+            ];
+        }
+
         return view('frontend.pages.home.productDetails', [
             'product' => $product,
             'attributes' => $attributes,
             'trendingProducts' => $trendingProducts,
             'relatedProducts' => $relatedProducts,
             'categoryBreadcrumb' => array_slice($categoryBreadcrumb->toArray(), -2),
+            'seriesProducts' => $seriesProducts
         ]);
     }
 
@@ -138,5 +160,9 @@ class HomeController extends FrontendController
             'message' => 'Đã xóa sản phẩm khỏi danh sách yêu thích',
             'wishlistCount' => $wishlistCount
         ]);
+    }
+
+    public function getProductBy()
+    {
     }
 }

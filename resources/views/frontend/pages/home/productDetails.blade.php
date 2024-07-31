@@ -16,7 +16,7 @@
             <div class="row">
                 <div class="col-xxl-8 col-xl-8 col-lg-7 wow fadeInUp">
                     <div class="row g-4">
-                        <x-frontend.home.products.product-details :product="$product" />
+                        <x-frontend.home.products.product-details :product="$product" :seriesProducts="$seriesProducts" />
                     </div>
                 </div>
                 <div class="col-xxl-4 col-xl-4 col-lg-5 d-none d-lg-block wow fadeInUp">
