@@ -240,7 +240,7 @@
             success: function(res) {
                 if (res.success) {
                     showNotificationForWishList(res.message)
-                    $('#wishlist-count').text(res.wishlistCount);
+                    $('.wishlist-count').text(res.wishlistCount);
                     if (isInWishlist) {
                         // Xóa khỏi danh sách yêu thích
                         $svg.attr('fill', 'none');
@@ -269,7 +269,8 @@
             },
             success: function(res) {
                 if (res.success) {
-                    $('#cart-count').text(res.countProducts == 0 ? res.countProducts + 1 : res
+                    $('body').find('.cart-count').text(res.countProducts == 0 ? res.countProducts +
+                        1 : res
                         .countProducts);
                     var lastProduct = res.cartData.products[res.cartData.products.length - 1];
                     updateCartHover(res.cartData);

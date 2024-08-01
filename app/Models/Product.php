@@ -237,36 +237,6 @@ class Product extends MainModel
         }
     }
 
-    public static function getFilterProduct($items,  $options = null)
-    {
-        $brandId = isset($items['brand']) ? $items['brand'] : null;
-        unset($items['brand']);
-
-        $attributeValueIds = array_filter($items, function ($value) {
-            return ($value !== null && $value !== '');
-        });
-        $ids = array_values($attributeValueIds);
-        $ids = Template::flattenArray($ids);
-
-        $query = self::with(['productAttributes.attribute', 'productAttributes.attributeValue', 'categoryProduct']);
-        $query->select('id', 'name', 'status', 'is_top', 'category_product_id', 'price', 'original_price', 'is_featured');
-
-        // Thêm điều kiện lọc theo brand_id nếu brandId không rỗng
-        if (!is_null($brandId)) {
-            $query->whereIn('brand_id', $brandId);
-        }
-        // Thêm điều kiện lọc theo attribute_value_id nếu attributeValueIds không rỗng
-        if (!empty($ids)) {
-            $query->whereHas('productAttributes', function ($q) use ($ids) {
-                $q->whereIn('attribute_value_id', $ids);
-            });
-        }
-
-        if (isset($options['task']) && $options['task'] == 'collection') {
-            return new Collection($query->get());
-        }
-    }
-
     public function scopeWithRelations(Builder $query)
     {
         return $query->with(['productAttributes.attribute', 'productAttributes.attributeValue', 'categoryProduct', 'brandProduct']);
@@ -379,6 +349,36 @@ class Product extends MainModel
     {
         $product = $query->with(['productAttributes.attribute', 'productAttributes.attributeValue', 'series'])->where('series_id', $seriedId)->get();
         return $product;
+    }
+
+    public static function getFilterProduct($items,  $options = null)
+    {
+        $brandId = isset($items['brand']) ? $items['brand'] : null;
+        unset($items['brand']);
+
+        $attributeValueIds = array_filter($items, function ($value) {
+            return ($value !== null && $value !== '');
+        });
+        $ids = array_values($attributeValueIds);
+        $ids = Template::flattenArray($ids);
+
+        $query = self::with(['productAttributes.attribute', 'productAttributes.attributeValue', 'categoryProduct']);
+        $query->select('id', 'name', 'status', 'is_top', 'category_product_id', 'price', 'original_price', 'is_featured');
+
+        // Thêm điều kiện lọc theo brand_id nếu brandId không rỗng
+        if (!is_null($brandId)) {
+            $query->whereIn('brand_id', $brandId);
+        }
+        // Thêm điều kiện lọc theo attribute_value_id nếu attributeValueIds không rỗng
+        if (!empty($ids)) {
+            $query->whereHas('productAttributes', function ($q) use ($ids) {
+                $q->whereIn('attribute_value_id', $ids);
+            });
+        }
+
+        if (isset($options['task']) && $options['task'] == 'collection') {
+            return new Collection($query->get());
+        }
     }
 
     public function search($request)

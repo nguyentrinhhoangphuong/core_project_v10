@@ -29,15 +29,9 @@
         </li>
         <li class="right-side">
             <a href="{{ route('frontend.home.wishList') }}" class="btn p-0 position-relative header-wishlist">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="feather feather-heart">
-                    <path
-                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                    </path>
-                </svg>
+                <i data-feather="heart"></i>
                 @inject('wishListService', 'App\Services\WishList\WishListService')
-                <span class="position-absolute top-0 start-100 translate-middle badge" id="wishlist-count">
+                <span class="position-absolute top-0 start-100 translate-middle badge wishlist-count">
                     {{ $wishListService->countProducts() }}
                 </span>
             </a>
@@ -47,7 +41,7 @@
             <div class="onhover-dropdown header-badge">
                 <a href="{{ route('frontend.cart.index') }}" class="btn p-0 position-relative header-wishlist">
                     <i data-feather="shopping-cart"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge" id="cart-count">
+                    <span class="position-absolute top-0 start-100 translate-middle badge cart-count">
                         {{ $cartService->countProducts() }}
                     </span>
                 </a>
@@ -125,7 +119,6 @@
                     @endif
                 </div>
             </div>
-
         </li>
         {{-- <li class="right-side onhover-dropdown">
             <div class="delivery-login-box">
