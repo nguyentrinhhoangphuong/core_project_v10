@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\CategoryProducts as MainMoDel;
-use App\Http\Requests\CategoryProductsRequest as MainRequest;
+// use App\Http\Requests\CategoryProductsRequest as MainRequest;
 use Illuminate\Http\Request;
 
 class CategoryProductsController extends AdminController
@@ -34,7 +34,7 @@ class CategoryProductsController extends AdminController
         ]);
     }
 
-    public function store(MainRequest $request)
+    public function store(Request $request)
     {
         $this->save($request->all(), ['task' => 'add-item']);
         return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' created successfully');
@@ -64,7 +64,7 @@ class CategoryProductsController extends AdminController
         ]);
     }
 
-    public function update(MainRequest $request, MainMoDel $item)
+    public function update(Request $request, MainMoDel $item)
     {
         $this->updateItem($request, $item);
         return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' updated successfully');

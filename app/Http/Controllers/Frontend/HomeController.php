@@ -100,7 +100,6 @@ class HomeController extends FrontendController
 
         $productsInSeries = $this->product->getProductsBySeries($product->series_id);
         $desiredKeys = ['CPU', 'Ram', 'SSD', 'Kích thước màn hình'];
-
         foreach ($productsInSeries as $productInSeries) {
             $attributes = [];
             foreach ($productInSeries->productAttributes as $attribute) {
@@ -114,9 +113,13 @@ class HomeController extends FrontendController
                 'productId' => $productInSeries->id,
                 'productName' => $productInSeries->name,
                 'attributeString' => $attributeString,
-                'price' => $productInSeries->price
+                'price' => $productInSeries->price,
+                'series' => $productInSeries->series->name
             ];
         }
+
+
+
 
         return view('frontend.pages.home.productDetails', [
             'product' => $product,
@@ -131,6 +134,7 @@ class HomeController extends FrontendController
     public function search(Request $request)
     {
         $products = $this->product->search($request);
+
         $breadcrumb = "Tìm kiếm: " . $request->search;
         return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb'));
     }
@@ -162,7 +166,10 @@ class HomeController extends FrontendController
         ]);
     }
 
-    public function getProductBy()
+    public function filterandsearch(Request $request)
     {
+        $products = $this->product->filterAndSearch($request);
+        $breadcrumb = "Tìm kiếm: " . $request->input('search');
+        return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb'));
     }
 }

@@ -13,6 +13,6 @@
     {{-- End Featured Product --}}
 
     {{-- Product Grouped By Brand --}}
-    <x-frontend.home.products-grouped-by-brand />
+    {{-- <x-frontend.home.products-grouped-by-brand /> --}}
     {{-- End Product Grouped By Brand --}}
 @endsection

@@ -124,4 +124,17 @@ class CategoryProducts extends MainModel
         $node = self::find($item['id']);
         $node->delete();
     }
+
+    public function getMainCategories()
+    {
+        return CategoryProducts::withDepth()
+            ->with(['children' => function ($query) {
+                $query->orderBy('_lft');
+            }, 'children.children' => function ($query) {
+                $query->orderBy('_lft');
+            }])
+            ->having('depth', '=', 1)
+            ->orderBy('_lft')
+            ->get();
+    }
 }

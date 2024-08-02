@@ -23,11 +23,7 @@ class CategoriesProducts extends Component
      */
     public function render(): View|Closure|string
     {
-        $categories = $this->model->withDepth()->having('depth', '=', 1)->get();
-        // Load children for each category
-        foreach ($categories as $category) {
-            $category->load('children');
-        }
+        $categories = $this->model->getMainCategories();
         return view('components.frontend.header.categories-products', compact('categories'));
     }
 }

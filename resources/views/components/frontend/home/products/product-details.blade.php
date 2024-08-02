@@ -113,10 +113,16 @@
                 <div class="product-variants mt-4">
                     <div class="row row-cols-1 row-cols-md-3 g-3">
                         @foreach ($seriesProducts as $index => $item)
+                            @php
+                                $variantName =
+                                    $item['attributeString'] != ''
+                                        ? $item['attributeString']
+                                        : ucfirst($item['series']);
+                            @endphp
                             <div class="variant-card {{ $item['productId'] === $product->id ? 'active' : '' }}">
                                 <a href="{{ route('frontend.home.productDetails', ['slug' => Str::slug($item['productName']) . '-' . $item['productId']]) }}"
                                     class="variant-link">
-                                    <div class="variant-name">{{ $item['attributeString'] }}</div>
+                                    <div class="variant-name">{{ $variantName }}</div>
                                     <div class="variant-price">{{ Template::numberFormatVND($item['price']) }}</div>
                                 </a>
                             </div>

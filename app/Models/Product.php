@@ -282,14 +282,16 @@ class Product extends MainModel
         return $query;
     }
 
+
+
     public function scopeGetTopProducts(Builder $query, $num = 8)
     {
-        return self::where('is_top', 1)->paginate($num);
+        return self::where('is_top', 1)->orderBy('created_at', 'desc')->paginate($num);
     }
 
     public function scopeGetFeaturedProducts()
     {
-        return self::where('is_featured', 1)->paginate(8);
+        return self::where('is_featured', 1)->orderBy('created_at', 'desc')->paginate(8);
     }
 
     public function processAttributes()
@@ -381,24 +383,38 @@ class Product extends MainModel
         }
     }
 
-    public function search($request)
+    public function filterAndSearch($request)
     {
-        $query = $this->query();
-        if ($request->filled('search')) {
-            $searchTerm = $request->search;
-            $query->where(function ($q) use ($searchTerm) {
+        $brands = $request->input('brand', []);
+        if (!is_array($brands)) $brands = [$brands];
+
+        $filters = $request->input('filters', []);
+        if (!is_array($filters)) $filters = [$filters];
+
+        $sort = $request->input('sort');
+        $searchTerm = $request->input('search');
+
+        $productsQuery = $this->withRelations()
+            ->select('id', 'name', 'price', 'is_featured', 'original_price', 'category_product_id', 'brand_id')
+            ->filterByBrands($brands)
+            ->filterByAttributes($filters)
+            ->sortBy($sort);
+
+        if ($searchTerm) {
+            $productsQuery->where(function ($q) use ($searchTerm) {
                 $q->where('name', 'like', '%' . $searchTerm . '%')
                     ->orWhereRaw("CONVERT(content USING utf8) LIKE ?", ["%{$searchTerm}%"])
                     ->orWhereRaw("description LIKE ?", ["%{$searchTerm}%"]);
             });
 
             // Tìm kiếm trong các thuộc tính
-            $query->orWhereHas('productAttributes', function ($q) use ($searchTerm) {
+            $productsQuery->orWhereHas('productAttributes', function ($q) use ($searchTerm) {
                 $q->WhereHas('attributeValue', function ($q) use ($searchTerm) {
                     $q->where('value', 'like', '%' . $searchTerm . '%');
                 });
             });
         }
-        return $query->paginate(10);
+
+        return $productsQuery->paginate(8)->withQueryString();
     }
 }

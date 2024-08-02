@@ -211,7 +211,7 @@ Route::group(['prefix' => '', 'as' => '', 'namespace' => 'App\\Http\\Controllers
     Route::post('addToWishList', ['uses' => 'HomeController@addToWishList', 'as' => 'frontend.home.addToWishList']);
     Route::delete('removeFromWishList/{productId}', ['uses' => 'HomeController@removeFromWishList', 'as' => 'frontend.home.removeFromWishList']);
 
-    Route::get('laptop', ['uses' => 'HomeController@filter', 'as' => 'frontend.home.filterProduct']);
+    Route::get('laptop', ['uses' => 'HomeController@filterandsearch', 'as' => 'frontend.home.filterProduct']);
     Route::get('laptop/search', ['uses' => 'HomeController@search', 'as' => 'frontend.home.search']);
     Route::get('products/{slug}', ['uses' => 'HomeController@productDetails', 'as' => 'frontend.home.productDetails']);
     Route::get('{slug}', ['uses' => 'HomeController@showProductbyCategory', 'as' => 'frontend.home.showProductbyCategory']);
