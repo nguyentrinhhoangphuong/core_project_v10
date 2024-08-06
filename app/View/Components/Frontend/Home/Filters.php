@@ -6,27 +6,29 @@ use App\Models\AttributeValue;
 use App\Models\Brand;
 use App\Models\CategoryProducts;
 use App\Models\ProductAttributes;
+use App\Services\CategoryProductAttribute\CategoryProductAttributeService;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class Filters extends Component
 {
-    protected $brand;
-    protected AttributeValue $attributeValue;
+    public $brands;
+    public $filterAttributes;
+    public $filterSummary;
+    protected $categoryProductAttributeService;
+
+
     /**
      * Create a new component instance.
      */
-    public function __construct(Brand $brand, AttributeValue $attributeValue)
+    public function __construct($brands, $filterAttributes, $filterSummary)
     {
-        $this->brand = $brand::select('id', 'name')->get();
-        $this->attributeValue = $attributeValue;
+        $this->brands = $brands;
+        $this->filterAttributes = $filterAttributes;
+        $this->filterSummary = $filterSummary;
     }
 
-    public function filterOptions()
-    {
-        return $this->attributeValue->getAttrFilterForFrontend();
-    }
 
     /**
      * Get the view / contents that represent the component.
@@ -34,8 +36,9 @@ class Filters extends Component
     public function render(): View|Closure|string
     {
         return view('components.frontend.home.filters', [
-            'brands' => $this->brand,
-            'filterOptions' => $this->filterOptions(),
+            'brands' => $this->brands,
+            'filterAttributes' => $this->filterAttributes,
+            'filterSummary' => $this->filterSummary,
         ]);
     }
 }

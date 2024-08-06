@@ -159,10 +159,10 @@
             <div class="product-info">
                 <ul class="product-info-list product-info-list-2">
                     <li>Thương hiệu: <a
-                            href="{{ route('frontend.home.filterProduct', ['brand[]' => $product->brandProduct->id]) }}">{{ ucwords($product->brandProduct->name) }}</a>
+                            href="{{ route('frontend.home.showProducts', ['brand[]' => $product->brandProduct->id]) }}">{{ ucwords($product->brandProduct->name) }}</a>
                     </li>
                     <li>Dòng máy: <a
-                            href="{{ route('frontend.home.showProductbyCategory', ['slug' => Template::slug($product->categoryProduct->name) . '-' . $product->categoryProduct->id]) }}">{{ ucwords($product->categoryProduct->name) }}</a>
+                            href="{{ route('frontend.home.showProducts', ['slug' => Template::slug($product->categoryProduct->name) . '-' . $product->categoryProduct->id]) }}">{{ ucwords($product->categoryProduct->name) }}</a>
                     </li>
                 </ul>
             </div>

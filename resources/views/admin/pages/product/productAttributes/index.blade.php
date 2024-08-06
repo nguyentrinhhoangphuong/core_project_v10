@@ -4,9 +4,6 @@
     <div class="row row-deck row-cards">
         <div class="col-12">
             <div class="row row-cards">
-                <div class="col-12 d-flex justify-content-end">
-                    {{-- <x-admin.area-search :params="$params" /> --}}
-                </div>
                 <div class="col-12">
                     <div class="row row-cards">
                         <div class="col-8">

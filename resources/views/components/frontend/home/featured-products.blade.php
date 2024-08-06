@@ -119,7 +119,7 @@
             </div>
             <div class="col-auto">
                 <a class="dropdown-item" id="high"
-                    href="{{ route('frontend.home.filterProduct', ['sort' => 'featured']) }}">
+                    href="{{ route('frontend.home.showProducts', ['sort' => 'featured']) }}">
                     Xem tất cả
                 </a>
             </div>

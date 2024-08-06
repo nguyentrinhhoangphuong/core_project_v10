@@ -3,7 +3,6 @@
     // Lấy tên route hiện tại
     $currentRoute = Route::currentRouteName();
     $isWishlistRoute = $currentRoute === 'frontend.home.wishList'; // Kiểm tra nếu route hiện tại là 'wishlist'
-
     $xhtml = '';
     if (count($productsComponent) > 0) {
         foreach ($productsComponent as $product) {

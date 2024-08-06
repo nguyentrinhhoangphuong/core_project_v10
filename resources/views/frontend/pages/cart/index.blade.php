@@ -8,7 +8,7 @@
             @if (!isset($cart) || $cart->products->isEmpty())
                 <div class="text-center">
                     <p>Giỏ hàng của bạn đang trống</p>
-                    <a href="{{ route('frontend.home.filterProduct') }}">Tiếp tục mua hàng</a>
+                    <a href="{{ route('frontend.home.showProducts') }}">Tiếp tục mua hàng</a>
                 </div>
             @else
                 <div class="row g-sm-5 g-3">
@@ -122,7 +122,7 @@
                                     </li>
 
                                     <li>
-                                        <button onclick="location.href = '{{ route('frontend.home.filterProduct') }}';"
+                                        <button onclick="location.href = '{{ route('frontend.home.showProducts') }}';"
                                             class="btn btn-light shopping-button text-dark">
                                             <i class="fa-solid fa-arrow-left-long"></i>Xem sản phẩm khác</button>
                                     </li>

@@ -1,19 +1,33 @@
 <div class="shop-left-sidebar">
-    <div class="back-button">
-        <h3><i class="fa-solid fa-arrow-left"></i> Back</h3>
-    </div>
     <div class="accordion custom-accordion" id="accordionExample">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingTwo">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseTwo">
-                    <span>Brand</span>
-                </button>
-            </h2>
-            <div id="collapseTwo" class="accordion-collapse collapse show">
-                <div class="accordion-body">
-                    <ul class="category-list custom-padding">
-                        @if (count($brands))
+        @if ($filterSummary)
+            <div class="filter-category">
+                <a href="{{ route('frontend.home.clearAllFilters') }}">Clear All</a>
+                <ul>
+                    @foreach ($filterSummary as $filter)
+                        <li>
+                            <a
+                                href="{{ route('frontend.home.removeFilter', ['type' => $filter['type'], 'id' => $filter['id']]) }}">
+                                {{ ucfirst($filter['value']) }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @if (count($brands))
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseTwo">
+                        <span>Brand</span>
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        <ul class="category-list custom-padding">
+
                             @foreach ($brands as $item)
                                 <li>
                                     <div class="form-check ps-0 m-0 category-list-box">
@@ -27,33 +41,32 @@
                                     </div>
                                 </li>
                             @endforeach
-                        @endif
-                    </ul>
+
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
 
-        @foreach ($filterOptions as $attributeName => $values)
+        @foreach ($filterAttributes as $attribute)
             <div class="accordion-item">
                 <h2 class="accordion-header" id="heading{{ $loop->index }}">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapse{{ $loop->index }}">
-                        <span>{{ $attributeName }}</span>
+                        <span>{{ $attribute->name }}</span>
                     </button>
                 </h2>
                 <div id="collapse{{ $loop->index }}" class="accordion-collapse collapse show">
                     <div class="accordion-body">
                         <ul class="category-list custom-padding custom-height">
-                            @foreach ($values as $value)
+                            @foreach ($attribute->attributeValue as $item)
                                 <li>
                                     <div class="form-check ps-0 m-0 category-list-box">
-                                        <input class="checkbox_animated" type="checkbox"
-                                            id="value{{ $value->value_id }}" name="filters[{{ $attributeName }}][]"
-                                            value="{{ $value->value_id }}"
-                                            {{ in_array($value->value_id, (array) request()->input('filters.' . $attributeName, [])) ? 'checked' : '' }}>
-
-                                        <label class="form-check-label">
-                                            <span class="name">{{ $value->value }}</span>
+                                        <input class="checkbox_animated" type="checkbox" value="{{ $item->id }}"
+                                            name="filters[{{ $item->id }}][]" id="{{ $item->id }}"
+                                            {{ in_array($item->id, (array) request()->input('filters.' . $item->id, [])) ? 'checked' : '' }} />
+                                        <label class="form-check-label" for="{{ $item->id }}">
+                                            <span class="name">{{ $item->value }}</span>
                                         </label>
                                     </div>
                                 </li>

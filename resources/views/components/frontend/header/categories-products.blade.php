@@ -18,7 +18,7 @@
                             <ul>%s</ul>
                         </div>',
                         $key + 1,
-                        route('frontend.home.showProductbyCategory', [
+                        route('frontend.home.showProducts', [
                             'slug' => Str::slug($value['name']) . '-' . $value['id'],
                         ]),
                         $value['name'],
@@ -32,14 +32,13 @@
                 '
                 <ul class="category-list">
                     <li class="onhover-category-list">
-                        <a href="%s" class="category-name">
+                        <a href="javascript:void(0)" class="category-name">
                             <h6>%s</h6>
                             %s
                         </a>
                         %s
                     </li>
                 </ul>',
-                route('frontend.home.showProductbyCategory', ['slug' => Str::slug($name) . '-' . $id]),
                 $name,
                 $iconRight,
                 $sub,
@@ -58,7 +57,7 @@
                     '<li>
                         <a href="%s">%s</a>
                     </li>',
-                    route('frontend.home.showProductbyCategory', [
+                    route('frontend.home.showProducts', [
                         'slug' => Str::slug($value['name']) . '-' . $value['id'],
                     ]),
                     $name,

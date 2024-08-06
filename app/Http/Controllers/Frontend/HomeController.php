@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Models\Attributes;
+use App\Models\AttributeValue;
+use App\Models\Brand;
 use App\Models\CategoryProducts;
 use App\Models\Product;
 use App\Models\ProductAttributes;
+use App\Services\CategoryProductAttribute\CategoryProductAttributeService;
 use App\Services\WishList\WishListService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -14,8 +18,9 @@ class HomeController extends FrontendController
     protected CategoryProducts $categoryProducts;
     protected Product $product;
     protected $wishListService;
+    protected $categoryProductAttributeService;
 
-    public function __construct(CategoryProducts $categoryProducts, Product $product, WishListService $wishListService)
+    public function __construct(CategoryProducts $categoryProducts, Product $product, WishListService $wishListService, CategoryProductAttributeService $categoryProductAttributeService)
     {
         $this->controllerName = 'home';
         $this->numberOfPage = 12;
@@ -25,6 +30,7 @@ class HomeController extends FrontendController
         $this->categoryProducts = $categoryProducts;
         $this->product = $product;
         $this->wishListService = $wishListService;
+        $this->categoryProductAttributeService = $categoryProductAttributeService;
     }
 
     public function index()
@@ -40,28 +46,6 @@ class HomeController extends FrontendController
     public function register()
     {
         return view('frontend.pages.home.register');
-    }
-
-    public function showProductbyCategory(Request $request, $slug)
-    {
-        $arrSlug = explode('-', $slug);
-        $categoryProductID = $this->categoryProducts->descendantsAndSelf($arrSlug[count($arrSlug) - 1])->pluck('id');
-        if ($categoryProductID->isEmpty()) {
-            abort(404);
-        }
-        array_pop($arrSlug);
-        $breadcrumb = implode(" ", $arrSlug);
-        $productsQuery = Product::withRelations()
-            ->inCategories($categoryProductID)
-            ->select('id', 'name', 'price', 'original_price', 'is_featured', 'category_product_id', 'brand_id');
-
-        if ($request->has('sort')) {
-            $sort = $request->input('sort');
-            $productsQuery->sortBy($sort);
-        }
-        $products = $productsQuery->paginate($this->numberOfPage);
-        // Kiểm tra xem có sản phẩm nào không
-        return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb'));
     }
 
     public function filter(Request $request)
@@ -118,9 +102,6 @@ class HomeController extends FrontendController
             ];
         }
 
-
-
-
         return view('frontend.pages.home.productDetails', [
             'product' => $product,
             'attributes' => $attributes,
@@ -131,20 +112,12 @@ class HomeController extends FrontendController
         ]);
     }
 
-    public function search(Request $request)
-    {
-        $products = $this->product->search($request);
-
-        $breadcrumb = "Tìm kiếm: " . $request->search;
-        return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb'));
-    }
-
     public function wishList(Request $request)
     {
         $wishListID = json_decode(Cookie::get('wishlist'));
         $products = $this->wishListService->getProductWithList($wishListID);
         $breadcrumb = "Danh sách yêu thích";
-        return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb'));
+        return view($this->pathViewController . 'wishList', compact('products', 'breadcrumb'));
     }
 
     public function addToWishList(Request $request)
@@ -166,10 +139,104 @@ class HomeController extends FrontendController
         ]);
     }
 
-    public function filterandsearch(Request $request)
+
+    public function showProducts(Request $request, $slug = null)
     {
-        $products = $this->product->filterAndSearch($request);
-        $breadcrumb = "Tìm kiếm: " . $request->input('search');
-        return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb'));
+        if ($slug === null) {
+            // Xử lý cho trường hợp filterandsearch
+            $valueSearch = $request->input('search') ?? "tất cả";
+            $products = $this->product->filterAndSearch($request);
+            if ($products->items() == []) {
+                abort(404);
+            };
+            $breadcrumb = "Tìm kiếm: " . $valueSearch;
+            $categoryProductID = null;
+        } else {
+            // Xử lý cho trường hợp showProductbyCategory
+            $arrSlug = explode('-', $slug);
+            $categoryProductsID = $this->categoryProducts->descendantsAndSelf($arrSlug[count($arrSlug) - 1])->pluck('id');
+            if ($categoryProductsID->isEmpty()) {
+                abort(404);
+            }
+            $categoryProductID = end($arrSlug);
+            array_pop($arrSlug);
+            $breadcrumb = implode(" ", $arrSlug);
+            $productsQuery = Product::withRelations()
+                ->inCategories($categoryProductsID)
+                ->select('id', 'name', 'price', 'original_price', 'is_featured', 'category_product_id', 'brand_id');
+
+            if ($request->has('sort')) {
+                $sort = $request->input('sort');
+                $productsQuery->sortBy($sort);
+            }
+            $products = $productsQuery->paginate($this->numberOfPage);
+        }
+
+        $filterAttributes = $this->categoryProductAttributeService->getRelevantFilterAttributes($products);
+        $brands = $this->categoryProductAttributeService->getRelevantBrands($products);
+
+        $filterNames = [];
+        $filterSummary = [];
+        if ($request->filters) {
+            foreach ($request->filters as $attributeId => $values) {
+                $attributeValues = AttributeValue::where('id', $values)->get();
+                if (!empty($attributeValues)) {
+                    foreach ($attributeValues as $value) {
+                        $filterSummary[] = [
+                            'type' => 'attribute',
+                            'id' => $value->id,
+                            'value' => $value->value,
+                        ];
+                    }
+                }
+            }
+        }
+
+        if ($request->brand) {
+            $brands  = Brand::whereIn('id', $request->brand)->get();
+            foreach ($brands as $brand) {
+                $filterSummary[] = [
+                    'type' => 'brand',
+                    'id' => $brand->id,
+                    'value' => $brand->name,
+                ];
+            }
+        }
+        return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb', 'filterAttributes', 'brands', 'categoryProductID', 'filterSummary'));
+    }
+
+    public function clearAllFilters(Request $request)
+    {
+        $currentUrl = url()->previous();
+        $url = parse_url($currentUrl);
+        if (isset($url['query'])) {
+            unset($url['query']);
+        }
+        return redirect()->route('frontend.home.showProducts');
+    }
+
+    public function removeFilter(Request $request, $type, $id)
+    {
+        $currentUrl = url()->previous();
+        $url = parse_url($currentUrl);
+        $queryParams = [];
+        if (isset($url['query'])) {
+            parse_str($url['query'], $queryParams);
+        }
+        if ($type === 'attribute' && isset($queryParams['filters'][$id])) {
+            unset($queryParams['filters'][$id]);
+            if (empty($queryParams['filters'])) {
+                unset($queryParams['filters']);
+            }
+        } elseif ($type === 'brand' && isset($queryParams['brand'])) {
+            $brandIndex = array_search($id, $queryParams['brand']);
+            unset($queryParams['brand'][$brandIndex]);
+        }
+        $newUrl = $url['scheme'] . '://' . $url['host'] . ':' . $url['port']  . $url['path'];
+        if (!empty($queryParams)) {
+            $newUrl .= '?' . http_build_query($queryParams);
+            return redirect($newUrl);
+        }
+        return redirect()->route('frontend.home.showProducts');
     }
 }

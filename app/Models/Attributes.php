@@ -17,6 +17,16 @@ class Attributes extends MainModel
         return $this->hasMany(AttributeValue::class, 'attribute_id');
     }
 
+    public function categoryProducts()
+    {
+        return $this->belongsToMany(CategoryProducts::class, 'category_product_attributes', 'attribute_id', 'category_product_id');
+    }
+
+    public function productAttributes()
+    {
+        return $this->hasMany(ProductAttributes::class, 'attribute_id');
+    }
+
     public function baseQuery()
     {
         return self::from('attributes as a');

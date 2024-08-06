@@ -3,7 +3,7 @@
         $url =
             $item->url != null
                 ? $item->url
-                : route('frontend.home.showProductbyCategory', [
+                : route('frontend.home.showProducts', [
                     'slug' => Str::slug($item['name']) . '-' . $item['model_id'],
                 ]);
         $hasChildren = count($item->children) > 0;

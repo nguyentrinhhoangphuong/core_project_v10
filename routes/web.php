@@ -26,6 +26,8 @@ Route::prefix('admin')
             // ======================= CATEGORY PRODUCT =================================
             Route::post('category-products/update-status/{id}', ['uses' => 'CategoryProductsController@updateStatus', 'as' => 'category-products.update.status']);
             Route::post('category-products/updateTree', ['uses' => 'CategoryProductsController@updateTree', 'as' => 'category-products.update.tree']);
+            Route::get('category-products/add-attribute', ['uses' => 'CategoryProductsController@addAttribute', 'as' => 'category-products.addAttribute']);
+            Route::post('category-products/{categoryProductsId}/save-attributes', ['uses' => 'CategoryProductsController@saveAttributeId', 'as' => 'category-products.saveAttributeId']);
             Route::resource('category-products', 'CategoryProductsController', ['parameters' => ['category-products' => 'item']]);
             // ======================= PRODUCT =================================
             Route::post('products/update-status', ['uses' => 'ProductController@updateStatus', 'as' => 'products.update.status']);
@@ -210,11 +212,10 @@ Route::group(['prefix' => '', 'as' => '', 'namespace' => 'App\\Http\\Controllers
     Route::get('wishList', ['uses' => 'HomeController@wishList', 'as' => 'frontend.home.wishList']);
     Route::post('addToWishList', ['uses' => 'HomeController@addToWishList', 'as' => 'frontend.home.addToWishList']);
     Route::delete('removeFromWishList/{productId}', ['uses' => 'HomeController@removeFromWishList', 'as' => 'frontend.home.removeFromWishList']);
-
-    Route::get('laptop', ['uses' => 'HomeController@filterandsearch', 'as' => 'frontend.home.filterProduct']);
-    Route::get('laptop/search', ['uses' => 'HomeController@search', 'as' => 'frontend.home.search']);
-    Route::get('products/{slug}', ['uses' => 'HomeController@productDetails', 'as' => 'frontend.home.productDetails']);
-    Route::get('{slug}', ['uses' => 'HomeController@showProductbyCategory', 'as' => 'frontend.home.showProductbyCategory']);
+    Route::get('clear-all-filters', ['uses' => 'HomeController@clearAllFilters', 'as' => 'frontend.home.clearAllFilters']);
+    Route::get('/remove-filter/{type}/{id}', ['uses' => 'HomeController@removeFilter', 'as' => 'frontend.home.removeFilter']);
+    Route::get('products/{slug?}', ['uses' => 'HomeController@showProducts', 'as' => 'frontend.home.showProducts']);
+    Route::get('product/{slug}', ['uses' => 'HomeController@productDetails', 'as' => 'frontend.home.productDetails']);
     Route::get('/', ['uses' => 'HomeController@index', 'as' => 'frontend.home.index']);
 });
 

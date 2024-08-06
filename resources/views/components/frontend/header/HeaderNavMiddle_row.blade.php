@@ -3,7 +3,7 @@
         @php
             $url =
                 $child->url ??
-                route('frontend.home.showProductbyCategory', [
+                route('frontend.home.showProducts', [
                     'slug' => Str::slug($child->name) . '-' . $child->model_id,
                 ]);
             $dropdownClass = $child->children->isNotEmpty() ? 'myli' : '';
@@ -18,7 +18,7 @@
                         @php
                             $subUrl =
                                 $subChild->url ??
-                                route('frontend.home.showProductbyCategory', [
+                                route('frontend.home.showProducts', [
                                     'slug' => Str::slug($subChild->name) . '-' . $subChild->model_id,
                                 ]);
                         @endphp

@@ -282,8 +282,6 @@ class Product extends MainModel
         return $query;
     }
 
-
-
     public function scopeGetTopProducts(Builder $query, $num = 8)
     {
         return self::where('is_top', 1)->orderBy('created_at', 'desc')->paginate($num);
@@ -414,7 +412,6 @@ class Product extends MainModel
                 });
             });
         }
-
-        return $productsQuery->paginate(8)->withQueryString();
+        return $productsQuery->paginate(20)->withQueryString();
     }
 }
