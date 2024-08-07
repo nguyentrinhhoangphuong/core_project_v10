@@ -145,7 +145,7 @@
                                 <li class="list-total border-top-0">
                                     <h4>Tổng tiền</h4>
                                     <h4 class="price theme-color" id="discounted-total">
-                                        {{ Template::numberFormatVND($total) }}</h4>
+                                        {{ Template::numberFormatVND($cart->total) }}</h4>
                                 </li>
                             </ul>
 
