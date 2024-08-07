@@ -1,10 +1,16 @@
 @php
     use App\Helpers\Template;
 @endphp
+@inject('cartService', 'App\Services\Cart\CartService')
 @extends('frontend.main')
 @section('content')
     <section class="cart-section section-b-space">
         <div class="container">
+            @if (session('coupon_expired'))
+                <div class="alert alert-warning">
+                    {{ session('coupon_expired') }}
+                </div>
+            @endif
             @if (!isset($cart) || $cart->products->isEmpty())
                 <div class="text-center">
                     <p>Giỏ hàng của bạn đang trống</p>
@@ -98,19 +104,48 @@
                         <div class="summery-box p-sticky">
                             <div class="summery-contain">
                                 <div class="coupon-cart">
-                                    <h6 class="text-content mb-2">Coupon Apply</h6>
-                                    <div class="mb-3 coupon-box input-group">
-                                        <input type="email" class="form-control" id="exampleFormControlInput1"
-                                            placeholder="Enter Coupon Code Here...">
-                                        <button class="btn-apply">Apply</button>
-                                    </div>
+                                    <h6 class="text-content mb-2">Áp dụng phiếu giảm giá</h6>
+                                    <form id="coupon-form">
+                                        <div class="mb-3 coupon-box input-group">
+                                            <input type="text" class="form-control" name="code"
+                                                placeholder="Nhập mã giảm giá..." value="{!! $cart->coupon->code ?? null !!}">
+                                            <input type="hidden" name="total" value="{{ $cart->total }}">
+                                            <button type="submit" class="btn-apply">Apply</button>
+                                        </div>
+                                    </form>
+                                    <div id="coupon-message"></div>
+                                    @if ($cartService->checkCoupon())
+                                        <a id="delete-coupon" href="#" data-coupon-id="{{ $cart->coupon_id }}">Xóa
+                                            coupon</a>
+                                    @else
+                                        <a id="delete-coupon" style="display: none;" href="#"
+                                            data-coupon-id="{{ $cart->coupon_id }}">Xóa coupon</a>
+                                    @endif
+
+                                    <ul class="summery-discount">
+                                        <li>
+                                            <h4>Tổng tiền gốc</h4>
+                                            <h4 class="price" id="original-total">
+                                                {{ Template::numberFormatVND($total) }}
+                                            </h4>
+                                        </li>
+
+                                        <li>
+                                            <h4>Giảm giá</h4>
+                                            <h4 class="price" id="discount-amount">
+                                                {{ Template::numberFormatVND($cart->discount_amount) }}</h4>
+                                        </li>
+                                    </ul>
+
+
                                 </div>
                             </div>
 
                             <ul class="summery-total">
                                 <li class="list-total border-top-0">
                                     <h4>Tổng tiền</h4>
-                                    <h4 class="price theme-color">{{ Template::numberFormatVND($cart->total) }}</h4>
+                                    <h4 class="price theme-color" id="discounted-total">
+                                        {{ Template::numberFormatVND($total) }}</h4>
                                 </li>
                             </ul>
 
@@ -139,15 +174,62 @@
         @csrf
         <input type="hidden" name="product_id" id="delete-product-id">
     </form>
+@endsection
+@section('scripts')
     <script>
         document.querySelectorAll('.remove.close_button').forEach(button => {
             button.addEventListener('click', function() {
                 const productId = this.getAttribute('data-product-id');
                 const deleteForm = document.getElementById('delete-product-form');
                 const deleteProductIdInput = document.getElementById('delete-product-id');
-
                 deleteProductIdInput.value = productId;
                 deleteForm.submit();
+            });
+        });
+
+        $('#coupon-form').submit(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: '{{ route('frontend.home.applyCoupon') }}',
+                method: 'GET',
+                data: $(this).serialize(),
+                success: function(response) {
+                    $('#coupon-message').text(response.message).css('color', 'green');
+                    $('#original-total').text(response.original_total);
+                    $('#discount-amount').text(response.discount_amount);
+                    $('#discounted-total').text(response.discounted_total);
+                    $('#delete-coupon').show();
+                    $('.summery-discount').show();
+
+                },
+                error: function(xhr) {
+                    $('#coupon-message').text(xhr.responseJSON.error).css('color', 'red');
+                    $('#delete-coupon').hide();
+                }
+            });
+        });
+
+        $('#delete-coupon').on('click', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: '{{ route('frontend.home.deleteCoupon') }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#coupon-message').text(response.message).css('color', 'green');
+                        $('#original-total').text(response.original_total);
+                        $('#discount-amount').text('0đ');
+                        $('#discounted-total').text(response.discounted_total);
+                        $('#delete-coupon').hide();
+                        $('input[name="code"]').val('');
+                    }
+                },
+                error: function(xhr) {
+                    $('#coupon-message').text('Có lỗi xảy ra khi xóa coupon').css('color', 'red');
+                }
             });
         });
     </script>

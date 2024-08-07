@@ -111,6 +111,9 @@
                             <a class="dropdown-item" href="{{ route('admin.brand.index') }}">
                                 Brand
                             </a>
+                            <a class="dropdown-item" href="{{ route('admin.coupon.index') }}">
+                                Coupon
+                            </a>
                         </div>
                     </div>
                 </li>

@@ -52,6 +52,7 @@
 
     @include('frontend.elements.scripts')
     @yield('scripts_frontend_add_product_to_cart')
+    @yield('scripts')
 </body>
 
 </html>

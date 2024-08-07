@@ -94,6 +94,9 @@ Route::prefix('admin')
             Route::get('order/{id}', ['uses' => 'OrderController@orderDetail', 'as' => 'order.detail']);
             Route::post('order/status-change', ['uses' => 'OrderController@orderChangeStatus', 'as' => 'order.status.change']);
             Route::resource('order', 'OrderController', ['parameters' => ['order' => 'item']]);
+            // ===================================== COUPON ==================================
+            Route::resource('coupon', 'CouponController', ['parameters' => ['coupon' => 'item']]);
+
 
 
             // ======================= laravel-filemanager ===================
@@ -204,6 +207,8 @@ Route::group(['prefix' => '', 'as' => '', 'namespace' => 'App\\Http\\Controllers
     Route::post('addtocart', ['uses' => 'ProductCartController@store', 'as' => 'frontend.productcart.store']);
     Route::post('cart/destroy', ['uses' => 'ProductCartController@destroy', 'as' => 'frontend.productcart.destroy']);
     Route::post('update-quantity', ['uses' => 'ProductCartController@updateQuantity', 'as' => 'frontend.productcart.updateQuantity']);
+    Route::get('apply-coupon', ['uses' => 'CartController@applyCoupon', 'as' => 'frontend.home.applyCoupon']);
+    Route::post('delete-coupon', ['uses' => 'CartController@deleteCoupon', 'as' => 'frontend.home.deleteCoupon']);
     // ======================= Home ===============================
     Route::middleware('guest')->group(function () {
         Route::get('login', ['uses' => 'HomeController@login', 'as' => 'frontend.home.login']);

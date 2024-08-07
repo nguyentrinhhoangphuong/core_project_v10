@@ -30,4 +30,9 @@ class Order extends MainModel
     {
         return $this->morphToMany(Product::class, 'productable')->withPivot('quantity');
     }
+
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
+    }
 }

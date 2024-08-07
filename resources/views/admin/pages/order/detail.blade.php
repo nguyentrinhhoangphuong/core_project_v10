@@ -67,6 +67,13 @@
                             @endforeach
 
                             <tr>
+                                <td colspan="4" class="font-weight-bold text-uppercase text-end">Coupon:
+                                    {{ $orderDetails['coupon']['code'] }}</td>
+                                <td class="font-weight-bold text-end">
+                                    {{ Template::numberFormatVND($orderDetails['coupon']['max_discount_amount']) }}
+                                </td>
+                            </tr>
+                            <tr>
                                 <td colspan="4" class="font-weight-bold text-uppercase text-end">Tổng tiền:</td>
                                 <td class="font-weight-bold text-end">
                                     {{ Template::numberFormatVND($orderDetails['total_amount']) }}</td>

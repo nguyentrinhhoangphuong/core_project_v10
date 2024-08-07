@@ -59,6 +59,7 @@ class OrderService
       'phone' => $order->phone,
       'email' => $order->address,
       'created_at' => Template::dateFormat($order->created_at),
+      'coupon' => $order->coupon,
       'products' => $order->products->map(function ($product) {
         return [
           'id' => $product->pivot->product_id,

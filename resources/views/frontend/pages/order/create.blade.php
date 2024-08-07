@@ -10,6 +10,7 @@
                     <h3 class="mb-4 text-center">Thông tin khách mua hàng</h3>
                     <form action="{{ route('frontend.order.store') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="coupon_id" value="{{ $cart->coupon_id ?? null }}">
                         <div class="mb-3">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="gender" id="male" value="male"

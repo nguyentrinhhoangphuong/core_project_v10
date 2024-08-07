@@ -41,4 +41,26 @@ class CartService
     }
     return 0;
   }
+
+  public function updateDiscount($discountAmount, $couponId)
+  {
+    $cart = $this->getFromCookieOrCreate();
+    $cart->update(['discount_amount' => $discountAmount, 'coupon_id' => $couponId]);
+    return $cart;
+  }
+
+  public function checkCoupon()
+  {
+    $cart = $this->getFromCookieOrCreate();
+    return $cart->coupon_id != null ? true : false;
+  }
+
+  public function getTotal()
+  {
+    $cart = $this->getFromCookie();
+    if ($cart != null) {
+      return $cart->products->pluck('total')->sum();
+    }
+    return 0;
+  }
 }

@@ -23,7 +23,7 @@ class OrderController extends Controller
     public function create()
     {
         $cart = $this->cartService->getFromCookie();
-        if (!$cart) {
+        if (!$cart || $cart->coupon && $cart->coupon->hasReachedLimit()) {
             return redirect()->back();
         }
         return view('frontend.pages.order.create', compact('cart'));
@@ -41,9 +41,11 @@ class OrderController extends Controller
             'email' => $request['email'],
             'address' => $request['address'],
             'options' => $request->get('options'),
+            'coupon_id' => $request->get('coupon_id'),
         ]);
 
         $cart = $this->cartService->getFromCookie();
+        if ($cart->coupon_id != null) $cart->coupon->incrementUsage();
         $cartProductsWithQuantity = $cart->products->mapWithKeys(function ($product) {
             $quantity = $product->pivot->quantity;
             $product->decrement('qty', $quantity);
