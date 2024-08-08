@@ -98,7 +98,7 @@ class HomeController extends FrontendController
                 'productName' => $productInSeries->name,
                 'attributeString' => $attributeString,
                 'price' => $productInSeries->price,
-                'series' => $productInSeries->series->name
+                'series' => $productInSeries->series->name ?? ""
             ];
         }
 
@@ -142,6 +142,7 @@ class HomeController extends FrontendController
 
     public function showProducts(Request $request, $slug = null)
     {
+        $products = [];
         if ($slug === null) {
             // Xử lý cho trường hợp filterandsearch
             $valueSearch = $request->input('search') ?? "tất cả";
@@ -170,12 +171,14 @@ class HomeController extends FrontendController
                 $productsQuery->sortBy($sort);
             }
             $products = $productsQuery->paginate($this->numberOfPage);
+            $brandid = $products[0]['brand_id'];
+            $brandname = $products[0]->brandProduct['name'];
+            $brandIds = $products->pluck('brand_id')->unique()->toArray();
         }
 
         $filterAttributes = $this->categoryProductAttributeService->getRelevantFilterAttributes($products);
         $brands = $this->categoryProductAttributeService->getRelevantBrands($products);
 
-        $filterNames = [];
         $filterSummary = [];
         if ($request->filters) {
             foreach ($request->filters as $attributeId => $values) {
@@ -191,7 +194,6 @@ class HomeController extends FrontendController
                 }
             }
         }
-
         if ($request->brand) {
             $brands  = Brand::whereIn('id', $request->brand)->get();
             foreach ($brands as $brand) {
@@ -202,7 +204,8 @@ class HomeController extends FrontendController
                 ];
             }
         }
-        return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb', 'filterAttributes', 'brands', 'categoryProductID', 'filterSummary'));
+
+        return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb', 'filterAttributes', 'brands', 'categoryProductID', 'filterSummary', 'request'));
     }
 
     public function clearAllFilters(Request $request)

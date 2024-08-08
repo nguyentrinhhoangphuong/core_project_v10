@@ -14,6 +14,7 @@ use Illuminate\View\Component;
 class Filters extends Component
 {
     public $brands;
+    public $request;
     public $filterAttributes;
     public $filterSummary;
     protected $categoryProductAttributeService;
@@ -22,9 +23,10 @@ class Filters extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct($brands, $filterAttributes, $filterSummary)
+    public function __construct($brands, $filterAttributes, $filterSummary, $request)
     {
         $this->brands = $brands;
+        $this->request = $request;
         $this->filterAttributes = $filterAttributes;
         $this->filterSummary = $filterSummary;
     }
@@ -37,6 +39,7 @@ class Filters extends Component
     {
         return view('components.frontend.home.filters', [
             'brands' => $this->brands,
+            'request' => $this->request,
             'filterAttributes' => $this->filterAttributes,
             'filterSummary' => $this->filterSummary,
         ]);

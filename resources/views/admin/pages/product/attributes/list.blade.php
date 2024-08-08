@@ -68,6 +68,7 @@
                         <label class="form-label">{{ __('cruds.admin.' . $routeName . '.fields.name') }}</label>
                         <input type="text" class="form-control" name="name" value="{{ old('name') }}"
                             placeholder="{{ __('cruds.admin.' . $routeName . '.fields.name') }}">
+                        <input type="hidden" name="is_filter" value="0">
                     </div>
                 </form>
             </div>
@@ -99,19 +100,17 @@
                         method: 'POST',
                         body: formData
                     })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(data => {
                         if (data.success) {
                             const id = data.item.id;
                             const name = data.item.name;
                             const routeName = data.item.routeName;
                             const deleteUrl = data.item.deleteUrl;
+                            const createAttribute = data.item.createAttribute;
+                            const is_filter = data.item.is_filter;
                             const count = data.item.count;
+                            const checked = is_filter === 1 ? 'checked' : '';
                             const newRow = document.createElement('tr');
                             newRow.classList.add('row1');
                             newRow.setAttribute('data-id', id);
@@ -123,9 +122,20 @@
                                 <input type="text" class="form-control editable-field" name="name" value="${name}" style="width: 50%">
                             </td>
                             <td>
+                                <label class="dropdown-item form-switch">
+                                    <input class="form-check-input m-0 me-2 toggle-is_filter" type="checkbox"
+                                        data-item-id="${id}" data-item-status="${is_filter}"
+                                        data-controller="${ routeName }" ${checked}>
+                                </label>
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-primary"
+                                    href="${createAttribute}">
+                                    <i class="fa-solid fa-plus"></i>
+                                </a>
                                 <button class="btn btn-outline-danger item_delete">
                                     <i class="fa-regular fa-trash-can"></i>
-                                    <form action="${data.item.deleteUrl}" method="POST">
+                                    <form action="${deleteUrl}" method="POST">
                                         <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
                                         <input type="hidden" name="_method" value="DELETE">
                                     </form>
@@ -143,10 +153,13 @@
                             modalInstance.hide();
                             nameInput.value = '';
                             fireNotif("Đã tạo thành công", "success", 3000);
+                        } else {
+                            fireNotif(data.message, "error", 5000);
                         }
                     })
                     .catch(error => {
-                        console.error('There was an error!', error);
+                        console.error('Có lỗi xảy ra!', error);
+                        fireNotif("Có lỗi xảy ra, vui lòng thử lại.", "error", 3000);
                     });
             });
 
@@ -157,7 +170,7 @@
                 }
             });
 
-            $('.toggle-is_filter').on('change', function() {
+            $(document).on('change', '.toggle-is_filter', function() {
                 var checkbox = $(this);
                 var itemId = checkbox.data('item-id');
                 var status = checkbox.is(':checked') ? 1 : 0;
@@ -174,6 +187,10 @@
                     },
                     success: function(response) {
                         fireNotif("Cập nhật thành công", "success", 3000);
+                    },
+                    error: function(error) {
+                        console.error('Có lỗi xảy ra!', error);
+                        fireNotif("Có lỗi xảy ra khi cập nhật.", "error", 3000);
                     }
                 });
             });

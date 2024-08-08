@@ -8,6 +8,7 @@ use App\Models\ProductAttributes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class AttributesController extends AdminController
 {
@@ -63,22 +64,42 @@ class AttributesController extends AdminController
      */
     public function store(Request $request)
     {
-        $slug = Str::slug($request->name, '-');
-        $request['ordering'] = MainModel::max('ordering') + 1;
-        $data = $request->all();
-        $data['slug'] = $slug;
-        $item = MainMoDel::create($data);
-        $count = MainMoDel::count();
-        return response()->json([
-            'success' => true,
-            'item' => [
-                'id' => $item->id,
-                'count' => $count,
-                'name' => $item->name,
-                'routeName' => 'attributes',
-                'deleteUrl' => route('admin.attributes.destroy', ['item' => $item->id]),
-            ],
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|unique:attributes,name',
+            ], [
+                'name.unique' => 'Tên thuộc tính đã tồn tại. Vui lòng chọn tên khác.',
+            ]);
+
+            $slug = Str::slug($request->name, '-');
+            $request['ordering'] = MainModel::max('ordering') + 1;
+            $data = $request->all();
+            $data['slug'] = $slug;
+            $item = MainModel::create($data);
+            $count = MainModel::count();
+            return response()->json([
+                'success' => true,
+                'item' => [
+                    'id' => $item->id,
+                    'count' => $count,
+                    'name' => $item->name,
+                    'is_filter' => $item->is_filter,
+                    'routeName' => 'attributes',
+                    'deleteUrl' => route('admin.attributes.destroy', ['item' => $item->id]),
+                    'createAttribute' => route('admin.attributes.create', ['atrributeId' => $item->id, 'atrributeName' => $item->name]),
+                ],
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->errors()['name'][0] ?? 'Có lỗi xảy ra khi xác thực dữ liệu.',
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra, vui lòng thử lại.',
+            ], 500);
+        }
     }
 
 

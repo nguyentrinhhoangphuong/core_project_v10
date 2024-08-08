@@ -30,6 +30,9 @@
 
                             @foreach ($brands as $item)
                                 <li>
+                                    <a
+                                        href="{{ route('frontend.home.showProducts') .'?' .http_build_query(request()->merge(['brand' => array_unique(array_merge((array) request()->brand, [$item->id]))])->except(['page'])) }}">
+                                    </a>
                                     <div class="form-check ps-0 m-0 category-list-box">
                                         <input class="checkbox_animated" type="checkbox" id="brand_{{ $item->id }}"
                                             name="brand[]" value="{{ $item->id }}"

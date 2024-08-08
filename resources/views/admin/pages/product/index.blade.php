@@ -10,7 +10,6 @@
                 <div class="col-12">
                     <div class="card card-body">
                         <div class="table-responsive">
-                            <div id="successMessageContainer"></div>
                             @include('admin.pages.' . $controllerName . '.list', ['items' => $items])
                         </div>
                     </div>

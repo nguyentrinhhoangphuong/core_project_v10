@@ -161,7 +161,7 @@
                     <li>Thương hiệu: <a
                             href="{{ route('frontend.home.showProducts', ['brand[]' => $product->brandProduct->id]) }}">{{ ucwords($product->brandProduct->name) }}</a>
                     </li>
-                    <li>Dòng máy: <a
+                    <li>Dòng: <a
                             href="{{ route('frontend.home.showProducts', ['slug' => Template::slug($product->categoryProduct->name) . '-' . $product->categoryProduct->id]) }}">{{ ucwords($product->categoryProduct->name) }}</a>
                     </li>
                 </ul>
@@ -189,18 +189,35 @@
         <div class="tab-content custom-tab" id="myTabContent">
             <div class="tab-pane fade show active" id="info" role="tabpanel">
                 <div class="table-responsive">
+                    @php
+                        $groupedAttributes = $product->productAttributes->groupBy('attribute_id');
+                    @endphp
+
                     <table class="table table-striped">
                         <tbody>
-                            @foreach ($product->productAttributes as $attribute)
-                                @if ($attribute->attribute && $attribute->attributeValue)
+                            @foreach ($groupedAttributes as $attributeId => $attributes)
+                                @php
+                                    $attribute = $attributes->first();
+                                    if (!$attribute || !$attribute->attribute) {
+                                        continue;
+                                    }
+                                    $attributeName = $attribute->attribute->name;
+                                    $values = $attributes
+                                        ->map(function ($attr) {
+                                            return $attr->attributeValue ? $attr->attributeValue->value : null;
+                                        })
+                                        ->filter()
+                                        ->unique()
+                                        ->implode(', ');
+                                @endphp
+                                @if ($attributeName && $values)
                                     <tr>
-                                        <td>{{ $attribute->attribute->name }}</td>
-                                        <td>{{ $attribute->attributeValue->value }}</td>
+                                        <td>{{ $attributeName }}</td>
+                                        <td>{{ $values }}</td>
                                     </tr>
                                 @endif
                             @endforeach
                         </tbody>
-
                     </table>
                 </div>
             </div>

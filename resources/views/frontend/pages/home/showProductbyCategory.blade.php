@@ -32,7 +32,7 @@
                 {{-- FILTER --}}
                 <div class="col-custom-3">
                     <div class="left-box wow fadeInUp">
-                        <x-frontend.home.filters :filterAttributes="$filterAttributes" :brands="$brands ?? []" :filterSummary="$filterSummary" />
+                        <x-frontend.home.filters :request="$request" :filterAttributes="$filterAttributes" :brands="$brands ?? []" :filterSummary="$filterSummary" />
                     </div>
                 </div>
 
