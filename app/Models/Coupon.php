@@ -12,9 +12,17 @@ class Coupon extends Model
     use HasFactory;
 
     protected $fillable = [
-        'code', 'discount_type', 'discount_value', 'min_order_amount',
-        'max_discount_amount', 'usage_limit', 'used_count',
-        'starts_at', 'expires_at', 'is_active', 'description'
+        'code',
+        'discount_type',
+        'discount_value',
+        'min_order_amount',
+        'max_discount_amount',
+        'usage_limit',
+        'used_count',
+        'starts_at',
+        'expires_at',
+        'is_active',
+        'description'
     ];
 
     protected $casts = [
@@ -74,5 +82,14 @@ class Coupon extends Model
     {
         $this->used_count++;
         $this->save();
+    }
+
+    public function countCouponValid()
+    {
+        $activeCoupons = Coupon::where('is_active', true)
+            ->where('expires_at', '>', Carbon::now())
+            ->count();
+
+        return $activeCoupons;
     }
 }

@@ -100,33 +100,40 @@
                 <del class="text-content">{{ Template::numberFormatVND($product->original_price) }}</del>
             </h3>
         </div>
-        <div class="product-title">
-            <h4>Mô tả</h4>
-        </div>
-        <div class="pickup-detail">
-            <h4 class="text-content">{{ $product->description }}</h4>
-        </div>
+        @if ($product->description != null)
+            <div class="product-title">
+                <h4>Mô tả</h4>
+            </div>
+            <div class="pickup-detail">
+                <h4 class="text-content">{{ $product->description }}</h4>
+            </div>
+        @endif
+
         <div class="note-box product-package">
             <form id="addToCartForm" action="{{ route('frontend.productcart.store') }}" method="POST" class="w-100">
                 @csrf
                 <input type="hidden" name="productid" value="{{ $product->id }}">
                 <div class="product-variants mt-4">
                     <div class="row row-cols-1 row-cols-md-3 g-3">
-                        @foreach ($seriesProducts as $index => $item)
-                            @php
-                                $variantName =
-                                    $item['attributeString'] != ''
-                                        ? $item['attributeString']
-                                        : ucfirst($item['series']);
-                            @endphp
-                            <div class="variant-card {{ $item['productId'] === $product->id ? 'active' : '' }}">
-                                <a href="{{ route('frontend.home.productDetails', ['slug' => Str::slug($item['productName']) . '-' . $item['productId']]) }}"
-                                    class="variant-link">
-                                    <div class="variant-name">{{ $variantName }}</div>
-                                    <div class="variant-price">{{ Template::numberFormatVND($item['price']) }}</div>
-                                </a>
-                            </div>
-                        @endforeach
+                        @if (count($seriesProducts) > 1)
+                            @foreach ($seriesProducts as $index => $item)
+                                @php
+                                    $variantName =
+                                        $item['attributeString'] != ''
+                                            ? $item['attributeString']
+                                            : ucfirst($item['series']);
+                                @endphp
+                                <div class="variant-card {{ $item['productId'] === $product->id ? 'active' : '' }}">
+                                    <a href="{{ route('frontend.home.productDetails', ['slug' => Str::slug($item['productName']) . '-' . $item['productId']]) }}"
+                                        class="variant-link">
+                                        <div class="variant-name">{{ $variantName }}</div>
+                                        <div class="variant-price">{{ Template::numberFormatVND($item['price']) }}
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
+                        @endif
+
                     </div>
                 </div>
                 <button type="submit" class="btn btn-md bg-dark cart-button text-white w-100">

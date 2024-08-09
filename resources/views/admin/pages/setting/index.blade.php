@@ -19,21 +19,21 @@
                                 <div class="card-header">
                                     <ul class="nav nav-tabs card-header-tabs nav-fill" data-bs-toggle="tabs">
                                         <li class="nav-item">
-                                            <a href="#tabs-home-5" class="nav-link active" data-bs-toggle="tab">General
-                                                Config</a>
+                                            <a href="#tabs-home-5" class="nav-link active" data-bs-toggle="tab">Cấu hình
+                                                chung</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="#tabs-profile-5" class="nav-link" data-bs-toggle="tab">Social Config
+                                            <a href="#tabs-profile-5" class="nav-link" data-bs-toggle="tab">Cấu hình social
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="#tabs-activity-5" class="nav-link" data-bs-toggle="tab">Useful Links
-                                                Config
+                                            <a href="#tabs-activity-5" class="nav-link" data-bs-toggle="tab">Giới thiệu
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="#tabs-help-center" class="nav-link" data-bs-toggle="tab">Help Center
-                                                Config
+                                            <a href="#tabs-help-center" class="nav-link" data-bs-toggle="tab">Hỗ trợ khách
+                                                hàng
+
                                             </a>
                                         </li>
                                     </ul>

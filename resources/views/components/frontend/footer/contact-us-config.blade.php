@@ -9,7 +9,7 @@
 @endphp
 <div class="col-xl-4 col-lg-4 col-sm-6">
     <div class="footer-title">
-        <h4>Contact Us</h4>
+        <h4>Liên hệ chúng tôi</h4>
     </div>
 
     <div class="footer-contact">

@@ -22,9 +22,14 @@ class CategoryProducts extends MainModel
         return $this->belongsToMany(Attributes::class, 'category_product_attributes', 'category_product_id', 'attribute_id');
     }
 
+    // public function products()
+    // {
+    //     return $this->hasMany(Product::class, 'category_product_id');
+    // }
+
     public function products()
     {
-        return $this->hasMany(Product::class, 'category_product_id');
+        return $this->belongsToMany(Product::class, 'product_category_product', 'category_product_id', 'product_id');
     }
 
     public function getProductCountAttribute()

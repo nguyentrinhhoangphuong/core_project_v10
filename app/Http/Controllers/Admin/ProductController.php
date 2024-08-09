@@ -73,10 +73,12 @@ class ProductController extends AdminController
         $series = $item->brandProduct->series;
         $categoryProduct = $this->categoryProduct::withDepth()->defaultOrder()->get()->toFlatTree();
         $brands = $this->brand::all();
+        $subCategoryId = $item->categories->pluck('id')->toArray();
         return view($this->pathViewController . 'edit', [
             'title' => 'Edit ' . $this->controllerName,
             'item' => $item,
             'categoryProduct' => $categoryProduct,
+            'subCategoryId' => $subCategoryId,
             'brands' => $brands,
             'series' => $series,
         ]);

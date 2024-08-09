@@ -3,22 +3,72 @@
 namespace App\Services\Order;
 
 use App\Helpers\Template;
+use App\Models\Coupon;
 use App\Models\Order;
-use Illuminate\Http\Request;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
   protected $order;
+  protected $product;
+  protected $coupon;
 
-  public function __construct(Order $order)
+  public function __construct(Order $order, Product $product, Coupon $coupon)
   {
     $this->order = $order;
+    $this->product = $product;
+    $this->coupon = $coupon;
   }
 
   public function getAllOrders()
   {
     return $this->order->all();
+  }
+
+  public function getCountOrders()
+  {
+    return $this->order->count();
+  }
+
+  public function getCountProduct()
+  {
+    return $this->product->count();
+  }
+
+  public function getTotalSale()
+  {
+    return $this->order->where('status', 'delivered')->sum('total_amount');
+  }
+
+  public function getlatestOrders()
+  {
+    return $this->order->where('status', 'pending')->limit(10)->get();
+  }
+
+  public function getTotalOrderdelivered()
+  {
+    return $this->order->where('status', 'delivered')->count();
+  }
+
+  public function getTotalOrderShipped()
+  {
+    return $this->order->where('status', 'shipped')->count();
+  }
+
+  public function getTotalOrderProcessing()
+  {
+    return $this->order->where('status', 'processing')->count();
+  }
+
+  public function getTotalOrderConfirmed()
+  {
+    return $this->order->where('status', 'confirmed')->count();
+  }
+
+  public function getTotalCouponValid()
+  {
+    return $this->coupon->countCouponValid();
   }
 
   public function filterOrder($request, $limit = 10)

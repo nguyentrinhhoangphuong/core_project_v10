@@ -13,7 +13,7 @@
             $index = $key + 1;
             $id = $item['id'];
             $name = $item['name'];
-            $nameCategory = $item->categoryProduct->name;
+            $brand = $item->brandProduct->name ? $item->brandProduct->name : 'Không có thương hiệu';
             $price = number_format($item['price'], 0, '.', '.');
             $routeName = $routeName;
         @endphp
@@ -24,7 +24,7 @@
             </td>
             <td class="text-secondary">{!! $name !!}</td>
             <td>
-                <p>{!! $nameCategory !!}</p>
+                <p>{!! ucfirst($brand) !!}</p>
             </td>
             <td>
                 <p>{!! $price !!}</p>

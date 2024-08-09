@@ -35,6 +35,7 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
+            $('.attributesSelect').select2();
             $('.attributes').change(function() {
                 var attributeId = $(this).val();
                 if (attributeId) {
@@ -54,6 +55,8 @@
                                         item.attribute_value_id + '">' + item
                                         .attributeValues + '</option>');
                                 });
+                                attributeValuesDropdown.append(
+                                    '<option value="custom">+ Create new value</option>');
                                 attributeValuesDropdown.prop('disabled', false);
                                 attributeValuesDropdown.select2();
                                 attributeValuesDropdown.select2('open');

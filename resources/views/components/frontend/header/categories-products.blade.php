@@ -70,7 +70,7 @@
 <div class="header-nav-left">
     <button class="dropdown-category">
         <i data-feather="align-left"></i>
-        <span>Danh mục</span>
+        <span>Danh Mục Sản Phẩm</span>
     </button>
 
     <div class="category-dropdown">

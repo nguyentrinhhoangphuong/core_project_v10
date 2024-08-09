@@ -30,9 +30,7 @@ class CategoryProductAttributeService
   public function getAllFilterAttributes()
   {
     return Attributes::where('is_filter', true)
-      ->orderBy('ordering')
-      ->with('attributeValue')
-      ->get();
+      ->pluck('name')->toArray();
   }
 
   public function getRelevantFilterAttributes($products)

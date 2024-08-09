@@ -4,10 +4,10 @@
 @extends('admin.main')
 @section('content')
     @include('admin.elements.header')
-    <div class="row row-deck row-cards">
+    <div class="row row-deck row-cards ">
         <div class="col-12">
             <div class="row row-cards">
-                <div class="col-12">
+                <div class="col-12  print-section">
                     <div class="row mb-3">
                         <div class="col-6">
                             <h3>Thông tin khác hàng</h3>
@@ -29,7 +29,7 @@
                         <div class="col-6 text-end">
                             <h2>CODE: {{ $orderDetails['code'] }}</h2>
                             <p>Ngày Đặt hàng: {{ $orderDetails['created_at'] }}</p>
-                            <div class="d-flex justify-content-end align-items-center">
+                            <div class="d-flex justify-content-end align-items-center d-print-none">
                                 <label for="status" class="me-2">Trạng thái</label>
                                 <input type="hidden" value="{{ $orderDetails['id'] }}" id="orderid">
                                 <select id="order_status" class="form-select w-auto" name="order_status">
@@ -39,6 +39,22 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="col-auto ms-auto d-print-none mt-2">
+                                <button type="button" class="btn btn-primary" onclick="javascript:window.print();">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/printer -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path
+                                            d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" />
+                                        <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" />
+                                        <path
+                                            d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" />
+                                    </svg>
+                                    In hóa đơn
+                                </button>
+                            </div>
                         </div>
 
                     </div>
@@ -46,7 +62,6 @@
                         <table class="table table-transparent table-responsive">
                             <thead>
                                 <tr>
-                                    <th class="text-center">Hình</th>
                                     <th>Sản phẩm </th>
                                     <th class="text-center">Số lượng</th>
                                     <th class="text-end">Giá</th>
@@ -55,7 +70,6 @@
                             </thead>
                             @foreach ($orderDetails['products'] as $item)
                                 <tr>
-                                    <td><img src="{{ $item['image'] }}" width="50"></td>
                                     <td>
                                         <p class="strong mb-1">{{ $item['name'] }}</p>
                                     </td>
@@ -66,15 +80,17 @@
                                 </tr>
                             @endforeach
 
+                            @if ($orderDetails['coupon'])
+                                <tr>
+                                    <td colspan="3" class="font-weight-bold text-uppercase text-end">Coupon:
+                                        {{ $orderDetails['coupon']['code'] ?? 'khong' }}</td>
+                                    <td class="font-weight-bold text-end">
+                                        {{ Template::numberFormatVND($orderDetails['coupon']['max_discount_amount']) }}
+                                    </td>
+                                </tr>
+                            @endif
                             <tr>
-                                <td colspan="4" class="font-weight-bold text-uppercase text-end">Coupon:
-                                    {{ $orderDetails['coupon']['code'] }}</td>
-                                <td class="font-weight-bold text-end">
-                                    {{ Template::numberFormatVND($orderDetails['coupon']['max_discount_amount']) }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="4" class="font-weight-bold text-uppercase text-end">Tổng tiền:</td>
+                                <td colspan="3" class="font-weight-bold text-uppercase text-end">Tổng tiền:</td>
                                 <td class="font-weight-bold text-end">
                                     {{ Template::numberFormatVND($orderDetails['total_amount']) }}</td>
                             </tr>
@@ -111,3 +127,32 @@
         })
     </script>
 @endsection
+
+<style>
+    @media print {
+
+        /* Hide everything by default */
+        body * {
+            visibility: hidden;
+        }
+
+        /* Show the content you want to print */
+        .print-section,
+        .print-section * {
+            visibility: visible;
+        }
+
+        /* Hide unwanted elements */
+        .d-print-none {
+            display: none !important;
+        }
+
+        /* Position the content properly */
+        .print-section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+    }
+</style>

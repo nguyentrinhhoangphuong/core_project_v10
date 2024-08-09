@@ -76,7 +76,6 @@
                                         <label class="form-label">Dòng sản phẩm</label>
                                         <select class="form-select brand" name="series_id" id="series_id">
                                             <option value="" selected>Tùy chọn</option>
-
                                         </select>
                                     </div>
                                 </div>
@@ -96,20 +95,40 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label class="form-label">Danh mục sản phẩm</label>
-                                        <select class="form-select category_product" name="category_product_id">
+                                        <label class="form-label">Danh mục chính</label>
+                                        <select class="form-select category_product" id="main_category"
+                                            name="category_product_id">
                                             @foreach ($categoryProduct as $item)
                                                 <option value="{{ $item->id }}">
-                                                    {{ str_repeat('/-----', $item->depth) }} {{ $item->name }}
-                                                </option>
+                                                    {{ str_repeat('/-----', $item->depth) }} {{ $item->name }} </option>
                                             @endforeach
+
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Danh mục phụ</label>
+                                        <select class="form-select category_product" id="sub_category"
+                                            name="sub_category_id[]" multiple>
+                                            @foreach ($categoryProduct as $item)
+                                                <option value="{{ $item->id }}"
+                                                    {{ in_array($item->id, old('sub_category_id', [])) ? 'selected' : '' }}>
+                                                    {{ $item->name }}
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label">{{ __('cruds.admin.product.fields.status') }}</label>
                                         <select class="form-select" name="status">
@@ -122,10 +141,10 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label">{{ __('cruds.admin.product.fields.isTop') }}</label>
-                                        <select class="form-select" name="is_top">
+                                        <select class="form-select " name="is_top">
                                             <option value="" selected>Tùy chọn</option>
                                             @foreach ($topOptions as $key => $value)
                                                 <option value="{{ $key }}"
@@ -135,9 +154,10 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <div class="mb-3">
-                                        <label class="form-label">{{ __('cruds.admin.product.fields.isFeatured') }}</label>
+                                        <label
+                                            class="form-label">{{ __('cruds.admin.product.fields.isFeatured') }}</label>
                                         <select class="form-select" name="is_featured">
                                             <option value="" selected>Tùy chọn</option>
                                             @foreach ($featuredOptions as $key => $value)

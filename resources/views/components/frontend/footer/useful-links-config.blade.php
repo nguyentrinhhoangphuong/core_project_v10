@@ -12,7 +12,7 @@
 @endphp
 <div class="col-xl-2 col-lg-2 col-sm-3">
     <div class="footer-title">
-        <h4>Useful Links</h4>
+        <h4>Giới thiệu</h4>
     </div>
 
     <div class="footer-contain">

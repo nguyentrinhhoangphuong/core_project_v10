@@ -83,7 +83,7 @@ class HomeController extends FrontendController
         }
 
         $productsInSeries = $this->product->getProductsBySeries($product->series_id);
-        $desiredKeys = ['CPU', 'Ram', 'SSD', 'Kích thước màn hình'];
+        $desiredKeys = $this->categoryProductAttributeService->getAllFilterAttributes();
         foreach ($productsInSeries as $productInSeries) {
             $attributes = [];
             foreach ($productInSeries->productAttributes as $attribute) {
@@ -145,7 +145,7 @@ class HomeController extends FrontendController
         $products = [];
         if ($slug === null) {
             // Xử lý cho trường hợp filterandsearch
-            $valueSearch = $request->input('search') ?? "tất cả";
+            $valueSearch = $request->input('search') ?? "";
             $products = $this->product->filterAndSearch($request);
             if ($products->items() == []) {
                 abort(404);
@@ -156,24 +156,26 @@ class HomeController extends FrontendController
             // Xử lý cho trường hợp showProductbyCategory
             $arrSlug = explode('-', $slug);
             $categoryProductsID = $this->categoryProducts->descendantsAndSelf($arrSlug[count($arrSlug) - 1])->pluck('id');
-            if ($categoryProductsID->isEmpty()) {
-                abort(404);
-            }
+            $breadcrumb = $this->categoryProducts->descendantsAndSelf($arrSlug[count($arrSlug) - 1])->pluck('name')[0];
+            if ($categoryProductsID->isEmpty()) abort(404);
             $categoryProductID = end($arrSlug);
-            array_pop($arrSlug);
-            $breadcrumb = implode(" ", $arrSlug);
-            $productsQuery = Product::withRelations()
-                ->inCategories($categoryProductsID)
+            $productsQuery = Product::inCategories($categoryProductsID)
                 ->select('id', 'name', 'price', 'original_price', 'is_featured', 'category_product_id', 'brand_id');
+
+
+            if ($productsQuery->count() == 0) {
+                $categoryProductsID = $this->categoryProducts->descendantsAndSelf($categoryProductID)->pluck('id', 'name');
+                $productsQuery = Product::whereHas('categories', function ($query) use ($categoryProductsID) {
+                    $query->whereIn('category_products.id', $categoryProductsID);
+                })
+                    ->select('products.id', 'products.name', 'products.price', 'products.original_price', 'products.is_featured', 'products.brand_id');
+            }
 
             if ($request->has('sort')) {
                 $sort = $request->input('sort');
                 $productsQuery->sortBy($sort);
             }
             $products = $productsQuery->paginate($this->numberOfPage);
-            $brandid = $products[0]['brand_id'];
-            $brandname = $products[0]->brandProduct['name'];
-            $brandIds = $products->pluck('brand_id')->unique()->toArray();
         }
 
         $filterAttributes = $this->categoryProductAttributeService->getRelevantFilterAttributes($products);

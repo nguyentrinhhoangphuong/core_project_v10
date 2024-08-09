@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="mb-3">
                     <label class="form-label">Danh sách thuộc tính</label>
-                    <select class="form-select attributes" name="attribute_id">
+                    <select class="form-select attributes attributesSelect" name="attribute_id">
                         <option value="" selected>Tùy chọn</option>
                         @foreach ($attributes as $item)
                             <option value="{{ $item->id }}">

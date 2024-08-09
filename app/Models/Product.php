@@ -14,7 +14,27 @@ class Product extends MainModel
 {
     use HasFactory;
 
-    protected $fillable = [];
+    protected $fillable = [
+        'name',
+        'price',
+        'original_price',
+        'description',
+        'brand_id',
+        'series_id',
+        'sku',
+        'content',
+        'status',
+        'created_by',
+        'updated_by',
+        'slug',
+        'qty',
+        'offer_start_date',
+        'offer_end_date',
+        'is_top',
+        'is_featured',
+        'seo_title',
+        'seo_description'
+    ];
 
     public $fieldSearchAccepted = ['all', 'name'];
     public $requiredAttributes = ['cpu', 'ram', 'ssd'];
@@ -54,6 +74,16 @@ class Product extends MainModel
         return $this->belongsTo(CategoryProducts::class, 'category_product_id');
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(CategoryProducts::class, 'product_category_product', 'product_id', 'category_product_id');
+    }
+
+    public function mainCategory()
+    {
+        return $this->belongsTo(ProductCategoryProduct::class, 'category_product_id');
+    }
+
     public function brandProduct()
     {
         return $this->belongsTo(Brand::class, 'brand_id');
@@ -73,7 +103,7 @@ class Product extends MainModel
     {
         $result = null;
         if ($options['task'] == 'admin-list-item') {
-            $query = self::with('categoryProduct')->select('id', 'name', 'is_top', 'is_featured', 'category_product_id', 'price', 'description', 'content', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by');
+            $query = self::with('categoryProduct')->select('id', 'name', 'is_top', 'is_featured', 'brand_id', 'category_product_id', 'price', 'description', 'content', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by');
 
             if ($params['filter']['status'] != 'all') {
                 $query->where('status', $params['filter']['status']);
@@ -140,7 +170,8 @@ class Product extends MainModel
     public function saveItem($request, $options)
     {
         if ($options['task'] == 'add-item') {
-            $item = self::create($request->all());
+            $data = $request->except('sub_category_id');
+            $item = self::create($data);
 
             $alts = $request->input('alt', []);
             $images = $request->input('images', []);
@@ -152,17 +183,24 @@ class Product extends MainModel
                         ->toMediaCollection();
                 }
             }
+            $selectedCategories = $request->input('sub_category_id');
+            if (!empty($selectedCategories)) {
+                $item->categories()->sync($selectedCategories);
+            }
+
             return redirect()->route('admin.products.index');
         }
 
         if ($options['task'] == 'edit-item') {
-            $item = self::find($request->input('id'));
-            if (!isset($item)) {
-                return redirect()->route('admin.products.index')->withErrors('Project not found.');
+            $itemId = $request->input('id');
+            $item = self::find($itemId);
+            if (!isset($item)) return redirect()->route('admin.products.index')->withErrors('Project not found.');
+            $selectedCategories = $request->input('sub_category_id', []);
+            if (is_array($selectedCategories)) {
+                $item->categories()->sync($selectedCategories);
             }
-
-            $item->update($request->all());
-
+            $data = $request->except('sub_category_id');
+            $item->update($data);
             $image_delete = $request->input('image_delete', []);
             $images = $request->input('images', []);
             $alts = $request->input('alt', []);
@@ -204,6 +242,10 @@ class Product extends MainModel
                     $mediaItem->save();
                 }
             }
+
+
+
+            return redirect()->route('admin.products.index');
         }
     }
 
@@ -362,8 +404,8 @@ class Product extends MainModel
         $ids = array_values($attributeValueIds);
         $ids = Template::flattenArray($ids);
 
-        $query = self::with(['productAttributes.attribute', 'productAttributes.attributeValue', 'categoryProduct']);
-        $query->select('id', 'name', 'status', 'is_top', 'category_product_id', 'price', 'original_price', 'is_featured');
+        $query = self::with(['productAttributes.attribute', 'productAttributes.attributeValue', 'categoryProduct', 'brandProduct']);
+        $query->select('id', 'name', 'brand_id', 'status', 'is_top', 'category_product_id', 'price', 'original_price', 'is_featured');
 
         // Thêm điều kiện lọc theo brand_id nếu brandId không rỗng
         if (!is_null($brandId)) {

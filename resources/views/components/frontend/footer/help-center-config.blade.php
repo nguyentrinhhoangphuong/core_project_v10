@@ -12,7 +12,7 @@
 @endphp
 <div class="col-xl-2 col-sm-3">
     <div class="footer-title">
-        <h4>Help Center</h4>
+        <h4>Hỗ trợ khách hàng</h4>
     </div>
 
     <div class="footer-contain">
