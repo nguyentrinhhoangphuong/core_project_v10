@@ -102,6 +102,7 @@
                                         <label class="form-label">Danh mục chính</label>
                                         <select class="form-select category_product" id="main_category"
                                             name="category_product_id">
+                                            <option value="" selected>Tùy chọn</option>
                                             @foreach ($categoryProduct as $item)
                                                 <option value="{{ $item->id }}">
                                                     {{ str_repeat('/-----', $item->depth) }} {{ $item->name }} </option>
@@ -202,8 +203,8 @@
             </div>
         </div>
         <div class="card-footer d-flex justify-content-center">
-            <a href="{{ route('admin.' . $routeName . '.index') }}" class="btn btn-link me-2">Cancel</a>
-            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{{ route('admin.' . $routeName . '.index') }}" class="btn btn-link me-2">Hủy</a>
+            <button type="submit" class="btn btn-primary">Lưu và thêm thuộc tính sản phẩm</button>
         </div>
     </form>
 @endsection

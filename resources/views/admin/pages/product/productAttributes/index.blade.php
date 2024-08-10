@@ -55,10 +55,65 @@
                                         item.attribute_value_id + '">' + item
                                         .attributeValues + '</option>');
                                 });
-                                attributeValuesDropdown.append(
-                                    '<option value="custom">+ Create new value</option>');
                                 attributeValuesDropdown.prop('disabled', false);
-                                attributeValuesDropdown.select2();
+                                attributeValuesDropdown.select2({
+                                    tags: true,
+                                    createTag: function(params) {
+                                        return {
+                                            id: params.term,
+                                            text: params.term,
+                                            newOption: true
+                                        }
+                                    },
+                                    templateResult: function(data) {
+                                        var $result = $("<span></span>");
+                                        $result.text(data.text);
+                                        if (data.newOption) {
+                                            $result.append(" <em>(Thêm mới)</em>");
+                                        }
+                                        return $result;
+                                    }
+                                });
+                                attributeValuesDropdown.on('select2:select', function(e) {
+                                    var data = e.params.data;
+                                    let $attributeId = $('.attributes').val();
+                                    let $attrbuteValue = data.text;
+
+                                    if (data.newOption) {
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "attribute-values",
+                                            data: {
+                                                attribute_id: $attributeId,
+                                                value: $attrbuteValue,
+                                            },
+                                            success: function(response) {
+                                                if (response.success) {
+                                                    var newOption =
+                                                        new Option(response
+                                                            .item.name,
+                                                            response.item
+                                                            .attribute_value_id,
+                                                            true, true);
+                                                    attributeValuesDropdown
+                                                        .find(
+                                                            "option[value='" +
+                                                            data.id + "']")
+                                                        .remove(); // Xóa giá trị tạm thời
+                                                    attributeValuesDropdown
+                                                        .append(newOption)
+                                                        .trigger('change');
+
+                                                }
+                                            },
+                                            error: function(xhr, status,
+                                                error) {
+                                                console.error(xhr
+                                                    .responseText);
+                                            }
+                                        });
+                                    }
+                                });
                                 attributeValuesDropdown.select2('open');
                             } else {
                                 $(".attribute_values").empty();

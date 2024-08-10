@@ -19,6 +19,7 @@ class Product extends MainModel
         'price',
         'original_price',
         'description',
+        'category_product_id',
         'brand_id',
         'series_id',
         'sku',
@@ -170,6 +171,7 @@ class Product extends MainModel
     public function saveItem($request, $options)
     {
         if ($options['task'] == 'add-item') {
+            dd($request->all());
             $data = $request->except('sub_category_id');
             $item = self::create($data);
 
@@ -187,8 +189,7 @@ class Product extends MainModel
             if (!empty($selectedCategories)) {
                 $item->categories()->sync($selectedCategories);
             }
-
-            return redirect()->route('admin.products.index');
+            return $item;
         }
 
         if ($options['task'] == 'edit-item') {

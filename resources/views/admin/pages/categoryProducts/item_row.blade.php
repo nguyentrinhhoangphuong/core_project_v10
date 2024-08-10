@@ -1,22 +1,15 @@
-@php
-    $id = $item->id;
-    $name = $item->name;
-    $btnStatus = $item->status === 'active' ? 'btn-success' : 'btn-danger';
-    $statusLabel = $item->status === 'active' ? $statusOptions['active'] : $statusOptions['inactive'];
-    $indentation = str_repeat('&nbsp;', $item->depth * 4); // Thay đổi số lượng dấu cách tùy theo độ sâu
-@endphp
-
 <div data-sortable-id="{{ $item->id }}" class="list-group-item nested-item"
     style="margin-left: {{ $item->depth * 20 }}px;">
     <div class="d-flex align-items-center">
         <div>
-            <span class="item-name">{!! $indentation !!}{{ $item->name }}</span>
+            <span class="item-name">{{ $item->name }}</span>
         </div>
         <div class="btn-group btn-group-sm">
-            <button class="btn {{ $btnStatus }} text-white toggle-status" data-item-id="{{ $item->id }}"
-                data-item-status="{{ $item->status }}" data-controller="{{ $routeName }}">
-                {{ $statusLabel }}
-            </button>
+            <label class="dropdown-item form-switch">
+                <input class="form-check-input m-0 me-2 toggle-status" type="checkbox" data-item-id="{{ $item->id }}"
+                    data-item-status="{{ $item->status }}" data-controller="{{ $routeName }}"
+                    {{ $item->status === 1 ? 'checked' : '' }}>
+            </label>
             <a class="btn btn-primary text-white" href="{{ route('admin.category-products.edit', ['item' => $item]) }}">
                 Edit
             </a>

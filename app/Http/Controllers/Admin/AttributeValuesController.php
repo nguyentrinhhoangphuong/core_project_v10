@@ -52,6 +52,7 @@ class AttributeValuesController extends AdminController
             'success' => true,
             'item' => [
                 'name' => $item->value,
+                'attribute_value_id' => $item->id,
                 'deleteUrl' => route('admin.attribute-values.destroy', ['item' => $item->id]),
             ],
         ]);

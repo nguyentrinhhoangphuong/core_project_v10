@@ -6,44 +6,59 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ProductsRequest extends FormRequest
 {
-    private $table = 'products';
     /**
      * Determine if the user is authorized to make this request.
+     *
+     * @return bool
      */
-    public function authorize(): bool
+    public function authorize()
     {
-        return true;
+        return true; // Hoặc logic xác thực quyền truy cập của bạn
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array
      */
-    public function rules(): array
+    public function rules()
     {
-        // bail: nghĩa là nếu vi phạm 'min:5' thì sẽ dừng lại ngay chứ k cần phải tới 'url' 'link' => 'bail|required|min:5|url',
-        $id = $this->id;
-        $condName = 'bail|required' . $this->table . ',name';
-        if (!empty($id)) {
-            $condName .= ',' . $id; // nếu có id (edit) thì ta thêm $id để không phải unique
-        }
         return [
-            'name' => $condName,
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'original_price' => 'required|numeric|min:0',
+            'category_product_id' => 'required|exists:category_products,id',
+            'brand_id' => 'required|exists:brands,id',
+            'description' => 'nullable|string',
+            'series_id' => 'nullable|exists:series,id',
+            'sku' => 'nullable|string|max:255',
+            'content' => 'nullable|string',
+            'status' => 'nullable|boolean',
+            'slug' => 'nullable|string|max:255|unique:products,slug,' . $this->id,
+            'qty' => 'nullable|integer|min:0',
+            'offer_start_date' => 'nullable|date',
+            'offer_end_date' => 'nullable|date|after_or_equal:offer_start_date',
+            'is_top' => 'nullable|boolean',
+            'is_featured' => 'nullable|boolean',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string',
         ];
     }
 
     /**
-     * Get the error messages for the defined validation rules.
+     * Get custom messages for validator errors.
      *
-     * @return array<string, string>
+     * @return array
      */
-    public function messages(): array
+    public function messages()
     {
         return [
-            'name.required' => 'Trường tên là bắt buộc.',
-            'name.between' => 'Trường tên phải chứa ít nhất từ :min đến :max ký tự.',
-            'name.unique' => 'Tên đã được sử dụng.',
+            'name.required' => 'Tên sản phẩm là bắt buộc.',
+            'price.required' => 'Giá sản phẩm là bắt buộc.',
+            'original_price.required' => 'Giá gốc sản phẩm là bắt buộc.',
+            'category_product_id.required' => 'Danh mục sản phẩm là bắt buộc.',
+            'brand_id.required' => 'Thương hiệu là bắt buộc.',
+            // Thêm các thông báo tùy chỉnh khác nếu cần
         ];
     }
 }

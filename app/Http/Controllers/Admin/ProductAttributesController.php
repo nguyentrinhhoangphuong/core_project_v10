@@ -59,6 +59,7 @@ class ProductAttributesController extends AdminController
         return redirect()->back()->with('success', 'Đã thêm thành công');
     }
 
+
     /**
      * Show the form for editing the specified resource.
      */

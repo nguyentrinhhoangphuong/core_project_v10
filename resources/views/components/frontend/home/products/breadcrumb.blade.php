@@ -13,12 +13,12 @@
                 </li>
                 <li class="breadcrumb-item">
                     <a
-                        href="{{ route('frontend.home.showProducts', ['slug' => Template::slug($categoryBreadcrumb[0]['name']) . '-' . $categoryBreadcrumb[0]['id']]) }}">{{ ucwords($categoryBreadcrumb[0]['name']) }}</a>
+                        href="{{ route('frontend.home.showProducts', ['slug' => Template::slug($categoryBreadcrumb[0]['name'] ?? '') . '-' . $categoryBreadcrumb[0]['id']]) }}">{{ ucwords($categoryBreadcrumb[0]['name'] ?? '') }}</a>
                 </li>
 
                 <li class="breadcrumb-item">
                     <a
-                        href="{{ route('frontend.home.showProducts', ['slug' => Template::slug($categoryBreadcrumb[1]['name']) . '-' . $categoryBreadcrumb[1]['id']]) }}">{{ ucwords($categoryBreadcrumb[1]['name']) }}</a>
+                        href="{{ route('frontend.home.showProducts', ['slug' => Template::slug($categoryBreadcrumb[1]['name'] ?? '') . '-' . $categoryBreadcrumb[1]['id']]) }}">{{ ucwords($categoryBreadcrumb[1]['name']) ?? '' }}</a>
                 </li>
             </ol>
         </nav>

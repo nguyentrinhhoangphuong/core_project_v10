@@ -42,10 +42,10 @@ class ProductController extends AdminController
         ]);
     }
 
-    public function store(Request $request)
+    public function store(MainRequest $request)
     {
-        $this->save($request, ['task' => 'add-item']);
-        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' created successfully');
+        $item = $this->save($request, ['task' => 'add-item']);
+        return redirect()->route('admin.product-attributes.index', ['productId' => $item->id, 'productName' => $item->name]);
     }
 
     // tự động lưu vào file tạm sau khi kéo thả, thêm image 
@@ -71,7 +71,7 @@ class ProductController extends AdminController
     {
         $item = MainMoDel::findOrFail($item);
         $series = $item->brandProduct->series;
-        $categoryProduct = $this->categoryProduct::withDepth()->defaultOrder()->get()->toFlatTree();
+        $categoryProduct = $this->categoryProduct::withDepth()->defaultOrder()->where('parent_id', '!=', null)->get()->toFlatTree();
         $brands = $this->brand::all();
         $subCategoryId = $item->categories->pluck('id')->toArray();
         return view($this->pathViewController . 'edit', [
@@ -103,7 +103,7 @@ class ProductController extends AdminController
     }
     public function create()
     {
-        $categoryProduct = $this->categoryProduct::withDepth()->defaultOrder()->get()->toFlatTree();
+        $categoryProduct = $this->categoryProduct::withDepth()->defaultOrder()->where('parent_id', '!=', null)->get()->toFlatTree();
         $brands = $this->brand::all();
         return view($this->pathViewController . 'create', [
             'title' => 'Add ' . $this->controllerName,
@@ -112,10 +112,10 @@ class ProductController extends AdminController
         ]);
     }
 
-    public function update(Request $request, MainMoDel $item)
+    public function update(MainRequest $request, MainMoDel $item)
     {
         $this->updateItem($request, $item);
-        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' updated successfully');
+        return redirect()->back()->with('success', ucfirst($this->controllerName) . ' cập nhật thành công');
     }
 
 
@@ -123,7 +123,7 @@ class ProductController extends AdminController
     public function destroy(MainMoDel $item)
     {
         $this->deleteItem($item);
-        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' deleted successfully');
+        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' đã xóa thành công');
     }
 
     public function updateStatus(Request $request)

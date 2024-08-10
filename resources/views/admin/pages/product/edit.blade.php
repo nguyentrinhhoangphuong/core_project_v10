@@ -120,7 +120,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        <label class="form-label">Danh mục sản phẩm</label>
+                                        <label class="form-label">Danh mục chính</label>
                                         <select class="form-select category_product" name="category_product_id">
                                             @foreach ($categoryProduct as $item)
                                                 <option value="{{ $item->id }}"
@@ -220,8 +220,8 @@
             </div>
         </div>
         <div class="card-footer d-flex justify-content-center">
-            <a href="{{ route('admin.' . $routeName . '.index') }}" class="btn btn-link me-2">Cancel</a>
-            <button type="submit" class="btn btn-primary">Update</button>
+            <a href="{{ route('admin.' . $routeName . '.index') }}" class="btn btn-link me-2">Hủy</a>
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
         </div>
         <input type="hidden" name="id" value="{!! $id !!}">
     </form>
@@ -264,5 +264,8 @@
                 });
             }
         });
+        @if (session('success'))
+            fireNotif("{{ session('success') }}", "success", 3000);
+        @endif
     </script>
 @endsection

@@ -54,7 +54,7 @@ class AdminController extends Controller
 
     public function save($item, $options)
     {
-        $this->model->saveItem($item, $options);
+        return $this->model->saveItem($item, $options);
     }
 
     public function updateItem($request, $item)

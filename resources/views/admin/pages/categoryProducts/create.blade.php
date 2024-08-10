@@ -1,7 +1,7 @@
 @php
     $statusOptions = [
-        'active' => config('zvn.template.status.active.name'),
-        'inactive' => config('zvn.template.status.inactive.name'),
+        '1' => config('zvn.template.status.active.name'),
+        '0' => config('zvn.template.status.inactive.name'),
     ];
 @endphp
 @extends('admin.main')
@@ -24,7 +24,7 @@
                                 <select class="form-select" name="status">
                                     @foreach ($statusOptions as $key => $value)
                                         <option value="{{ $key }}"
-                                            @if (old('status', 'active') == $key) selected @endif>{{ $value }}
+                                            @if (old('status', 1) == $key) selected @endif>{{ $value }}
                                         </option>
                                     @endforeach
                                 </select>
