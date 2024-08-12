@@ -1,3 +1,6 @@
+@php
+    use App\Helpers\Template;
+@endphp
 <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu"
@@ -7,7 +10,8 @@
         <div class="collapse navbar-collapse" id="sidebar-menu">
             <ul class="navbar-nav pt-lg-3">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('admin.dashboard.index') }}">
+                    <a class="nav-link {{ Template::isActive('admin.dashboard.index') }}"
+                        href="{{ route('admin.dashboard.index') }}">
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/mail-opened -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -25,8 +29,9 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link active" href="{{ route('admin.sliders.index') }}">
+                <li class="nav-item">
+                    <a class="nav-link {{ Template::isActive('admin.sliders.index') }}"
+                        href="{{ route('admin.sliders.index') }}">
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/mail-opened -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -44,7 +49,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('admin.categories.index') }}">
+                    <a class="nav-link {{ Template::isActive('admin.categories.index') }}"
+                        href="{{ route('admin.categories.index') }}">
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/mail-opened -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -62,7 +68,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('admin.articles.index') }}">
+                    <a class="nav-link {{ Template::isActive('admin.articles.index') }}"
+                        href="{{ route('admin.articles.index') }}">
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/mail-opened -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -79,9 +86,19 @@
                         </span>
                     </a>
                 </li>
-                <li class="nav-item dropdown active">
-                    <a class="nav-link dropdown-toggle active" href="#" data-bs-toggle="dropdown"
-                        data-bs-auto-close="false" role="button" aria-expanded="false">
+                <li class="nav-item dropdown">
+                    @php
+                        $productRoutes = [
+                            'admin.products.index',
+                            'admin.category-products.index',
+                            'admin.attributes.index',
+                            'admin.brand.index',
+                            'admin.coupon.index',
+                        ];
+                    @endphp
+                    <a class="nav-link dropdown-toggle {{ in_array(Route::currentRouteName(), $productRoutes) ? 'active' : '' }}"
+                        href="#" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
+                        aria-expanded="{{ in_array(Route::currentRouteName(), $productRoutes) ? 'true' : 'false' }}">
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/mail-opened -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -97,28 +114,36 @@
                             Products
                         </span>
                     </a>
-                    <div class="dropdown-menu show" data-bs-popper="static">
-                        <div class="dropdown-menu-columns show">
-                            <a class="dropdown-item" href="{{ route('admin.products.index') }}">
+                    <div class="dropdown-menu {{ in_array(Route::currentRouteName(), $productRoutes) ? 'show' : '' }}"
+                        data-bs-popper="static">
+                        <div
+                            class="dropdown-menu-columns {{ in_array(Route::currentRouteName(), $productRoutes) ? 'show' : '' }}">
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.products.index' ? 'active' : '' }}"
+                                href="{{ route('admin.products.index') }}">
                                 All Products
                             </a>
-                            <a class="dropdown-item" href="{{ route('admin.category-products.index') }}">
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.category-products.index' ? 'active' : '' }}"
+                                href="{{ route('admin.category-products.index') }}">
                                 Category Products
                             </a>
-                            <a class="dropdown-item" href="{{ route('admin.attributes.index') }}">
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.attributes.index' ? 'active' : '' }}"
+                                href="{{ route('admin.attributes.index') }}">
                                 Attributes
                             </a>
-                            <a class="dropdown-item" href="{{ route('admin.brand.index') }}">
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.brand.index' ? 'active' : '' }}"
+                                href="{{ route('admin.brand.index') }}">
                                 Brand
                             </a>
-                            <a class="dropdown-item" href="{{ route('admin.coupon.index') }}">
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.coupon.index' ? 'active' : '' }}"
+                                href="{{ route('admin.coupon.index') }}">
                                 Coupon
                             </a>
                         </div>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('admin.menus.index') }}">
+                    <a class="nav-link {{ Template::isActive('admin.menus.index') }}"
+                        href="{{ route('admin.menus.index') }}">
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/mail-opened -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -136,7 +161,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('admin.order.index') }}">
+                    <a class="nav-link {{ Template::isActive('admin.order.index') }}"
+                        href="{{ route('admin.order.index') }}">
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/mail-opened -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -154,7 +180,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('admin.settings.index') }}">
+                    <a class="nav-link {{ Template::isActive('admin.settings.index') }}"
+                        href="{{ route('admin.settings.index') }}">
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/mail-opened -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -172,7 +199,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('admin.fileManager.index') }}">
+                    <a class="nav-link {{ Template::isActive('admin.fileManager.index') }}"
+                        href="{{ route('admin.fileManager.index') }}">
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/mail-opened -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"

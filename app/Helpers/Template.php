@@ -37,6 +37,14 @@ class Template
         return date("d-m-Y", strtotime($date));
     }
 
+    public static function isActive($route, $className = 'active')
+    {
+        if (is_array($route)) {
+            return in_array(Route::currentRouteName(), $route) ? $className : '';
+        }
+        return Route::currentRouteName() == $route ? $className : '';
+    }
+
     public static function getOrderStatus($status)
     {
         $statuses = config('order_status.status');
