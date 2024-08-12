@@ -8,7 +8,7 @@
                     </div>
                     <div class="col-auto">
                         <a class="dropdown-item" id="high"
-                            href="{{ route('frontend.home.filterProduct', ['brand[]' => $products['brand_id']]) }}">
+                            href="{{ route('frontend.home.showProducts', ['brand[]' => $products['brand_id']]) }}">
                             Xem tất cả
                         </a>
                     </div>

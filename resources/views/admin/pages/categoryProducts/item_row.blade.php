@@ -23,8 +23,8 @@
                 @csrf
                 @method('DELETE')
             </form>
-            <a href="{{ route('admin.category-products.addAttribute', ['categoryProductsId' => $item->id]) }}"
-                class="btn btn-out">Thêm thuộc tính</a>
+            {{-- <a href="{{ route('admin.category-products.addAttribute', ['categoryProductsId' => $item->id]) }}"
+                class="btn btn-out">Thêm thuộc tính</a> --}}
         </div>
     </div>
 

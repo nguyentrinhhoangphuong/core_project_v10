@@ -57,7 +57,6 @@ class CategoryProductAttributeService
   public function getRelevantBrands($products)
   {
     $productIds = $products->pluck('id')->toArray();
-
     $brands = Brand::whereHas('products', function ($query) use ($productIds) {
       $query->whereIn('id', $productIds);
     })

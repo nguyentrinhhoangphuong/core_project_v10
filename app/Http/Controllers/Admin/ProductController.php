@@ -146,4 +146,18 @@ class ProductController extends AdminController
         $html = view('admin.pages.' . $this->controllerName . '.list_row', ['items' => $data])->render();
         return response()->json(['success' => true, 'data' => $html]);
     }
+
+    public function search(Request $request)
+    {
+        $query = MainMoDel::query();
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'LIKE', "%{$search}%");
+        }
+        $items = $query->paginate(10);
+        return view($this->pathViewController . 'index', [
+            'title' => 'Tất cả sản phẩm',
+            'items' => $items,
+        ]);
+    }
 }

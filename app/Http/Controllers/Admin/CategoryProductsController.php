@@ -43,7 +43,7 @@ class CategoryProductsController extends AdminController
     public function store(Request $request)
     {
         $this->save($request->all(), ['task' => 'add-item']);
-        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' created successfully');
+        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' đã tạo thành công');
     }
 
     public function edit($item)
@@ -77,13 +77,13 @@ class CategoryProductsController extends AdminController
     public function update(Request $request, MainMoDel $item)
     {
         $this->updateItem($request, $item);
-        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' updated successfully');
+        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' cập nhật thành công');
     }
 
     public function destroy(MainMoDel $item)
     {
         $this->deleteItem($item);
-        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' deleted successfully');
+        return redirect()->route($this->routeIndex)->with('success', ucfirst($this->controllerName) . ' đã xóa thành công');
     }
 
     public function updateStatus(Request $request)
@@ -110,31 +110,31 @@ class CategoryProductsController extends AdminController
         ]);
     }
 
-    public function addAttribute(Request $request)
-    {
-        $attributes = Attributes::all();
-        $categoryProduct = MainMoDel::where('id', $request->categoryProductsId)->firstOrFail();
-        $currentAttributeIds = CategoryProductAttribute::where('category_product_id', $request->categoryProductsId)
-            ->pluck('attribute_id')
-            ->toArray();
-        return view($this->pathViewController . 'addAttribute', [
-            'title' => 'Thêm thuộc tính cho danh mục: ' . $categoryProduct->name,
-            'attributes' => $attributes,
-            'currentAttributeIds' => $currentAttributeIds,
-        ]);
-    }
+    // public function addAttribute(Request $request)
+    // {
+    //     $attributes = Attributes::all();
+    //     $categoryProduct = MainMoDel::where('id', $request->categoryProductsId)->firstOrFail();
+    //     $currentAttributeIds = CategoryProductAttribute::where('category_product_id', $request->categoryProductsId)
+    //         ->pluck('attribute_id')
+    //         ->toArray();
+    //     return view($this->pathViewController . 'addAttribute', [
+    //         'title' => 'Thêm thuộc tính cho danh mục: ' . $categoryProduct->name,
+    //         'attributes' => $attributes,
+    //         'currentAttributeIds' => $currentAttributeIds,
+    //     ]);
+    // }
 
-    public function saveAttributeId(Request $request, $categoryProductsId)
-    {
-        $attributeIds = $request->input('attribute_ids', []);
-        // Xóa tất cả các liên kết cũ
-        CategoryProductAttribute::where('category_product_id', $categoryProductsId)->delete();
-        foreach ($attributeIds as $attributeId) {
-            CategoryProductAttribute::create([
-                'category_product_id' => $categoryProductsId,
-                'attribute_id' => $attributeId
-            ]);
-        }
-        return redirect()->back()->with('success', 'Đã cập nhật thuộc tính cho danh mục sản phẩm');
-    }
+    // public function saveAttributeId(Request $request, $categoryProductsId)
+    // {
+    //     $attributeIds = $request->input('attribute_ids', []);
+    //     // Xóa tất cả các liên kết cũ
+    //     CategoryProductAttribute::where('category_product_id', $categoryProductsId)->delete();
+    //     foreach ($attributeIds as $attributeId) {
+    //         CategoryProductAttribute::create([
+    //             'category_product_id' => $categoryProductsId,
+    //             'attribute_id' => $attributeId
+    //         ]);
+    //     }
+    //     return redirect()->back()->with('success', 'Đã cập nhật thuộc tính cho danh mục sản phẩm');
+    // }
 }

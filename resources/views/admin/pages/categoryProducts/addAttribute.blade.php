@@ -1,4 +1,4 @@
-@extends('admin.main')
+{{-- @extends('admin.main')
 @section('content')
     @include('admin.elements.header')
     <div class="row row-deck row-cards">
@@ -50,4 +50,4 @@
             fireNotif("{{ session('success') }}", "success", 3000);
         @endif
     </script>
-@endsection
+@endsection --}}

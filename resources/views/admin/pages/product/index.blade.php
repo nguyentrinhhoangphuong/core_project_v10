@@ -8,6 +8,16 @@
                     <x-admin.products.filter />
                 </div>
                 <div class="col-12">
+                    <form action="{{ route('admin.products.search') }}" method="GET">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="search" placeholder="Tên sản phẩm"
+                                value="{{ request('search') }}">
+                            <button type="submit" class="btn btn-primary">Tìm sản phẩm</button>
+                            <a class="btn" href="{{ route('admin.products.index') }}">Reset</a>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-12">
                     <div class="card card-body">
                         <div class="table-responsive">
                             @include('admin.pages.' . $controllerName . '.list', ['items' => $items])
@@ -41,6 +51,10 @@
                         fireNotif("Cập nhật thành công", "success", 3000);
                     }
                 });
+            });
+            $('.searchProductName').on('submit', function(e) {
+                console.log(e);
+
             });
         });
         @if (session('success'))

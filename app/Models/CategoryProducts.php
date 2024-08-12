@@ -17,10 +17,10 @@ class CategoryProducts extends MainModel
         return $this->hasMany(CategoryProducts::class, 'parent_id', 'id')->with('category_products');
     }
 
-    public function attributes()
-    {
-        return $this->belongsToMany(Attributes::class, 'category_product_attributes', 'category_product_id', 'attribute_id');
-    }
+    // public function attributes()
+    // {
+    //     return $this->belongsToMany(Attributes::class, 'category_product_attributes', 'category_product_id', 'attribute_id');
+    // }
 
     // public function products()
     // {

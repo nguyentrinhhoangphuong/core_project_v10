@@ -82,7 +82,7 @@ class HomeController extends FrontendController
             }
         }
 
-        $productsInSeries = $this->product->getProductsBySeries($product->series_id);
+        $productsInSeries = $this->product->getProductsBySeries($product->series_id, $product->brand_id);
         $desiredKeys = $this->categoryProductAttributeService->getAllFilterAttributes();
         foreach ($productsInSeries as $productInSeries) {
             $attributes = [];
@@ -139,65 +139,111 @@ class HomeController extends FrontendController
         ]);
     }
 
-
     public function showProducts(Request $request, $slug = null)
     {
-        $products = [];
         if ($slug === null) {
-            // Xử lý cho trường hợp filterandsearch
-            $valueSearch = $request->input('search') ?? "";
-            $products = $this->product->filterAndSearch($request);
-            if ($products->items() == []) {
-                abort(404);
-            };
-            $breadcrumb = "Tìm kiếm: " . $valueSearch;
-            $categoryProductID = null;
+            return $this->handleFilterAndSearch($request);
         } else {
-            // Xử lý cho trường hợp showProductbyCategory
-            $arrSlug = explode('-', $slug);
-            $categoryProductsID = $this->categoryProducts->descendantsAndSelf($arrSlug[count($arrSlug) - 1])->pluck('id');
-            $breadcrumb = $this->categoryProducts->descendantsAndSelf($arrSlug[count($arrSlug) - 1])->pluck('name')[0];
-            if ($categoryProductsID->isEmpty()) abort(404);
-            $categoryProductID = end($arrSlug);
-            $productsQuery = Product::inCategories($categoryProductsID)
-                ->select('id', 'name', 'price', 'original_price', 'is_featured', 'category_product_id', 'brand_id');
+            return $this->handleShowProductByCategory($request, $slug);
+        }
+    }
 
+    private function handleFilterAndSearch(Request $request)
+    {
+        $valueSearch = $request->input('search') ?? "";
+        $products = $this->product->filterAndSearch($request);
 
-            if ($productsQuery->count() == 0) {
-                $categoryProductsID = $this->categoryProducts->descendantsAndSelf($categoryProductID)->pluck('id', 'name');
-                $productsQuery = Product::whereHas('categories', function ($query) use ($categoryProductsID) {
-                    $query->whereIn('category_products.id', $categoryProductsID);
-                })
-                    ->select('products.id', 'products.name', 'products.price', 'products.original_price', 'products.is_featured', 'products.brand_id');
-            }
-
-            if ($request->has('sort')) {
-                $sort = $request->input('sort');
-                $productsQuery->sortBy($sort);
-            }
-            $products = $productsQuery->paginate($this->numberOfPage);
+        if ($products->isEmpty()) {
+            abort(404);
         }
 
+        $breadcrumb = $valueSearch == "" ? "Lọc theo thuộc tính" : "Tìm kiếm:" . $valueSearch;
+        $categoryProductID = null;
+
+        return $this->renderView($products, $breadcrumb, $categoryProductID, $request);
+    }
+
+    private function handleShowProductByCategory(Request $request, $slug)
+    {
+        $arrSlug = explode('-', $slug);
+        $categoryProductID = end($arrSlug);
+        $categoryProductsID = $this->categoryProducts->descendantsAndSelf($categoryProductID)->pluck('id');
+        $breadcrumb = $this->categoryProducts->descendantsAndSelf($categoryProductID)->pluck('name')->first();
+
+        if ($categoryProductsID->isEmpty() || !$breadcrumb) {
+            abort(404);
+        }
+
+        $productsQuery = $this->buildProductsQuery($categoryProductsID, $categoryProductID);
+        $productsQuery = $this->applySorting($productsQuery, $request);
+
+        $products = $productsQuery->paginate($this->numberOfPage);
+
+        return $this->renderView($products, $breadcrumb, $categoryProductID, $request, $slug);
+    }
+
+    private function buildProductsQuery($categoryProductsID, $categoryProductID)
+    {
+        $productsQuery = Product::inCategories($categoryProductsID)
+            ->select('id', 'name', 'price', 'original_price', 'is_featured', 'category_product_id', 'brand_id');
+
+        if ($productsQuery->count() == 0) {
+            $categoryProductsID = $this->categoryProducts->descendantsAndSelf($categoryProductID)->pluck('id', 'name');
+            $productsQuery = Product::whereHas('categories', function ($query) use ($categoryProductsID) {
+                $query->whereIn('category_products.id', $categoryProductsID);
+            })
+                ->select('products.id', 'products.name', 'products.price', 'products.original_price', 'products.is_featured', 'products.brand_id');
+        }
+
+        return $productsQuery;
+    }
+
+    private function applySorting($productsQuery, $request)
+    {
+        if ($request->has('sort')) {
+            $sort = $request->input('sort');
+            return $productsQuery->sortBy($sort);
+        }
+        return $productsQuery;
+    }
+
+    private function renderView($products, $breadcrumb, $categoryProductID, $request, $slug = null)
+    {
         $filterAttributes = $this->categoryProductAttributeService->getRelevantFilterAttributes($products);
         $brands = $this->categoryProductAttributeService->getRelevantBrands($products);
+        $filterSummary = $this->buildFilterSummary($request);
 
+        return view($this->pathViewController . 'showProductbyCategory', compact(
+            'products',
+            'breadcrumb',
+            'filterAttributes',
+            'brands',
+            'categoryProductID',
+            'filterSummary',
+            'request',
+            'slug'
+        ));
+    }
+
+    private function buildFilterSummary($request)
+    {
         $filterSummary = [];
+
         if ($request->filters) {
             foreach ($request->filters as $attributeId => $values) {
-                $attributeValues = AttributeValue::where('id', $values)->get();
-                if (!empty($attributeValues)) {
-                    foreach ($attributeValues as $value) {
-                        $filterSummary[] = [
-                            'type' => 'attribute',
-                            'id' => $value->id,
-                            'value' => $value->value,
-                        ];
-                    }
+                $attributeValues = AttributeValue::whereIn('id', $values)->get();
+                foreach ($attributeValues as $value) {
+                    $filterSummary[] = [
+                        'type' => 'attribute',
+                        'id' => $value->id,
+                        'value' => $value->value,
+                    ];
                 }
             }
         }
+
         if ($request->brand) {
-            $brands  = Brand::whereIn('id', $request->brand)->get();
+            $brands = Brand::whereIn('id', $request->brand)->get();
             foreach ($brands as $brand) {
                 $filterSummary[] = [
                     'type' => 'brand',
@@ -207,7 +253,7 @@ class HomeController extends FrontendController
             }
         }
 
-        return view($this->pathViewController . 'showProductbyCategory', compact('products', 'breadcrumb', 'filterAttributes', 'brands', 'categoryProductID', 'filterSummary', 'request'));
+        return $filterSummary;
     }
 
     public function clearAllFilters(Request $request)

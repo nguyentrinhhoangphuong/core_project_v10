@@ -2,8 +2,8 @@
     use App\Helpers\Template as Template;
 
     $statusOptions = [
-        'active' => config('zvn.template.status.active.name'),
-        'inactive' => config('zvn.template.status.inactive.name'),
+        '1' => config('zvn.template.status.active.name'),
+        '0' => config('zvn.template.status.inactive.name'),
     ];
 
 @endphp

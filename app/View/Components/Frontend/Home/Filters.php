@@ -17,16 +17,18 @@ class Filters extends Component
     public $request;
     public $filterAttributes;
     public $filterSummary;
+    public $slug;
     protected $categoryProductAttributeService;
 
 
     /**
      * Create a new component instance.
      */
-    public function __construct($brands, $filterAttributes, $filterSummary, $request)
+    public function __construct($brands, $filterAttributes, $filterSummary, $request, $slug)
     {
         $this->brands = $brands;
         $this->request = $request;
+        $this->slug = $slug;
         $this->filterAttributes = $filterAttributes;
         $this->filterSummary = $filterSummary;
     }
@@ -42,6 +44,7 @@ class Filters extends Component
             'request' => $this->request,
             'filterAttributes' => $this->filterAttributes,
             'filterSummary' => $this->filterSummary,
+            'slug' => $this->slug,
         ]);
     }
 }

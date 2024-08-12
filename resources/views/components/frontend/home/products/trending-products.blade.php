@@ -10,8 +10,10 @@
                     <div class="offer-product">
                         <a href="{{ route('frontend.home.productDetails', ['slug' => Template::slug($product->name) . '-' . $product->id]) }}"
                             class="offer-image">
-                            <img src="{{ $product->media[$loop->index]->getUrl() }}" class="img-fluid blur-up lazyload"
-                                alt="">
+                            @if (count($product->media) > $loop->index)
+                                <img src="{{ $product->media[0]->getUrl() }}" class="img-fluid blur-up lazyload"
+                                    alt="">
+                            @endif
                         </a>
 
                         <div class="offer-detail">

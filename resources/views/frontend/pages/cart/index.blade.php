@@ -14,7 +14,7 @@
             @if (!isset($cart) || $cart->products->isEmpty())
                 <div class="text-center">
                     <p>Giỏ hàng của bạn đang trống</p>
-                    <a href="{{ route('frontend.home.showProducts') }}">Tiếp tục mua hàng</a>
+                    <a href="{{ route('frontend.home.index') }}">Tiếp tục mua hàng</a>
                 </div>
             @else
                 <div class="row g-sm-5 g-3">

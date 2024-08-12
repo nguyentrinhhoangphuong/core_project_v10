@@ -171,7 +171,6 @@ class Product extends MainModel
     public function saveItem($request, $options)
     {
         if ($options['task'] == 'add-item') {
-            dd($request->all());
             $data = $request->except('sub_category_id');
             $item = self::create($data);
 
@@ -388,9 +387,12 @@ class Product extends MainModel
             ->paginate($num);
     }
 
-    public function scopeGetProductsBySeries(Builder $query, $seriedId)
+    public function scopeGetProductsBySeries(Builder $query, $seriedId, $brandId)
     {
-        $product = $query->with(['productAttributes.attribute', 'productAttributes.attributeValue', 'series'])->where('series_id', $seriedId)->get();
+        $product = $query->with(['productAttributes.attribute', 'productAttributes.attributeValue', 'series', 'brandProduct'])
+            ->where('brand_id', $brandId)
+            ->where('series_id', $seriedId)
+            ->get();
         return $product;
     }
 

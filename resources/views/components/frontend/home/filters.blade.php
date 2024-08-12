@@ -16,6 +16,7 @@
             </div>
         @endif
 
+
         @if (count($brands))
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingTwo">
@@ -27,7 +28,6 @@
                 <div id="collapseTwo" class="accordion-collapse collapse show">
                     <div class="accordion-body">
                         <ul class="category-list custom-padding">
-
                             @foreach ($brands as $item)
                                 <li>
                                     <a

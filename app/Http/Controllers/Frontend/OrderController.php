@@ -77,8 +77,6 @@ class OrderController extends Controller
         $status = array_filter(config('order_status.status'), function ($key) use ($statusForUser) {
             return in_array($key, $statusForUser);
         }, ARRAY_FILTER_USE_KEY);
-        // dump($order);
-        // dd($status);
         if ($order) {
             return redirect()->back()->with(['order' => $order, 'status' => $status, 'code' => $code]);
         } else {

@@ -26,12 +26,11 @@ Route::prefix('admin')
             // ======================= CATEGORY PRODUCT =================================
             Route::post('category-products/update-status/{id}', ['uses' => 'CategoryProductsController@updateStatus', 'as' => 'category-products.update.status']);
             Route::post('category-products/updateTree', ['uses' => 'CategoryProductsController@updateTree', 'as' => 'category-products.update.tree']);
-            Route::get('category-products/add-attribute', ['uses' => 'CategoryProductsController@addAttribute', 'as' => 'category-products.addAttribute']);
-            Route::post('category-products/{categoryProductsId}/save-attributes', ['uses' => 'CategoryProductsController@saveAttributeId', 'as' => 'category-products.saveAttributeId']);
             Route::resource('category-products', 'CategoryProductsController', ['parameters' => ['category-products' => 'item']]);
             // ======================= PRODUCT =================================
             Route::post('products/update-status', ['uses' => 'ProductController@updateStatus', 'as' => 'products.update.status']);
             Route::post('products/upload', ['uses' => 'ProductController@upload', 'as' => 'products.upload']);
+            Route::get('products/search', ['uses' => 'ProductController@search', 'as' => 'products.search']);
             Route::post('products/media', ['uses' => 'ProductController@storeMedia', 'as' => 'products.storeMedia']);
             Route::get('products/{id}/files', ['uses' => 'ProductController@files', 'as' => 'products.files']);
             Route::post('products/update-field', ['uses' => 'ProductController@updateField', 'as' => 'products.update.field']);

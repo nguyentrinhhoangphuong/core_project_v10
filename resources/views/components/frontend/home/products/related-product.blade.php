@@ -12,11 +12,13 @@
                     <div class="product-box-3 wow fadeInUp">
                         <div class="product-header">
                             <div class="product-image">
-                                <a
-                                    href="{{ route('frontend.home.productDetails', ['slug' => Template::slug($product->name) . '-' . $product->id]) }}">
-                                    <img src="{{ $product->media[0]->getUrl() }}" class="img-fluid blur-up lazyload"
-                                        alt="{{ $product->name }}">
-                                </a>
+                                @if (count($product->media) >= $loop->index)
+                                    <a
+                                        href="{{ route('frontend.home.productDetails', ['slug' => Template::slug($product->name) . '-' . $product->id]) }}">
+                                        <img src="{{ $product->media[0]->getUrl() }}" class="img-fluid blur-up lazyload"
+                                            alt="{{ $product->name }}">
+                                    </a>
+                                @endif
                             </div>
                         </div>
                         <div class="product-footer">

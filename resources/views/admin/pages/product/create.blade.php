@@ -119,7 +119,7 @@
                                             @foreach ($categoryProduct as $item)
                                                 <option value="{{ $item->id }}"
                                                     {{ in_array($item->id, old('sub_category_id', [])) ? 'selected' : '' }}>
-                                                    {{ $item->name }}
+                                                    {{ str_repeat('/-----', $item->depth) }} {{ $item->name }}
                                                 </option>
                                             @endforeach
 

@@ -73,6 +73,7 @@ class AttributesController extends AdminController
 
             $slug = Str::slug($request->name, '-');
             $request['ordering'] = MainModel::max('ordering') + 1;
+            $request['is_filter'] = 1;
             $data = $request->all();
             $data['slug'] = $slug;
             $item = MainModel::create($data);
@@ -83,7 +84,7 @@ class AttributesController extends AdminController
                     'id' => $item->id,
                     'count' => $count,
                     'name' => $item->name,
-                    'is_filter' => $item->is_filter,
+                    'is_filter' => 1,
                     'routeName' => 'attributes',
                     'deleteUrl' => route('admin.attributes.destroy', ['item' => $item->id]),
                     'createAttribute' => route('admin.attributes.create', ['atrributeId' => $item->id, 'atrributeName' => $item->name]),
