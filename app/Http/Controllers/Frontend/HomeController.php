@@ -132,16 +132,33 @@ class HomeController extends FrontendController
         return response()->json(['success' => true, 'wishlistCount' => $wishlistCount, 'message' => 'Đã lưu sản phẩm vào danh sách yêu thích'], 201);
     }
 
+
     public function removeFromWishList($productId)
     {
-        $this->wishListService->removeFromWishList($productId);
-        $wishlistCount = $this->wishListService->countProducts() - 1;
+        // Lấy cookie và giải mã nó
+        $wishlist = Cookie::get('wishlist');
+        $wishlist = $wishlist ? json_decode($wishlist, true) : [];
+
+        // Loại bỏ sản phẩm khỏi danh sách yêu thích
+        $wishlist = array_diff($wishlist, [$productId]);
+
+        // Kiểm tra nếu danh sách wishlist trống
+        if (empty($wishlist)) {
+            Cookie::queue(Cookie::forget('wishlist'));
+            $wishlistCount = 0;
+        } else {
+            // Lưu lại danh sách sau khi xóa sản phẩm
+            Cookie::queue('wishlist', json_encode(array_values($wishlist)), 60 * 24 * 30);
+            $wishlistCount = count($wishlist);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Đã xóa sản phẩm khỏi danh sách yêu thích',
             'wishlistCount' => $wishlistCount
         ]);
     }
+
 
     public function showProducts(Request $request, $slug = null)
     {

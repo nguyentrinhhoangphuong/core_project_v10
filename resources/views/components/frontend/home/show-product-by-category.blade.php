@@ -109,7 +109,7 @@
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(res) {
-                    $('#wishlist-count').text(res.wishlistCount);
+                    $('.wishlist-count').text(res.wishlistCount);
                     $button.closest('.product-box-3').remove();
                     if (res.wishlistCount == 0) {
                         // Hiển thị thông báo rằng không còn sản phẩm nào
