@@ -20,5 +20,5 @@ Laptop Store Platform is a web application designed for selling laptops, monitor
 - **Database**: MySQL
 
 ## Database Design
-
 For an overview of the database schema, please refer to the [Database Design Diagram](https://dbdiagram.io/d/core-project-661b837c03593b6b61eea5da).
+![Database Design](core-project.png)
