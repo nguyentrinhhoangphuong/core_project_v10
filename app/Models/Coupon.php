@@ -92,4 +92,25 @@ class Coupon extends Model
 
         return $activeCoupons;
     }
+
+    public static function getValidCouponNames($orderTotal = 0)
+    {
+        $validCoupons = Coupon::where('is_active', true)
+            ->where('starts_at', '<=', Carbon::now())
+            ->where('expires_at', '>', Carbon::now())
+            ->where('min_order_amount', '<=', $orderTotal)
+            ->where(function ($query) {
+                $query->whereNull('usage_limit')
+                    ->orWhereColumn('used_count', '<', 'usage_limit');
+            })
+            ->get();
+        return $validCoupons->map(function ($coupon) {
+            return [
+                'id' => $coupon->id,
+                'code' => $coupon->code,
+                'discount_type' => $coupon->discount_type,
+                'discount_value' => $coupon->discount_value,
+            ];
+        });
+    }
 }

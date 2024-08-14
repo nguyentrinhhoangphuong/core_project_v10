@@ -6,6 +6,7 @@ use App\Models\Attributes;
 use App\Models\AttributeValue;
 use App\Models\Brand;
 use App\Models\CategoryProducts;
+use App\Models\FlashSale;
 use App\Models\Product;
 use App\Models\ProductAttributes;
 use App\Services\CategoryProductAttribute\CategoryProductAttributeService;
@@ -17,10 +18,11 @@ class HomeController extends FrontendController
 {
     protected CategoryProducts $categoryProducts;
     protected Product $product;
+    protected $flashSales;
     protected $wishListService;
     protected $categoryProductAttributeService;
 
-    public function __construct(CategoryProducts $categoryProducts, Product $product, WishListService $wishListService, CategoryProductAttributeService $categoryProductAttributeService)
+    public function __construct(FlashSale $flashSale, CategoryProducts $categoryProducts, Product $product, WishListService $wishListService, CategoryProductAttributeService $categoryProductAttributeService)
     {
         $this->controllerName = 'home';
         $this->numberOfPage = 12;
@@ -31,6 +33,7 @@ class HomeController extends FrontendController
         $this->product = $product;
         $this->wishListService = $wishListService;
         $this->categoryProductAttributeService = $categoryProductAttributeService;
+        $this->flashSales = $flashSale;
     }
 
     public function index()
@@ -101,14 +104,15 @@ class HomeController extends FrontendController
                 'series' => $productInSeries->series->name ?? ""
             ];
         }
-
+        $activeFlashSale = $this->flashSales->isActiveFlashSales();
         return view('frontend.pages.home.productDetails', [
             'product' => $product,
             'attributes' => $attributes,
             'trendingProducts' => $trendingProducts,
             'relatedProducts' => $relatedProducts,
             'categoryBreadcrumb' => array_slice($categoryBreadcrumb->toArray(), -2),
-            'seriesProducts' => $seriesProducts
+            'seriesProducts' => $seriesProducts,
+            'activeFlashSale' => $activeFlashSale
         ]);
     }
 

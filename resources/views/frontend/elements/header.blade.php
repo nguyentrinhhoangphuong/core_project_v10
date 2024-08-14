@@ -15,6 +15,7 @@
         transition: opacity 0.3s ease, visibility 0.3s ease;
         display: flex;
         align-items: center;
+        z-index: 1001;
     }
 
     .scroll-visible span {
@@ -45,6 +46,7 @@
         min-width: 1em;
         min-height: 1em;
         border-radius: 2px;
+        z-index: 1002;
     }
 
     .vertical-line {
@@ -81,7 +83,7 @@
                     <div class="header-nav">
                         <x-frontend.header.categories-products />
                         <div class="header-nav-middle">
-                            <div class="main-nav navbar navbar-expand-xl navbar-light navbar-sticky">
+                            <div class="main-nav navbar navbar-expand-xl navbar-light">
                                 <div class="offcanvas offcanvas-collapse order-xl-2" id="primaryMenu">
                                     <div class="offcanvas-header navbar-shadow">
                                         <h5>Menu</h5>
@@ -188,8 +190,10 @@
         window.addEventListener('scroll', function() {
             if (window.pageYOffset > headerHeight) {
                 header.classList.add('active');
+                stickyHeader.style.zIndex = '1000'; // Đảm bảo header ở trên
             } else {
                 header.classList.remove('active');
+                stickyHeader.style.zIndex = ''; // Reset lại z-index khi không cần sticky
             }
         });
     });

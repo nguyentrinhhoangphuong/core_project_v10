@@ -24,6 +24,7 @@
                                         <th>Giá trị đơn hàng tối thiểu</th>
                                         <th>Giảm giá tối đa</th>
                                         <th>Giới hạn sử dụng</th>
+                                        <th>Số lần đã sử dụng</th>
                                         <th>Ngày bắt đầu</th>
                                         <th>Ngày kết thúc</th>
                                         <th>Trạng thái</th>
@@ -46,6 +47,7 @@
                                                     $item['max_discount_amount'],
                                                 );
                                                 $usage_limit = $item['usage_limit'];
+                                                $used_count = $item['used_count'];
                                                 $starts_at = Template::dateFormat($item['starts_at']);
                                                 $expires_at = Template::dateFormat($item['expires_at']);
                                                 $is_active = $item['is_active'];
@@ -57,6 +59,7 @@
                                                 <td>{{ $min_order_amount }}</td>
                                                 <td>{{ $max_discount_amount }}</td>
                                                 <td>{{ $usage_limit }}</td>
+                                                <td>{{ $used_count }}</td>
                                                 <td>{{ $starts_at }}</td>
                                                 <td>{{ $expires_at }}</td>
                                                 <td>

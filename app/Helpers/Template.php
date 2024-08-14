@@ -32,6 +32,11 @@ class Template
         return number_format($num, 0, ',', '.') . 'đ';
     }
 
+    public static function formatPercentage($value)
+    {
+        return intval($value) . '%';
+    }
+
     public static function dateFormat($date)
     {
         return date("d-m-Y", strtotime($date));

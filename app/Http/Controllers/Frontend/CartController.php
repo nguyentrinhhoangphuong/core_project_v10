@@ -24,11 +24,12 @@ class CartController extends Controller
     {
         $cart = $this->cartService->getFromCookie();
         $total = $this->cartService->getTotal();
+        $coupon = $this->coupon->getValidCouponNames($total);
         if ($cart && $cart->coupon && $cart->coupon->hasReachedLimit()) {
             $cart = $this->cartService->updateDiscount(0, null);
             session()->flash('coupon_expired', 'Mã giảm giá đã hết hạn và đã bị xóa khỏi giỏ hàng của bạn.');
         }
-        return view('frontend.pages.cart.index', compact('cart', 'total'));
+        return view('frontend.pages.cart.index', compact('cart', 'total', 'coupon'));
     }
 
     public function applyCoupon(Request $request)

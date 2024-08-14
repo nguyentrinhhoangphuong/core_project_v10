@@ -11,13 +11,15 @@ class ProductDetails extends Component
 {
     protected $product;
     public $seriesProducts;
+    public $activeFlashSale;
     /**
      * Create a new component instance.
      */
-    public function __construct(Product $product, $seriesProducts = [])
+    public function __construct(Product $product, $seriesProducts = [], $activeFlashSale)
     {
         $this->product = $product;
         $this->seriesProducts = $seriesProducts;
+        $this->activeFlashSale = $activeFlashSale;
     }
 
     /**
@@ -27,7 +29,8 @@ class ProductDetails extends Component
     {
         return view('components.frontend.home.products.product-details', [
             'product' => $this->product,
-            'seriesProducts' => $this->seriesProducts
+            'seriesProducts' => $this->seriesProducts,
+            'activeFlashSale' => $this->activeFlashSale
         ]);
     }
 }

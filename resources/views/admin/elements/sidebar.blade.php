@@ -94,6 +94,7 @@
                             'admin.attributes.index',
                             'admin.brand.index',
                             'admin.coupon.index',
+                            'admin.flash-sales.index',
                         ];
                     @endphp
                     <a class="nav-link dropdown-toggle {{ in_array(Route::currentRouteName(), $productRoutes) ? 'active' : '' }}"
@@ -114,29 +115,33 @@
                             Products
                         </span>
                     </a>
-                    <div class="dropdown-menu {{ in_array(Route::currentRouteName(), $productRoutes) ? 'show' : '' }}"
+                    <div class="dropdown-menu {{ request()->is('admin/products*', 'admin/category-products*', 'admin/attributes*', 'admin/brand*', 'admin/coupon*', 'admin/flash-sales*') ? 'show' : '' }}"
                         data-bs-popper="static">
                         <div
-                            class="dropdown-menu-columns {{ in_array(Route::currentRouteName(), $productRoutes) ? 'show' : '' }}">
-                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.products.index' ? 'active' : '' }}"
+                            class="dropdown-menu-columns {{ request()->is('admin/products*', 'admin/category-products*', 'admin/attributes*', 'admin/brand*', 'admin/coupon*', 'admin/flash-sales*') ? 'show' : '' }}">
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.products.index' ? 'active text-white' : '' }}"
                                 href="{{ route('admin.products.index') }}">
                                 All Products
                             </a>
-                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.category-products.index' ? 'active' : '' }}"
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.category-products.index' ? 'active text-white' : '' }}"
                                 href="{{ route('admin.category-products.index') }}">
                                 Category Products
                             </a>
-                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.attributes.index' ? 'active' : '' }}"
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.attributes.index' ? 'active text-white' : '' }}"
                                 href="{{ route('admin.attributes.index') }}">
                                 Attributes
                             </a>
-                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.brand.index' ? 'active' : '' }}"
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.brand.index' ? 'active text-white' : '' }}"
                                 href="{{ route('admin.brand.index') }}">
                                 Brand
                             </a>
-                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.coupon.index' ? 'active' : '' }}"
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'admin.coupon.index' ? 'active text-white' : '' }}"
                                 href="{{ route('admin.coupon.index') }}">
                                 Coupon
+                            </a>
+                            <a class="dropdown-item {{ request()->is('admin/flash-sales*') ? 'active text-white' : '' }}"
+                                href="{{ route('admin.flash-sales.index') }}">
+                                Flash sales
                             </a>
                         </div>
                     </div>

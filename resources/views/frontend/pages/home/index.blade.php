@@ -4,6 +4,8 @@
     <x-frontend.slider.carousel />
     <!-- Home Section End -->
 
+    <x-frontend.home.flash-sales />
+
     {{-- Top Product --}}
     <x-frontend.home.top-products />
     {{-- End Top Product --}}

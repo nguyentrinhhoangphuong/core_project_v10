@@ -1,64 +1,6 @@
 @php
     use App\Helpers\Template;
 @endphp
-<style>
-    .product-variants {
-        margin-bottom: 20px;
-    }
-
-    .variant-card {
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: 12px;
-        text-align: center;
-        transition: all 0.3s ease;
-        height: 100%;
-        background-color: #fff;
-    }
-
-    .variant-card.active {
-        border-color: #28a745;
-        background-color: #e8f5e9;
-    }
-
-    .variant-link {
-        text-decoration: none;
-        color: inherit;
-        display: block;
-    }
-
-    .variant-name {
-        font-size: 0.9rem;
-        font-weight: bold;
-        margin-bottom: 6px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .variant-price {
-        font-size: 0.85rem;
-        color: #666;
-    }
-
-    .variant-card:hover {
-        border-color: #28a745;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    @media (max-width: 767px) {
-        .row-cols-md-3>* {
-            flex: 0 0 auto;
-            width: 50%;
-        }
-    }
-
-    @media (max-width: 575px) {
-        .row-cols-md-3>* {
-            width: 100%;
-        }
-    }
-</style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <div class="col-xl-6 wow fadeInUp">
     <div class="product-left-box">
@@ -96,7 +38,15 @@
     <div class="right-box-contain">
         <h2 class="name">{{ $product->name }}</h2>
         <div class="price-rating">
-            <h3 class="theme-color price">{{ Template::numberFormatVND($product->price) }}
+            <h3 class="theme-color price">
+                @if (!$product->flashSales->isEmpty())
+                    <div class="mb-3">
+                        <div class="alert alert-warning text-center">
+                            <strong>Flash Sale:</strong> <span id="countdown" class="fw-bold"></span>
+                        </div>
+                    </div>
+                @endif
+                {{ Template::numberFormatVND($product->flash_sale_price) }}
                 <del class="text-content">{{ Template::numberFormatVND($product->original_price) }}</del>
             </h3>
         </div>
@@ -127,7 +77,8 @@
                                     <a href="{{ route('frontend.home.productDetails', ['slug' => Str::slug($item['productName']) . '-' . $item['productId']]) }}"
                                         class="variant-link">
                                         <div class="variant-name">{{ $variantName }}</div>
-                                        <div class="variant-price">{{ Template::numberFormatVND($item['price']) }}
+                                        <div class="variant-price">
+                                            {{ Template::numberFormatVND($product->flash_sale_price) }}
                                         </div>
                                     </a>
                                 </div>
@@ -373,3 +324,74 @@
         }
     }
 </script>
+<script>
+    var endTime = "{{ $activeFlashSale->end_time }}";
+</script>
+<script src="{{ asset('_frontend/js/countDownDate.js') }}"></script>
+<style>
+    .flash-sale-label {
+        background-color: red;
+        color: white;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .product-variants {
+        margin-bottom: 20px;
+    }
+
+    .variant-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+        height: 100%;
+        background-color: #fff;
+    }
+
+    .variant-card.active {
+        border-color: #28a745;
+        background-color: #e8f5e9;
+    }
+
+    .variant-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .variant-name {
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin-bottom: 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .variant-price {
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    .variant-card:hover {
+        border-color: #28a745;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 767px) {
+        .row-cols-md-3>* {
+            flex: 0 0 auto;
+            width: 50%;
+        }
+    }
+
+    @media (max-width: 575px) {
+        .row-cols-md-3>* {
+            width: 100%;
+        }
+    }
+</style>

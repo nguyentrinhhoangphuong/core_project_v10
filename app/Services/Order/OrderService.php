@@ -97,30 +97,30 @@ class OrderService
     $order = $this->order->with('products')->find($order->id);
     if (!$order) return null;
 
-    $orderDetails = [
-      'id' => $order->id,
-      'status' => $order->status,
-      'customer_name' => $order->name,
-      'code' => $order->code,
-      'options' => $order->options,
-      'total_amount' => $order->total_amount,
-      'gender' => $order->gender,
-      'address' => $order->address,
-      'phone' => $order->phone,
-      'email' => $order->address,
-      'created_at' => Template::dateFormat($order->created_at),
-      'coupon' => $order->coupon,
-      'products' => $order->products->map(function ($product) {
-        return [
-          'id' => $product->pivot->product_id,
-          'quantity' => $product->pivot->quantity,
-          'name' => $product->name,
-          'price' => $product->price,
-          'image' => $product->media[0]->getUrl(),
-        ];
-      })
-    ];
-    return $orderDetails;
+    // $orderDetails = [
+    //   'id' => $order->id,
+    //   'status' => $order->status,
+    //   'customer_name' => $order->name,
+    //   'code' => $order->code,
+    //   'options' => $order->options,
+    //   'total_amount' => $order->total_amount,
+    //   'gender' => $order->gender,
+    //   'address' => $order->address,
+    //   'phone' => $order->phone,
+    //   'email' => $order->address,
+    //   'created_at' => Template::dateFormat($order->created_at),
+    //   'coupon' => $order->coupon,
+    //   'products' => $order->products->map(function ($product) {
+    //     return [
+    //       'id' => $product->pivot->product_id,
+    //       'quantity' => $product->pivot->quantity,
+    //       'name' => $product->name,
+    //       'price' => $product->price,
+    //       'image' => $product->media[0]->getUrl(),
+    //     ];
+    //   })
+    // ];
+    return $order;
   }
 
   public function updateOrderStatus($orderId, $status)

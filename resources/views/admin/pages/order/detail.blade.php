@@ -41,17 +41,6 @@
                             </div>
                             <div class="col-auto ms-auto d-print-none mt-2">
                                 <button type="button" class="btn btn-primary" onclick="javascript:window.print();">
-                                    <!-- Download SVG icon from http://tabler-icons.io/i/printer -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                        stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                        <path
-                                            d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" />
-                                        <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" />
-                                        <path
-                                            d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" />
-                                    </svg>
                                     In hóa đơn
                                 </button>
                             </div>
@@ -59,41 +48,55 @@
 
                     </div>
                     <div class="card card-body">
-                        <table class="table table-transparent table-responsive">
+                        <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Sản phẩm </th>
+                                    <th>Sản phẩm</th>
                                     <th class="text-center">Số lượng</th>
                                     <th class="text-end">Giá</th>
+                                    <th class="text-end">Giá Flash Sales</th>
                                     <th class="text-end">Tổng</th>
                                 </tr>
                             </thead>
-                            @foreach ($orderDetails['products'] as $item)
+                            <tbody>
+                                @foreach ($orderDetails['products'] as $item)
+                                    <tr>
+                                        <td>{{ $item['name'] }}</td>
+                                        <td class="text-center">{{ $item->pivot->quantity }}</td>
+                                        <td class="text-end">{{ Template::numberFormatVND($item->price) }}</td>
+                                        <td class="text-end">
+                                            @if (!$item->flashSales->isEmpty())
+                                                {{ Template::numberFormatVND($item->flash_sale_price) }}
+                                            @endif
+                                        </td>
+                                        <td class="text-end">
+                                            @if (!$item->flashSales->isEmpty())
+                                                {{ Template::numberFormatVND($item->flash_sale_price * $item->pivot->quantity) }}
+                                            @else
+                                                {{ Template::numberFormatVND($item->price * $item->pivot->quantity) }}
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                @if ($orderDetails->coupon != null)
+                                    <tr>
+                                        <td colspan="4" class="font-weight-bold text-uppercase text-end">
+                                            Coupon: {{ $orderDetails['coupon']['code'] ?? 'khong' }}
+                                        </td>
+                                        <td class="font-weight-bold text-end">
+                                            {{ Template::numberFormatVND($orderDetails->discount_amount) }}
+                                        </td>
+                                    </tr>
+                                @endif
                                 <tr>
-                                    <td>
-                                        <p class="strong mb-1">{{ $item['name'] }}</p>
-                                    </td>
-                                    <td class="text-center">{{ $item['quantity'] }}</td>
-                                    <td class="text-end">{{ Template::numberFormatVND($item['price']) }}</td>
+                                    <td colspan="4" class="text-end"><strong>Tổng tiền:</strong></td>
                                     <td class="text-end">
-                                        {{ Template::numberFormatVND($item['price'] * $item['quantity']) }}</td>
-                                </tr>
-                            @endforeach
-
-                            @if ($orderDetails['coupon'])
-                                <tr>
-                                    <td colspan="3" class="font-weight-bold text-uppercase text-end">Coupon:
-                                        {{ $orderDetails['coupon']['code'] ?? 'khong' }}</td>
-                                    <td class="font-weight-bold text-end">
-                                        {{ Template::numberFormatVND($orderDetails['coupon']['max_discount_amount']) }}
+                                        <strong>{{ Template::numberFormatVND($orderDetails['total_amount']) }}</strong>
                                     </td>
                                 </tr>
-                            @endif
-                            <tr>
-                                <td colspan="3" class="font-weight-bold text-uppercase text-end">Tổng tiền:</td>
-                                <td class="font-weight-bold text-end">
-                                    {{ Template::numberFormatVND($orderDetails['total_amount']) }}</td>
-                            </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

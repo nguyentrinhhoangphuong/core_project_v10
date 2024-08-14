@@ -89,7 +89,7 @@
                                                 </a>
                                                 <h6>
                                                     <span>{{ $item->pivot->quantity }}x
-                                                    </span>{{ Template::numberFormatVND($item->price) }}
+                                                    </span>{{ Template::numberFormatVND($item->flash_sale_price) }}
                                                 </h6>
                                             </div>
                                         </div>
@@ -99,7 +99,7 @@
 
                         </ul>
                         <div class="price-box">
-                            <h5>Tổng cộng :</h5>
+                            <h5>Tổng cộng:</h5>
                             <h4 class="theme-color fw-bold">
                                 {{ Template::numberFormatVND($cart->total) }}
                             </h4>

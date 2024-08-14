@@ -80,6 +80,11 @@ class Product extends MainModel
         return $this->belongsToMany(CategoryProducts::class, 'product_category_product', 'product_id', 'category_product_id');
     }
 
+    public function flashSales()
+    {
+        return $this->belongsToMany(FlashSale::class, 'flash_sale_product');
+    }
+
     public function mainCategory()
     {
         return $this->belongsTo(ProductCategoryProduct::class, 'category_product_id');
@@ -97,7 +102,7 @@ class Product extends MainModel
 
     public function getTotalAttribute()
     {
-        return $this->price * $this->pivot->quantity;
+        return $this->flash_sale_price * $this->pivot->quantity;
     }
 
     public function listItems($params = null, $options = null)
@@ -458,5 +463,30 @@ class Product extends MainModel
             });
         }
         return $productsQuery->paginate(20)->withQueryString();
+    }
+
+    public function getFlashSalePriceAttribute()
+    {
+        $current_time = now();
+        $flash_sale = $this->flashSales()
+            ->where('start_time', '<=', $current_time)
+            ->where('end_time', '>=', $current_time)
+            ->where('is_active', true)
+            ->first();
+
+        if ($flash_sale) {
+            return $this->price * (1 - $flash_sale->discount_percentage / 100);
+        }
+
+        return $this->price;
+    }
+
+    public function scopeActiveFlashSale(Builder $query)
+    {
+        return $query->whereHas('flashSales', function ($q) {
+            $q->where('start_time', '<=', now())
+                ->where('end_time', '>=', now())
+                ->where('is_active', true);
+        });
     }
 }

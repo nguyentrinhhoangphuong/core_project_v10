@@ -31,6 +31,7 @@ class OrderController extends Controller
 
     public function store(OrderRequest $request)
     {
+        $cart = $this->cartService->getFromCookie();
         $order = Order::create([
             'code' => $this->generateOrderCode(),
             'status' => 'pending',
@@ -42,9 +43,9 @@ class OrderController extends Controller
             'address' => $request['address'],
             'options' => $request->get('options'),
             'coupon_id' => $request->get('coupon_id'),
+            'discount_amount' => $cart->discount_amount
         ]);
 
-        $cart = $this->cartService->getFromCookie();
         if ($cart->coupon_id != null) $cart->coupon->incrementUsage();
         $cartProductsWithQuantity = $cart->products->mapWithKeys(function ($product) {
             $quantity = $product->pivot->quantity;

@@ -44,8 +44,8 @@ class ProductCartController extends Controller
                 return [
                     'id' => $product->id,
                     'name' => $product->name,
-                    'price' => $product->price,
-                    'price_formatted' => Template::numberFormatVND($product->price),
+                    'price' => $product->flash_sale_price,
+                    'price_formatted' => Template::numberFormatVND($product->flash_sale_price),
                     'quantity' => $product->pivot->quantity,
                     'image' => $product->media[0]->getUrl(),
                 ];

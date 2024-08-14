@@ -52,7 +52,7 @@
                                                     </td>
 
                                                     <td class="price">
-                                                        <h5>{{ Template::numberFormatVND($item->price) }}</h5>
+                                                        <h5>{{ Template::numberFormatVND($item->flash_sale_price) }}</h5>
                                                         <del
                                                             class="text-content">{{ Template::numberFormatVND($item->original_price) }}</del>
                                                     </td>
@@ -115,13 +115,23 @@
                                     </form>
                                     <div id="coupon-message"></div>
                                     @if ($cartService->checkCoupon())
-                                        <a id="delete-coupon" href="#" data-coupon-id="{{ $cart->coupon_id }}">Xóa
-                                            coupon</a>
+                                        <a id="delete-coupon" href="#" data-coupon-id="{{ $cart->coupon_id }}">
+                                            Xóa coupon
+                                        </a>
                                     @else
                                         <a id="delete-coupon" style="display: none;" href="#"
                                             data-coupon-id="{{ $cart->coupon_id }}">Xóa coupon</a>
                                     @endif
-
+                                    @if ($coupon)
+                                        <div class="coupon-info">
+                                            @foreach ($coupon as $item)
+                                                <p class="coupon-code" data-code="{{ $item['code'] }}"
+                                                    style="cursor: pointer">
+                                                    Sử dụng mã giảm giá: {{ $item['code'] }}
+                                                </p>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                     <ul class="summery-discount">
                                         <li>
                                             <h4>Tổng tiền gốc</h4>
@@ -187,6 +197,47 @@
             });
         });
 
+        $('.coupon-code').on('click', function() {
+            var code = $(this).data('code');
+            var currentCode = $('input[name="code"]').val();
+
+            if (currentCode !== code) {
+                if (currentCode !== "") {
+                    // Nếu đã có coupon, xóa nó trước
+                    deleteCoupon(function() {
+                        applyCoupon(code);
+                    });
+                } else {
+                    // Nếu chưa có coupon, áp dụng ngay
+                    applyCoupon(code);
+                }
+            }
+        });
+
+        function applyCoupon(code) {
+            $('input[name="code"]').val(code);
+            $('#coupon-form').submit();
+        }
+
+        function deleteCoupon(callback) {
+            $.ajax({
+                url: '{{ route('frontend.home.deleteCoupon') }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
+                success: function(response) {
+                    if (response.success) {
+                        updateCouponDisplay(response, false);
+                        if (callback) callback();
+                    }
+                },
+                error: function(xhr) {
+                    $('#coupon-message').text('Có lỗi xảy ra khi xóa coupon').css('color', 'red');
+                }
+            });
+        }
+
         $('#coupon-form').submit(function(e) {
             e.preventDefault();
             $.ajax({
@@ -194,13 +245,7 @@
                 method: 'GET',
                 data: $(this).serialize(),
                 success: function(response) {
-                    $('#coupon-message').text(response.message).css('color', 'green');
-                    $('#original-total').text(response.original_total);
-                    $('#discount-amount').text(response.discount_amount);
-                    $('#discounted-total').text(response.discounted_total);
-                    $('#delete-coupon').show();
-                    $('.summery-discount').show();
-
+                    updateCouponDisplay(response, true);
                 },
                 error: function(xhr) {
                     $('#coupon-message').text(xhr.responseJSON.error).css('color', 'red');
@@ -211,26 +256,19 @@
 
         $('#delete-coupon').on('click', function(e) {
             e.preventDefault();
-            $.ajax({
-                url: '{{ route('frontend.home.deleteCoupon') }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                },
-                success: function(response) {
-                    if (response.success) {
-                        $('#coupon-message').text(response.message).css('color', 'green');
-                        $('#original-total').text(response.original_total);
-                        $('#discount-amount').text('0đ');
-                        $('#discounted-total').text(response.discounted_total);
-                        $('#delete-coupon').hide();
-                        $('input[name="code"]').val('');
-                    }
-                },
-                error: function(xhr) {
-                    $('#coupon-message').text('Có lỗi xảy ra khi xóa coupon').css('color', 'red');
-                }
-            });
+            deleteCoupon();
         });
+
+        function updateCouponDisplay(response, isCouponApplied) {
+            $('#coupon-message').text(response.message).css('color', 'green');
+            $('#original-total').text(response.original_total);
+            $('#discount-amount').text(isCouponApplied ? response.discount_amount : '0đ');
+            $('#discounted-total').text(response.discounted_total);
+            $('#delete-coupon').toggle(isCouponApplied);
+            $('.summery-discount').toggle(isCouponApplied);
+            if (!isCouponApplied) {
+                $('input[name="code"]').val('');
+            }
+        }
     </script>
 @endsection

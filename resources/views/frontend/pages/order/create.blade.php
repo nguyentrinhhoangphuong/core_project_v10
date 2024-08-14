@@ -10,7 +10,6 @@
                     <h3 class="mb-4 text-center">Thông tin khách mua hàng</h3>
                     <form action="{{ route('frontend.order.store') }}" method="POST">
                         @csrf
-                        <input type="hidden" name="coupon_id" value="{{ $cart->coupon_id ?? null }}">
                         <div class="mb-3">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="gender" id="male" value="male"
@@ -65,6 +64,7 @@
                             <textarea class="form-control" rows="3" name="options" placeholder="Lưu ý yêu cầu khác (Không bắt buộc)"></textarea>
                         </div>
                         <input type="hidden" name="total_amount" value="{{ $cart->total }}">
+                        <input type="hidden" name="coupon_id" value="{{ $cart->coupon_id ?? null }}">
                         <button type="submit" class="btn w-100" style="color: white; background-color: brown">
                             ĐẶT HÀNG NGAY
                         </button>
@@ -109,7 +109,7 @@
                                                         <h4 class="table-title text-content">Giá</h4>
                                                     </div>
                                                     <div class="col">
-                                                        <strong>{{ Template::numberFormatVND($item->price) }}</strong>
+                                                        <strong>{{ Template::numberFormatVND($item->flash_sale_price) }}</strong>
                                                     </div>
                                                 </div>
                                                 <div class="row">
